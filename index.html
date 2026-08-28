@@ -1,0 +1,2339 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Protótipo de gestão de vagas do Portal RH"
+    />
+    <title>Portal RH | Pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=candidate-menu-95" />
+  </head>
+  <body>
+    <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5" />
+        <path d="M5 10.5V21h14V10.5" />
+        <path d="M10 21v-6h4v6" />
+      </symbol>
+      <symbol id="i-columns" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="5" height="16" rx="1.2" />
+        <rect x="10" y="4" width="5" height="10" rx="1.2" />
+        <rect x="17" y="4" width="4" height="13" rx="1.2" />
+      </symbol>
+      <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 6h13M8 12h13M8 18h13" />
+        <circle cx="4" cy="6" r="1" fill="currentColor" stroke="none" />
+        <circle cx="4" cy="12" r="1" fill="currentColor" stroke="none" />
+        <circle cx="4" cy="18" r="1" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18 9 12l6-6" />
+      </symbol>
+      <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="8" width="18" height="13" rx="2" />
+        <path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        <path d="M3 13h18" />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M8 3v4M16 3v4M3 11h18" />
+      </symbol>
+      <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="2.5" width="8" height="4" rx="1" />
+        <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
+        <path d="M9 12h6M9 16h4" />
+      </symbol>
+      <symbol id="i-check-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="m8 12 3 3 5-6" />
+      </symbol>
+      <symbol id="i-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="8" height="8" rx="1.2" />
+        <rect x="13" y="3" width="8" height="5" rx="1.2" />
+        <rect x="13" y="10" width="8" height="11" rx="1.2" />
+        <rect x="3" y="13" width="8" height="8" rx="1.2" />
+      </symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20V10M12 20V4M20 20v-7" />
+        <path d="M3 20h18" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 3v2.2M12 18.8V21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M3 12h2.2M18.8 12H21M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6" />
+      </symbol>
+      <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.2 8.4a2.8 2.8 0 1 1 4.6 2.2c-.9.7-1.6 1.2-1.6 2.4" />
+        <path d="M12 17.2h.01" />
+      </symbol>
+      <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8.5 12.2 2.4 2.4 4.6-5.2" />
+      </symbol>
+      <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m7.2 7.2 9.6 9.6" />
+      </symbol>
+      <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m9 9 6 6M15 9l-6 6" />
+      </symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3l18 18" />
+        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+        <path d="M9.9 5.2A10 10 0 0 1 12 5c5 0 9.3 3.1 11 7a11.5 11.5 0 0 1-4.2 4.8" />
+        <path d="M6.7 6.7C4.8 8 3.3 9.9 2 12c1.7 3.9 6 7 10 7 1.3 0 2.6-.2 3.8-.7" />
+      </symbol>
+      <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </symbol>
+      <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m5 12 14-7-4 14-3-6-7-1z" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9" />
+        <path d="M10 20a2 2 0 0 0 4 0" />
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3.5 2" />
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+        <circle cx="16" cy="7" r="2" />
+        <circle cx="8" cy="17" r="2" />
+      </symbol>
+      <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3h7l5 5v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" />
+        <path d="M15 3v5h5" />
+      </symbol>
+      <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21.4 11.6 12 21a6 6 0 0 1-8.5-8.5l9.9-9.9a4 4 0 0 1 5.7 5.7l-9.9 9.8a2 2 0 0 1-2.8-2.8l8.5-8.4" />
+      </symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m4 7 8 6 8-6" />
+      </symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18" /></symbol>
+      <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18H10v-3"/></symbol>
+      <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 9h5a1 1 0 0 1 1 1v11"/><path d="M8 8h2M8 12h2M8 16h2M17 13h1M17 17h1"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.5 10.5 7-4M8.5 13.5l7 4"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/></symbol>
+      <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7v10M15 7v10"/></symbol>
+    </svg>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <div>
+            <strong>Portal RH</strong>
+            <span>Gestão de talentos</span>
+          </div>
+          <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+            <span aria-hidden="true">×</span>
+          </button>
+          <button
+            class="icon-button sidebar-toggle"
+            id="sidebarToggle"
+            type="button"
+            aria-label="Recolher menu"
+            aria-expanded="true"
+            aria-controls="sidebar"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+        </div>
+
+        <nav class="main-nav" aria-label="Navegação principal">
+          <div class="nav-group">
+            <p class="nav-group-label">Gestão</p>
+            <a href="#gestor" class="nav-item" data-page="gestor" title="Portal do gestor">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <span class="nav-label">Portal do gestor</span>
+            </a>
+            <a href="#analises-gestores" class="nav-item" data-page="analisesGestores" title="Análises de gestores">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span>
+              <span class="nav-label">Análises de gestores</span>
+              <span class="nav-count" id="managerAnalysesNavCount">1</span>
+            </a>
+          </div>
+          <div class="nav-group">
+            <p class="nav-group-label">Recrutamento</p>
+            <a href="#dashboard" class="nav-item active" data-page="dashboard" aria-current="page" title="Início">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-home" /></svg></span>
+              <span class="nav-label">Início</span>
+            </a>
+            <a href="#pipeline" class="nav-item" data-page="pipeline" title="Pipeline">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-columns" /></svg></span>
+              <span class="nav-label">Pipeline</span>
+              <span class="nav-count">10</span>
+            </a>
+            <a href="#vagas" class="nav-item" data-page="jobs" title="Vagas">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
+              <span class="nav-label">Vagas</span>
+              <span class="nav-count">12</span>
+            </a>
+            <a href="#talentos" class="nav-item" data-page="talentos" title="Talentos">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <span class="nav-label">Talentos</span>
+              <span class="nav-count" id="talentsNavCount">22</span>
+            </a>
+          </div>
+          <div class="nav-group">
+            <p class="nav-group-label">Seleção</p>
+            <a href="#entrevistas" class="nav-item" data-page="entrevistas" title="Entrevistas">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-calendar" /></svg></span>
+              <span class="nav-label">Entrevistas</span>
+              <span class="nav-count" id="interviewsNavCount">6</span>
+            </a>
+            <a href="#tecnicos" class="nav-item" data-page="tecnicos" title="Técnicos">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-clipboard" /></svg></span>
+              <span class="nav-label">Técnicos</span>
+              <span class="nav-count" id="testsNavCount">2</span>
+            </a>
+            <a href="#resultados" class="nav-item" data-page="resultados" title="Resultados">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-square" /></svg></span>
+              <span class="nav-label">Resultados</span>
+              <span class="nav-count" id="resultsNavCount">34</span>
+            </a>
+          </div>
+          <div class="nav-group">
+            <p class="nav-group-label">Análise</p>
+            <a href="#painel" class="nav-item" data-page="painel" title="Painel">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-layout" /></svg></span>
+              <span class="nav-label">Painel</span>
+            </a>
+            <a href="#relatorios" class="nav-item" data-page="relatorios" title="Relatórios">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-chart" /></svg></span>
+              <span class="nav-label">Relatórios</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="#configuracoes" class="nav-item" data-page="settings" title="Configurações">
+            <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-settings" /></svg></span>
+            <span class="nav-label">Configurações</span>
+          </a>
+          <div class="help-card">
+            <span class="help-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-help" /></svg></span>
+            <div>
+              <strong>Precisa de ajuda?</strong>
+              <button type="button">Falar com o suporte</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button
+            class="icon-button menu-button"
+            id="menuButton"
+            type="button"
+            aria-label="Recolher menu"
+            aria-expanded="true"
+            aria-controls="sidebar"
+          >
+            <span aria-hidden="true">☰</span>
+          </button>
+          <div class="topbar-title">
+            <span>Recrutamento e seleção</span>
+            <strong id="pageTitle">Dashboard</strong>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button notification-button" type="button" aria-label="Notificações" aria-expanded="false" aria-controls="notificationPopover">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-bell" /></svg></span>
+              <span class="notification-dot"></span>
+            </button>
+            <div class="profile-cluster">
+              <button
+                class="candidate-view-trigger"
+                id="openCandidatePortal"
+                type="button"
+                title="Vista do candidato"
+                aria-label="Abrir vista do candidato"
+              >
+                <svg class="ui-icon"><use href="#i-eye" /></svg>
+              </button>
+              <button class="profile-button" type="button" aria-label="Menu do perfil" aria-expanded="false" aria-controls="profilePopover">
+                <span class="avatar">LD</span>
+                <span class="profile-copy">
+                  <strong>Larissa Dias</strong>
+                  <small>Analista de RH</small>
+                </span>
+                <span aria-hidden="true">⌄</span>
+              </button>
+            </div>
+            <div class="topbar-popover notification-popover" id="notificationPopover" hidden>
+              <header><strong>Notificações</strong><small>3 atualizações pendentes</small></header>
+              <button type="button" data-topbar-page="entrevistas"><span class="popover-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Entrevistas de hoje</strong><small>Confira os próximos horários agendados.</small></span></button>
+              <button type="button" data-topbar-page="resultados" data-topbar-result-tab="contratados"><span class="popover-icon"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span><span><strong>Propostas aguardando retorno</strong><small>Acompanhe as movimentações recentes.</small></span></button>
+            </div>
+            <div class="topbar-popover profile-popover" id="profilePopover" hidden>
+              <header><span class="avatar">LD</span><span><strong>Larissa Dias</strong><small>larissa@portalrh.com</small></span></header>
+              <button type="button" data-topbar-page="settings"><span class="popover-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Configurações</strong><small>Catálogos e preferências do portal.</small></span></button>
+              <button type="button" id="profileOpenCandidatePortal"><span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>Vista do candidato</strong><small>Prévia do portal público de vagas.</small></span></button>
+              <button type="button" data-profile-action="logout"><span class="popover-icon"><svg class="ui-icon"><use href="#i-logout" /></svg></span><span><strong>Sair</strong><small>Encerrar a sessão neste protótipo.</small></span></button>
+            </div>
+          </div>
+        </header>
+
+        <section class="dashboard-page" id="dashboardPage">
+          <header class="dashboard-welcome">
+            <div>
+              <span class="eyebrow">TERÇA-FEIRA, 25 DE AGOSTO</span>
+              <h1>Olá, Larissa <span aria-hidden="true">✦</span></h1>
+              <p>Aqui está um resumo do seu recrutamento hoje.</p>
+            </div>
+            <button class="primary-button dashboard-new-job" type="button">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+              Nova vaga
+            </button>
+          </header>
+
+          <div class="dashboard-metrics" aria-label="Resumo do recrutamento">
+            <article class="dashboard-metric metric-green" data-go-page="pipeline" tabindex="0">
+              <div class="dashboard-metric-top">
+                <span class="dashboard-metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+                    <circle cx="9.5" cy="7" r="3.5" />
+                    <path d="M20 8v6M17 11h6" />
+                  </svg>
+                </span>
+                <span class="metric-trend positive">+12%</span>
+              </div>
+              <strong id="dashboardCandidatesCount">10</strong>
+              <span>Candidatos ativos</span>
+              <small>Novos perfis no processo</small>
+            </article>
+            <article class="dashboard-metric metric-mint" data-go-page="jobs" tabindex="0">
+              <div class="dashboard-metric-top">
+                <span class="dashboard-metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 7h16v13H4z" />
+                    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <path d="M10 12h4" />
+                  </svg>
+                </span>
+                <span class="metric-trend positive">+3</span>
+              </div>
+              <strong id="dashboardJobsCount">12</strong>
+              <span>Vagas abertas</span>
+              <small>3 publicadas neste mês</small>
+            </article>
+            <article class="dashboard-metric metric-navy" data-go-page="entrevistas" tabindex="0">
+              <div class="dashboard-metric-top">
+                <span class="dashboard-metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M8 3v4M16 3v4M3 11h18" />
+                  </svg>
+                </span>
+                <span class="metric-trend">Esta semana</span>
+              </div>
+              <strong>09</strong>
+              <span>Entrevistas</span>
+              <small>Próxima hoje às 14:30</small>
+            </article>
+            <article class="dashboard-metric metric-dark" data-go-page="resultados" data-result-tab="contratados" tabindex="0">
+              <div class="dashboard-metric-top">
+                <span class="dashboard-metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+                  </svg>
+                </span>
+                <span class="metric-trend positive">80%</span>
+              </div>
+              <strong>06</strong>
+              <span>Contratações</span>
+              <small>Meta mensal: 8 pessoas</small>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="dashboard-panel active-jobs-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Vagas em destaque</h2>
+                </div>
+                <button type="button" data-go-page="jobs">Ver todas <span>→</span></button>
+              </header>
+              <div class="dashboard-job-list" id="dashboardJobList"></div>
+            </section>
+
+            <section class="dashboard-panel match-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Melhores combinações</h2>
+                </div>
+                <button type="button" data-go-page="pipeline">Ver pipeline</button>
+              </header>
+              <div class="dashboard-match-list" id="dashboardMatchList"></div>
+            </section>
+
+            <section class="dashboard-panel funnel-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Movimento do pipeline</h2>
+                </div>
+                <span class="period-pill">Últimos 30 dias</span>
+              </header>
+              <div class="funnel-chart" id="dashboardFunnel"></div>
+              <div class="dashboard-activity">
+                <h3>Atividade recente</h3>
+                <div class="dashboard-activity-list" id="dashboardActivity"></div>
+              </div>
+            </section>
+
+            <section class="dashboard-panel agenda-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Próximos compromissos</h2>
+                </div>
+                <button type="button" data-go-page="entrevistas">Ver agenda</button>
+              </header>
+              <div class="agenda-date">
+                <strong>25</strong>
+                <span>AGO<br />TER</span>
+              </div>
+              <div class="agenda-list">
+                <article class="agenda-interview" data-go-page="entrevistas" data-interview-id="604" tabindex="0">
+                  <time>14:30</time>
+                  <div>
+                    <strong>Entrevista com Guilherme</strong>
+                    <span>Analista Contábil · Google Meet</span>
+                  </div>
+                  <span class="agenda-dot navy"></span>
+                </article>
+                <article data-open-job="Suporte de Sistemas" tabindex="0">
+                  <time>16:00</time>
+                  <div>
+                    <strong>Alinhamento com gestor</strong>
+                    <span>Vaga de Suporte de Sistemas</span>
+                  </div>
+                  <span class="agenda-dot accent"></span>
+                </article>
+              </div>
+              <div class="dashboard-note">
+                <span aria-hidden="true">✦</span>
+                <div>
+                  <strong>Seu dia está organizado</strong>
+                  <p>Você tem 2 compromissos e 3 candidatos aguardando retorno.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="dashboard-page analytics-page" id="painelPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Painel</h1>
+              <p>Volume, conversão e ritmo do processo nos últimos 30 dias.</p>
+            </div>
+            <div class="analytics-date-filter report-dates">
+              <label>
+                De
+                <input id="analyticsFrom" type="date" value="2026-07-26" />
+              </label>
+              <label>
+                Até
+                <input id="analyticsTo" type="date" value="2026-08-25" />
+              </label>
+            </div>
+          </header>
+
+          <div class="analytics-kpis" aria-label="Indicadores do painel">
+            <article class="analytics-kpi" data-go-page="jobs" tabindex="0">
+              <span class="analytics-kpi-icon accent" aria-hidden="true"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
+              <strong>12</strong>
+              <span>Vagas abertas</span>
+              <small>3 publicadas neste mês</small>
+            </article>
+            <article class="analytics-kpi" data-go-page="jobs" tabindex="0">
+              <span class="analytics-kpi-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-ban" /></svg></span>
+              <strong>04</strong>
+              <span>Vagas encerradas</span>
+              <small>2 neste trimestre</small>
+            </article>
+            <article class="analytics-kpi" data-go-page="relatorios" tabindex="0">
+              <span class="analytics-kpi-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-clock" /></svg></span>
+              <strong>13 dias</strong>
+              <span>Tempo médio de contratação</span>
+              <small>Meta interna: 10 dias</small>
+            </article>
+            <article class="analytics-kpi" data-go-page="resultados" data-result-tab="contratados" tabindex="0">
+              <span class="analytics-kpi-icon accent" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-square" /></svg></span>
+              <strong>1,3%</strong>
+              <span>Taxa de aprovação</span>
+              <small>2 contratados em 157 inscritos</small>
+            </article>
+          </div>
+
+          <div class="analytics-grid">
+            <section class="dashboard-panel analytics-funnel-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Funil de recrutamento</h2>
+                  <p class="panel-note">Quanto permanece em cada etapa e quantos avançaram da anterior.</p>
+                </div>
+                <span class="period-pill">157 inscritos</span>
+              </header>
+              <div class="recruitment-funnel" id="analyticsFunnel"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="dashboard-page analytics-page" id="relatoriosPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Relatórios</h1>
+              <p>Recorte por período: volume, prazo, origem e desfecho.</p>
+            </div>
+            <div class="report-dates">
+              <label>
+                De
+                <input id="reportFrom" type="date" value="2026-02-26" />
+              </label>
+              <label>
+                Até
+                <input id="reportTo" type="date" value="2026-08-25" />
+              </label>
+            </div>
+          </header>
+
+          <div class="analytics-kpis is-two" aria-label="Indicadores do relatório">
+            <article class="analytics-kpi" data-go-page="pipeline" tabindex="0">
+              <span class="analytics-kpi-icon accent" aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <strong>157</strong>
+              <span>Candidaturas</span>
+              <small>Inscritos no período selecionado</small>
+            </article>
+            <article class="analytics-kpi" data-go-page="resultados" data-result-tab="contratados" tabindex="0">
+              <span class="analytics-kpi-icon accent" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-square" /></svg></span>
+              <strong>02</strong>
+              <span>Contratações</span>
+              <small>1,3% das candidaturas</small>
+            </article>
+          </div>
+
+          <div class="analytics-grid">
+            <section class="dashboard-panel reports-jobs-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Candidatos por vaga</h2>
+                  <p class="panel-note">Volume de inscritos em cada vaga aberta.</p>
+                </div>
+              </header>
+              <div class="rank-chart" id="reportJobs"></div>
+            </section>
+
+            <section class="dashboard-panel reports-period-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Contratações por período</h2>
+                  <p class="panel-note">Quantas pessoas foram contratadas em cada mês.</p>
+                </div>
+              </header>
+              <div class="period-chart" id="reportPeriod"></div>
+            </section>
+
+            <section class="dashboard-panel reports-duration-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Tempo médio em cada etapa</h2>
+                  <p class="panel-note">Dias parados na etapa, com o tamanho da amostra.</p>
+                </div>
+              </header>
+              <div class="duration-chart" id="reportDuration"></div>
+            </section>
+
+            <section class="dashboard-panel reports-origin-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Origem dos candidatos</h2>
+                  <p class="panel-note">Participação de cada canal no total de inscritos.</p>
+                </div>
+              </header>
+              <div class="origin-chart" id="reportOrigin"></div>
+            </section>
+
+            <section class="dashboard-panel reports-reject-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Taxa de reprovação</h2>
+                  <p class="panel-note">Decisões finais: reprovados versus contratados.</p>
+                </div>
+              </header>
+              <div class="reject-chart" id="reportReject"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="dashboard-page settings-page" id="settingsPage" hidden>
+          <div id="settingsHomeView">
+            <header class="dashboard-welcome"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h1>Configurações</h1><p>Gerencie os catálogos e padrões usados no recrutamento.</p></div></header>
+            <section class="settings-panel"><header class="dashboard-panel-heading"><div><h2>Catálogos e padrões do sistema</h2><p class="panel-note">Mantenha os dados reutilizados nas vagas e nos processos seletivos.</p></div></header><div class="settings-catalog-grid" id="settingsCatalogGrid">
+              <button type="button" data-settings-view="departments"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-layout" /></svg></span><span><strong>Departamentos</strong><small>Estrutura, gestores e cargos</small></span><b>›</b></button>
+              <button type="button" data-settings-view="companies"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Empresas</strong><small>Dados e unidades cadastradas</small></span><b>›</b></button>
+              <button type="button" data-settings-view="managers"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Responsáveis RH</strong><small>Acessos e responsabilidades</small></span><b>›</b></button>
+              <button type="button" data-settings-view="benefits"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Benefícios</strong><small>Catálogo para novas vagas</small></span><b>›</b></button>
+              <button type="button" data-settings-view="stages"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-columns" /></svg></span><span><strong>Etapas do pipeline</strong><small>Fluxos do processo seletivo</small></span><b>›</b></button>
+              <button type="button" data-settings-view="emails"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-mail" /></svg></span><span><strong>Modelos de e-mail</strong><small>Mensagens reutilizáveis</small></span><b>›</b></button>
+              <button type="button" data-settings-view="rejections"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-message" /></svg></span><span><strong>Justificativas de rejeição</strong><small>Motivos padronizados</small></span><b>›</b></button>
+              <button type="button" id="openLgpdSettings"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>LGPD e retenção</strong><small>Consentimento e anonimização</small></span><b>›</b></button>
+            </div></section>
+          </div>
+
+          <div id="settingsDepartmentsView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Departamentos</h1><p>Organize a estrutura usada nas vagas e nos responsáveis.</p></div></div><button class="primary-button" id="newDepartmentButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo departamento</button></header>
+            <div class="settings-shortcuts"><button type="button" data-settings-view="managers"><svg class="ui-icon"><use href="#i-users" /></svg><span><strong>Gestores de departamento</strong><small>Cadastre e gerencie os gestores vinculados.</small></span><b>›</b></button><button type="button" data-settings-view="roles"><svg class="ui-icon"><use href="#i-briefcase" /></svg><span><strong>Cargos</strong><small>Gerencie os cargos e associe-os aos departamentos.</small></span><b>›</b></button></div>
+            <div class="settings-list" id="departmentList"></div>
+          </div>
+
+          <div id="settingsManagersView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Responsáveis RH</h1><p>Pessoas com acesso ao portal e responsabilidade pelos processos.</p></div></div><button class="primary-button" id="newManagerButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo responsável</button></header><div class="settings-list" id="settingsManagerList"></div>
+          </div>
+
+          <div id="settingsRolesView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-view="departments"><span aria-hidden="true">←</span> Voltar para departamentos</button><div><span class="eyebrow">DEPARTAMENTOS</span><h1>Cargos</h1><p>Funções disponíveis para cadastro de vagas.</p></div></div><button class="primary-button" id="newRoleButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo cargo</button></header><div class="settings-list" id="settingsRoleList"></div>
+          </div>
+
+          <div id="settingsCompaniesView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Empresas</h1><p>Identidade, localização e benefícios usados nas vagas.</p></div></div><button class="primary-button" id="newCompanyButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova empresa</button></header><div class="settings-list" id="settingsCompanyList"></div>
+          </div>
+
+          <div id="settingsScreeningsView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><div><h1>Triagens e solicitações</h1></div></div></header>
+            <nav class="screening-tabs" role="tablist" aria-label="Triagens e solicitações"><button type="button" role="tab" aria-selected="true" data-screening-tab="analyses">Análises de gestores <span id="analysisTabCount">1</span></button><button type="button" role="tab" aria-selected="false" data-screening-tab="requests">Solicitações de contratação <span id="requestTabCount">0</span></button></nav>
+            <div id="managerAnalysesPanel"><div class="screening-filters" role="group" aria-label="Filtrar análises"><button type="button" class="is-active" data-analysis-filter="all">Todas</button><button type="button" data-analysis-filter="pending">Pendentes</button><button type="button" data-analysis-filter="approved">Aprovadas</button><button type="button" data-analysis-filter="rejected">Reprovadas</button></div><div class="analysis-list" id="managerAnalysisList"></div><div class="empty-state" id="managerAnalysisEmpty" hidden><h3>Nenhuma análise encontrada</h3><p>Não existem pareceres com este status.</p></div></div>
+            <div id="hiringRequestsPanel" hidden><div class="analysis-list" id="hiringRequestList"></div><div class="empty-state" id="hiringRequestEmpty"><h3>Nenhuma solicitação pendente</h3><p>Novos pedidos de contratação aparecerão aqui.</p></div></div>
+          </div>
+
+          <div id="settingsBenefitsView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Benefícios</h1><p>Itens reutilizados na apresentação e criação das vagas.</p></div></div><button class="primary-button" id="newBenefitButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo benefício</button></header><div class="settings-list" id="settingsBenefitList"></div>
+          </div>
+
+          <div id="settingsStagesView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Etapas do pipeline</h1><p>Organize as colunas e a sequência do processo seletivo.</p></div></div><button class="primary-button" id="newStageButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova etapa</button></header><div class="settings-list pipeline-stage-list" id="settingsStageList"></div>
+          </div>
+
+          <div id="settingsEmailsView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Modelos de e-mail</h1><p>Personalize as mensagens automáticas enviadas pelo portal.</p></div></div></header><div class="settings-list email-template-list" id="settingsEmailList"></div>
+          </div>
+
+          <div id="settingsRejectionsView" hidden>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Justificativas de rejeição</h1><p>Padronize os retornos utilizados na reprovação de candidaturas.</p></div></div><button class="primary-button" id="newRejectionButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova justificativa</button></header><div class="settings-list" id="settingsRejectionList"></div>
+          </div>
+        </section>
+
+        <section class="dashboard-page design-system-page" id="designSystemPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <span class="eyebrow">FUNDAÇÃO VISUAL</span>
+              <h1>Design System</h1>
+              <p>Princípios, elementos e componentes que mantêm o Portal RH consistente.</p>
+            </div>
+            <span class="ds-version">Portal RH · v1.0</span>
+          </header>
+
+          <nav class="ds-index" aria-label="Seções do Design System">
+            <a href="#ds-foundations">Fundações</a><a href="#ds-type">Tipografia</a><a href="#ds-actions">Ações</a><a href="#ds-forms">Formulários</a><a href="#ds-status">Status</a><a href="#ds-surfaces">Superfícies</a>
+          </nav>
+
+          <div class="ds-grid">
+            <section class="ds-section ds-wide" id="ds-foundations">
+              <header><span>01</span><div><h2>Fundações</h2><p>Cores semânticas usadas em toda a experiência.</p></div></header>
+              <div class="ds-color-grid">
+                <article><i style="--swatch:#3baa4a"></i><strong>Verde principal</strong><code>#3BAA4A</code></article>
+                <article><i style="--swatch:#246f30"></i><strong>Verde escuro</strong><code>#246F30</code></article>
+                <article><i style="--swatch:#194a92"></i><strong>Azul informativo</strong><code>#194A92</code></article>
+                <article><i style="--swatch:#1c2430"></i><strong>Texto principal</strong><code>#1C2430</code></article>
+                <article><i style="--swatch:#6b7280"></i><strong>Texto secundário</strong><code>#6B7280</code></article>
+                <article><i style="--swatch:#f5f6f7"></i><strong>Superfície suave</strong><code>#F5F6F7</code></article>
+                <article><i style="--swatch:#e9a23b"></i><strong>Atenção</strong><code>#E9A23B</code></article>
+                <article><i style="--swatch:#d65b5b"></i><strong>Perigo</strong><code>#D65B5B</code></article>
+              </div>
+            </section>
+
+            <section class="ds-section" id="ds-type">
+              <header><span>02</span><div><h2>Tipografia</h2><p>Hierarquia clara e leitura rápida.</p></div></header>
+              <div class="ds-type-stack"><h1>Título de página</h1><h2>Título de seção</h2><h3>Título de componente</h3><p>Texto de apoio para explicar uma informação.</p><small>LEGENDA · METADADO</small></div>
+            </section>
+
+            <section class="ds-section" id="ds-actions">
+              <header><span>03</span><div><h2>Ações</h2><p>Botões primários, secundários e contextuais.</p></div></header>
+              <div class="ds-component-row"><button class="primary-button" type="button">Ação principal</button><button class="secondary-button" type="button">Secundária</button><button class="ds-outline-button" type="button"><svg class="ui-icon"><use href="#i-calendar" /></svg> Entrevista</button><button class="ds-icon-button" type="button" aria-label="Adicionar"><svg class="ui-icon"><use href="#i-plus" /></svg></button></div>
+            </section>
+
+            <section class="ds-section" id="ds-forms">
+              <header><span>04</span><div><h2>Formulários</h2><p>Entradas com rótulos e estados previsíveis.</p></div></header>
+              <div class="ds-form-sample"><label class="form-field"><span>Nome do candidato</span><input value="Lucas José da Silva" readonly /></label><label class="form-field"><span>Etapa</span><select><option>Triagem</option><option>Entrevista RH</option></select></label><label class="search-field"><svg class="ui-icon"><use href="#i-search" /></svg><input placeholder="Buscar candidatos..." /><kbd>Ctrl K</kbd></label></div>
+            </section>
+
+            <section class="ds-section" id="ds-status">
+              <header><span>05</span><div><h2>Status e etiquetas</h2><p>Estados do recrutamento reconhecidos por cor e texto.</p></div></header>
+              <div class="ds-component-row"><span class="entity-status is-approved">Aprovado</span><span class="entity-status is-hired">Contratado</span><span class="entity-status is-dismissed">Dispensado</span><span class="entity-status is-hidden">Triagem</span><span class="role-tag">Analista de Departamento Pessoal</span></div>
+            </section>
+
+            <section class="ds-section ds-wide" id="ds-surfaces">
+              <header><span>06</span><div><h2>Superfícies</h2><p>Cards e painéis para agrupar informações relacionadas.</p></div></header>
+              <div class="ds-surface-grid"><article class="ds-demo-card"><span class="talent-avatar">LS</span><div><strong>Lucas José da Silva</strong><p>Desenvolvedor(a) Full Stack</p></div><span class="result-badge is-hired">Contratado</span></article><article class="ds-demo-panel"><span class="eyebrow">PADRÃO DE MODAL</span><h3>Detalhe do candidato</h3><p>Cabeçalho, ações, conteúdo e atividade em uma superfície elevada.</p></article></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="pipeline-page" id="pipelinePage" hidden>
+          <header class="dashboard-welcome pipeline-heading" id="pipelineHeading">
+            <div>
+              <h1>Pipeline</h1>
+              <p>Acompanhe candidatos, etapas e próximos movimentos do processo seletivo.</p>
+            </div>
+            <button class="primary-button dashboard-new-job" type="button">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+              Nova vaga
+            </button>
+          </header>
+
+          <header class="dashboard-welcome job-board-heading" id="jobBoardHeading" hidden>
+              <div class="job-board-title">
+              <div>
+              <button class="page-back-link" type="button" id="jobBoardBack"><span aria-hidden="true">←</span> Voltar para vagas</button>
+              <h1>Candidatos da vaga</h1>
+              <p id="jobBoardSubtitle">Vaga</p>
+              </div>
+            </div>
+            <div class="job-board-toggle" role="tablist" aria-label="Modo de visualização">
+              <button type="button" role="tab" data-job-view="kanban" aria-selected="true" class="active">
+                <svg class="ui-icon"><use href="#i-columns" /></svg>
+                Kanban
+              </button>
+              <button type="button" role="tab" data-job-view="list" aria-selected="false">
+                <svg class="ui-icon"><use href="#i-list" /></svg>
+                Lista
+              </button>
+            </div>
+          </header>
+
+          <div class="talent-suggest" id="talentSuggestPanel" hidden></div>
+
+          <div class="pipeline-toolbar">
+            <label class="search-field pipeline-search">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+              <span class="sr-only">Buscar candidato</span>
+              <input
+                id="candidateSearch"
+                type="search"
+                placeholder="Buscar candidato, vaga ou e-mail..."
+              />
+              <kbd>Ctrl K</kbd>
+            </label>
+            <label class="select-field pipeline-select">
+              <span class="sr-only">Filtrar por vaga</span>
+              <select id="jobFilter">
+                <option value="all">Todas as vagas</option>
+                <option>Analista de Departamento Pessoal</option>
+                <option>Assistente / Analista Contábil</option>
+                <option>Assistente / Analista Fiscal</option>
+                <option>Suporte de Sistemas</option>
+                <option>Desenvolvedor(a) Full Stack</option>
+              </select>
+            </label>
+            <button class="sla-counter" id="slaOverdueCounter" type="button" hidden title="Candidatos parados além do prazo na etapa">
+              <span class="sla-badge">Atraso</span>
+              <strong id="slaOverdueCount">0</strong>
+              <span>parados na etapa</span>
+            </button>
+          </div>
+          <div class="pipeline-advanced-filters" aria-label="Filtros avançados do pipeline">
+            <label class="select-field">
+              <span>Etapa</span>
+              <select id="pipelineStageFilter">
+                <option value="all">Todas as etapas</option>
+              </select>
+            </label>
+            <label class="select-field">
+              <span>Perfil</span>
+              <select id="pipelineProfileFilter">
+                <option value="all">Todos os perfis</option>
+                <option value="incomplete">Abaixo de 80% completo</option>
+                <option value="complete">80% ou mais completo</option>
+              </select>
+            </label>
+            <label class="select-field">
+              <span>Prazo</span>
+              <select id="pipelineSlaFilter">
+                <option value="all">Todos os prazos</option>
+                <option value="overdue">Somente atrasados</option>
+                <option value="on-time">Dentro do prazo</option>
+              </select>
+            </label>
+          </div>
+          <div class="pipeline-bulk-bar" id="pipelineBulkBar" hidden>
+            <strong><span id="pipelineBulkCount">0</span> candidatos selecionados</strong>
+            <label class="select-field">
+              <span>Mover para</span>
+              <select id="pipelineBulkStage">
+                <option value="">Selecione uma etapa</option>
+              </select>
+            </label>
+            <button class="secondary-button" type="button" id="pipelineBulkClear">Limpar seleção</button>
+            <button class="primary-button" type="button" id="pipelineBulkApply">Aplicar etapa</button>
+          </div>
+
+          <div class="kanban" id="kanban" aria-label="Pipeline de candidatos"></div>
+          <div class="job-candidate-list" id="jobCandidateList" hidden></div>
+        </section>
+
+        <section class="dashboard-page" id="jobsPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Vagas</h1>
+            </div>
+            <button class="primary-button" id="newJobButton" type="button">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+              Nova vaga
+            </button>
+          </header>
+
+          <section class="jobs-panel" aria-labelledby="jobsTitle">
+            <div class="panel-heading">
+              <div>
+                <h2 id="jobsTitle">Todas as vagas</h2>
+                <span id="resultCount">4 oportunidades encontradas</span>
+              </div>
+              <div class="view-toggle" aria-label="Modo de visualização">
+                <button class="active" type="button" data-view="list" aria-label="Visualizar em lista">☷</button>
+                <button type="button" data-view="grid" aria-label="Visualizar em grade">▦</button>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-field">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+                <span class="sr-only">Buscar vagas</span>
+                <input
+                  id="searchInput"
+                  type="search"
+                  placeholder="Buscar por título, palavra-chave ou área..."
+                />
+                <kbd>Ctrl K</kbd>
+              </label>
+              <label class="select-field">
+                <span class="sr-only">Filtrar por status</span>
+                <select id="statusFilter">
+                  <option value="all">Todos os status</option>
+                  <option value="Aberta">Abertas</option>
+                  <option value="Pausada">Pausadas</option>
+                  <option value="Rascunho">Rascunhos</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="job-list" id="jobList"></div>
+
+            <div class="empty-state" id="emptyState" hidden>
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+              <h3>Nenhuma vaga encontrada</h3>
+              <p>Tente alterar os termos da busca ou os filtros.</p>
+              <button class="secondary-button" id="clearFilters" type="button">Limpar filtros</button>
+            </div>
+          </section>
+        </section>
+
+        <section class="dashboard-page new-job-page" id="newJobPage" hidden>
+          <header class="dashboard-welcome new-job-heading">
+            <div class="new-job-heading-copy">
+              <button class="page-back-link" id="newJobBack" type="button" aria-label="Voltar para vagas"><span aria-hidden="true">←</span> Voltar para vagas</button>
+              <div><span class="eyebrow">OPORTUNIDADES</span><h1>Nova vaga</h1><p>Cadastre as informações da oportunidade e configure o processo seletivo.</p></div>
+            </div>
+            <span class="period-pill" id="newJobProgress">Cadastro da vaga</span>
+          </header>
+          <form class="new-job-form" id="newJobFullForm">
+            <section class="new-job-section">
+              <header><span>01</span><div><h2>Informações básicas</h2><p>Identifique a oportunidade e as condições de trabalho.</p></div></header>
+              <div class="new-job-fields">
+                <label class="new-job-field full"><span>Cargo cadastrado</span><select id="newJobRole"><option value="">Selecionar cargo...</option><option>Analista Fiscal</option><option>Analista de Departamento Pessoal</option><option>Desenvolvedor(a) Full Stack</option><option>Suporte de Sistemas</option></select><small>Preenche título, departamento e descrição</small></label>
+                <label class="new-job-field full"><span>Departamento</span><select id="newJobDepartment" required><option value="">Selecionar departamento...</option><option>Tecnologia</option><option>Recursos Humanos</option><option>Contabilidade</option><option>Financeiro</option></select></label>
+                <label class="new-job-field full"><span>Título da vaga</span><input id="newJobTitle" required placeholder="Ex.: Analista de Produto" /></label>
+                <label class="new-job-field full"><span>Empresa cadastrada</span><select id="newJobCompanySelect"><option value="">Selecionar empresa...</option><option>Player Contabilidade</option><option>Portal RH</option></select><small>Preenche nome, localização, sobre e benefícios</small></label>
+                <label class="new-job-field full"><span>Empresa</span><input id="newJobCompany" required placeholder="Empresa" /></label>
+                <label class="new-job-field"><span>Tipo de contratação</span><select id="newJobContract"><option>CLT</option><option>PJ</option><option>Estágio</option><option>Temporário</option></select></label>
+                <label class="new-job-field"><span>Modalidade</span><select id="newJobWorkModel"><option>Presencial</option><option>Híbrido</option><option>Remoto</option></select></label>
+                <label class="new-job-field full"><span>Localização</span><input id="newJobLocation" placeholder="Cidade, estado ou endereço" /></label>
+                <label class="new-job-field"><span>Salário mínimo (opcional)</span><input id="newJobSalaryMin" type="number" min="0" step="100" /></label>
+                <label class="new-job-field"><span>Salário máximo (opcional)</span><input id="newJobSalaryMax" type="number" min="0" step="100" /></label>
+                <label class="new-job-field"><span>Nível de experiência</span><select id="newJobExperience"><option>Não informado</option><option>Júnior</option><option>Pleno</option><option>Sênior</option><option>Liderança</option></select></label>
+                <label class="new-job-field"><span>Status da vaga</span><select id="newJobStatus"><option>Aberta</option><option>Rascunho</option><option>Pausada</option></select></label>
+                <label class="new-job-field full"><span>Responsável cadastrado</span><select id="newJobManagerSelect"><option value="">Selecionar responsável...</option><option>Larissa Dias</option><option>Eduardo Ribeiro</option><option>Camila Monteiro</option></select><small>Vincula a vaga ao responsável e preenche o campo abaixo</small></label>
+                <label class="new-job-field full"><span>Responsável pela vaga</span><input id="newJobManager" placeholder="Nome do responsável" /></label>
+                <label class="new-job-switch full"><span><strong>Também para PCD</strong><small>Inclui a vaga nas oportunidades afirmativas.</small></span><input id="newJobPcd" type="checkbox" /><i></i></label>
+                <label class="new-job-field full"><span>Prazo de inscrições</span><input id="newJobDeadline" type="date" /></label>
+              </div>
+            </section>
+
+            <section class="new-job-section">
+              <header><span>02</span><div><h2>Conteúdo da vaga</h2><p>Descreva responsabilidades, requisitos e contexto da empresa.</p></div></header>
+              <div class="new-job-fields">
+                <label class="new-job-field full"><span>Descrição da vaga</span><textarea id="newJobDescription" rows="5" required placeholder="Apresente a oportunidade e seu objetivo"></textarea></label>
+                <label class="new-job-field full"><span>Atividades da função</span><textarea id="newJobActivities" rows="5" placeholder="Uma por linha, use - no início"></textarea></label>
+                <label class="new-job-field full"><span>Requisitos obrigatórios</span><textarea id="newJobRequirements" rows="5" placeholder="Uma por linha, use - no início"></textarea></label>
+              </div>
+            </section>
+
+            <section class="new-job-section">
+              <header><span>03</span><div><h2>Competências</h2><p>Selecione do catálogo ou cadastre novas competências.</p></div><button class="new-chip-button" id="newSkillButton" type="button">+ Nova</button></header>
+              <div class="catalog-chips" id="skillCatalog"></div><div class="selected-catalog" id="selectedSkills"></div>
+              <label class="new-job-field full"><span>Requisitos desejáveis</span><textarea id="newJobNiceToHave" rows="4" placeholder="Uma por linha, use - no início"></textarea></label>
+            </section>
+
+            <section class="new-job-section">
+              <header><span>04</span><div><h2>Benefícios e processo</h2><p>Complete a proposta de valor e as etapas da seleção.</p></div></header>
+              <div class="catalog-block"><strong>Benefícios do catálogo</strong><small>Selecionados são adicionados ao campo de benefícios</small><div class="catalog-chips" id="benefitCatalog"></div></div>
+              <div class="new-job-fields">
+                <label class="new-job-field full"><span>Benefícios</span><textarea id="newJobBenefits" rows="5"></textarea></label>
+                <label class="new-job-field full stage-select-field">
+                  <span>Etapas do processo</span>
+                  <div class="stage-select-grid" id="newJobStagesList" role="group" aria-label="Etapas disponíveis do pipeline"></div>
+                  <small>Selecione as etapas ativas cadastradas em Configurações → Etapas do pipeline.</small>
+                </label>
+                <input type="hidden" id="newJobStages" value="" />
+                <label class="new-job-field full"><span>Sobre a empresa</span><textarea id="newJobAbout" rows="5"></textarea></label>
+                <label class="new-job-field full"><span>Palavras-chave para busca</span><input id="newJobKeywords" placeholder="Ex.: fiscal, contábil, pleno" /></label>
+                <label class="new-job-field full"><span>Teste técnico da vaga</span><select id="newJobTest"><option value="">Nenhum</option></select><small>Opcional. Será exibido quando o candidato chegar à etapa de teste.</small></label>
+              </div>
+            </section>
+            <footer class="new-job-footer"><button class="secondary-button" id="cancelNewJob" type="button">Cancelar</button><button class="primary-button" type="submit">Salvar vaga</button></footer>
+          </form>
+        </section>
+
+        <section class="dashboard-page talentos-page" id="talentosPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Banco de talentos</h1>
+            </div>
+          </header>
+
+          <nav class="page-menu talent-tabs" role="tablist" aria-label="Listas do banco de talentos">
+            <button
+              type="button"
+              role="tab"
+              id="tabAprovados"
+              aria-selected="true"
+              aria-controls="talentList"
+              data-talent-tab="aprovados"
+            >
+              <span class="talent-tab-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span>
+              Aprovados
+              <span class="talent-tab-count" id="aprovadosCount">17</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tabBloqueados"
+              aria-selected="false"
+              aria-controls="talentList"
+              data-talent-tab="bloqueados"
+            >
+              <span class="talent-tab-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-ban" /></svg></span>
+              Bloqueados
+              <span class="talent-tab-count" id="bloqueadosCount">5</span>
+            </button>
+          </nav>
+
+          <label class="search-field talent-search">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+            <span class="sr-only">Buscar talentos</span>
+            <input
+              id="talentSearch"
+              type="search"
+              placeholder="Buscar aprovados..."
+            />
+            <kbd>Ctrl K</kbd>
+          </label>
+
+          <div class="talent-list" id="talentList"></div>
+
+          <div class="empty-state" id="talentEmpty" hidden>
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+            <h3>Nenhum talento encontrado</h3>
+            <p>Tente outro nome, e-mail ou motivo nesta lista.</p>
+            <button class="secondary-button" id="clearTalentSearch" type="button">Limpar busca</button>
+          </div>
+        </section>
+
+        <section class="dashboard-page resultados-page" id="resultadosPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Resultados</h1>
+            </div>
+          </header>
+
+          <nav class="page-menu talent-tabs" role="tablist" aria-label="Listas de resultados">
+            <button
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="resultList"
+              data-result-tab="contratados"
+            >
+              <span class="talent-tab-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span>
+              Contratados
+              <span class="talent-tab-count" id="contratadosCount">2</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="resultList"
+              data-result-tab="dispensados"
+            >
+              <span class="talent-tab-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-x-circle" /></svg></span>
+              Dispensados
+              <span class="talent-tab-count" id="dispensadosCount">14</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="resultList"
+              data-result-tab="ocultados"
+            >
+              <span class="talent-tab-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-eye-off" /></svg></span>
+              Ocultados
+              <span class="talent-tab-count" id="ocultadosCount">18</span>
+            </button>
+          </nav>
+
+          <label class="search-field talent-search">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+            <span class="sr-only">Buscar resultados</span>
+            <input
+              id="resultSearch"
+              type="search"
+              placeholder="Buscar contratados..."
+            />
+            <kbd>Ctrl K</kbd>
+          </label>
+
+          <div class="talent-list" id="resultList"></div>
+
+          <div class="empty-state" id="resultEmpty" hidden>
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-search" /></svg></span>
+            <h3>Nenhum resultado encontrado</h3>
+            <p>Tente outro nome ou vaga nesta lista.</p>
+            <button class="secondary-button" id="clearResultSearch" type="button">Limpar busca</button>
+          </div>
+        </section>
+
+        <section class="dashboard-page gestor-page" id="gestorPage" hidden>
+          <header class="dashboard-welcome gestor-hero">
+            <div>
+              <span class="eyebrow">TERÇA-FEIRA, 25 DE AGOSTO</span>
+              <h1>Olá, <span id="gestorManagerName">Larissa</span> <span aria-hidden="true">✦</span></h1>
+              <p>Aqui está um resumo do seu recrutamento hoje.</p>
+            </div>
+          </header>
+          <div class="gestor-stats" id="gestorStats" aria-label="Resumo do gestor"></div>
+          <div class="gestor-grid">
+            <section class="dashboard-panel gestor-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Minhas vagas</h2>
+                  <p class="panel-note">Vagas sob sua responsabilidade.</p>
+                </div>
+              </header>
+              <div class="gestor-list" id="gestorJobsList"></div>
+            </section>
+            <section class="dashboard-panel gestor-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Análises pendentes</h2>
+                  <p class="panel-note">Candidatos aguardando seu parecer.</p>
+                </div>
+              </header>
+              <div class="gestor-list" id="gestorAnalysesList"></div>
+            </section>
+            <section class="dashboard-panel gestor-wide gestor-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Candidatos nas minhas vagas</h2>
+                  <p class="panel-note">Acompanhe o pipeline e agende entrevistas.</p>
+                </div>
+              </header>
+              <div class="gestor-list gestor-candidates" id="gestorCandidatesList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="dashboard-page entrevistas-page" id="entrevistasPage" hidden>
+          <header class="dashboard-welcome">
+            <div>
+              <h1>Agenda de entrevistas</h1>
+            </div>
+            <button class="primary-button" id="newInterviewButton" type="button">
+              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+              Nova entrevista
+            </button>
+          </header>
+
+          <div class="interview-layout">
+            <section class="dashboard-panel interview-list-panel">
+              <header class="dashboard-panel-heading interview-panel-head">
+                <div>
+                  <h2 id="interviewListTitle">Próximas</h2>
+                  <p class="panel-note" id="interviewListNote">Entrevistas já confirmadas no calendário.</p>
+                </div>
+                <div class="interview-summary" id="interviewSummary" aria-label="Resumo da agenda"></div>
+              </header>
+              <div class="interview-toolbar" role="group" aria-label="Filtrar período">
+                <button type="button" class="is-active" data-interview-range="upcoming">Próximas</button>
+                <button type="button" data-interview-range="today">Hoje</button>
+                <button type="button" data-interview-range="7d">7 dias</button>
+                <button type="button" data-interview-range="30d">30 dias</button>
+                <button type="button" data-interview-range="over30d">+30 dias</button>
+              </div>
+              <div class="interview-list" id="interviewList"></div>
+              <div class="empty-state" id="interviewEmpty" hidden>
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-clipboard" /></svg></span>
+                <h3>Nenhuma entrevista neste dia</h3>
+                <p>Escolha outra data no calendário ou veja toda a agenda.</p>
+                <button class="secondary-button" id="clearInterviewDay" type="button">Ver todas</button>
+              </div>
+            </section>
+
+            <aside class="dashboard-panel interview-calendar-panel">
+              <header class="calendar-heading">
+                <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                <h2 id="calendarMonth">Agosto 2026</h2>
+                <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+              </header>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+              </div>
+              <div class="calendar-grid" id="calendarGrid"></div>
+              <p class="calendar-legend">
+                <span><i class="legend-today"></i> Hoje</span>
+                <span><i class="legend-event"></i> Com entrevista</span>
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="dashboard-page tecnicos-page" id="tecnicosPage" hidden>
+          <div id="testsListView">
+            <header class="dashboard-welcome">
+              <div>
+                <h1>Testes técnicos</h1>
+              </div>
+              <button class="primary-button" id="newTestButton" type="button">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+                Novo teste
+              </button>
+            </header>
+
+            <section class="dashboard-panel tests-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Todos os testes</h2>
+                </div>
+                <div class="talent-summary" aria-label="Resumo dos testes">
+                  <span><strong id="testsActiveSummary">02</strong> ativos</span>
+                  <span><strong id="testsTotalSummary">02</strong> no catálogo</span>
+                </div>
+              </header>
+              <div class="test-list" id="testList"></div>
+              <div class="empty-state" id="testEmpty" hidden>
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-clipboard" /></svg></span>
+                <h3>Nenhum teste técnico</h3>
+                <p>Crie o primeiro teste para aplicar nas vagas.</p>
+                <button class="secondary-button" id="emptyNewTestButton" type="button">Novo teste</button>
+              </div>
+            </section>
+          </div>
+
+          <div id="testsEditorView" hidden>
+            <header class="dashboard-welcome test-editor-welcome">
+              <div>
+                <button class="page-back-link" id="testEditorBack" type="button">
+                  <span aria-hidden="true">←</span>
+                  Voltar aos testes
+                </button>
+                <h1 id="testEditorTitle">Editar teste técnico</h1>
+              </div>
+              <button class="primary-button" id="saveTestButton" type="button">Salvar</button>
+            </header>
+
+            <div class="test-editor-layout">
+              <section class="dashboard-panel test-editor-panel">
+                <header class="dashboard-panel-heading">
+                  <div>
+                    <h2>Dados do teste</h2>
+                    <p class="panel-note">Título, descrição e critérios de aprovação.</p>
+                  </div>
+                </header>
+
+                <div class="test-editor-form">
+                  <label class="form-field full">
+                    <span>Título</span>
+                    <input id="testTitleInput" type="text" placeholder="Ex.: Analista Fiscal" />
+                  </label>
+                  <label class="form-field full">
+                    <span>Descrição</span>
+                    <textarea
+                      id="testDescriptionInput"
+                      rows="3"
+                      placeholder="Explique o objetivo da avaliação para o candidato."
+                    ></textarea>
+                  </label>
+                  <div class="test-score-field">
+                    <div class="test-score-label">
+                      <span>Nota mínima para aprovação</span>
+                      <strong id="testMinScoreLabel">70%</strong>
+                    </div>
+                    <input id="testMinScore" type="range" min="0" max="100" step="5" value="70" />
+                  </div>
+                  <label class="test-switch">
+                    <input id="testActive" type="checkbox" checked />
+                    <span class="test-switch-track" aria-hidden="true"></span>
+                    <span>Teste ativo</span>
+                  </label>
+                </div>
+              </section>
+
+              <section class="dashboard-panel test-questions-panel">
+                <header class="dashboard-panel-heading">
+                  <div>
+                    <h2>Questões</h2>
+                    <p class="panel-note" id="testQuestionsNote">Nenhuma questão ainda.</p>
+                  </div>
+                  <button class="primary-button" id="addQuestionButton" type="button">
+                    <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+                    Adicionar
+                  </button>
+                </header>
+                <div class="test-question-list" id="testQuestionList"></div>
+                <div class="empty-state test-questions-empty" id="testQuestionsEmpty">
+                  <span aria-hidden="true">?</span>
+                  <h3>Nenhuma questão ainda</h3>
+                  <p>Adicione perguntas de múltipla escolha para montar a prova.</p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="candidate-dialog" id="candidateDialog">
+      <div class="candidate-modal">
+        <header class="candidate-modal-header">
+          <div class="candidate-identity">
+            <span class="stage-pill" id="candidateStage">Triagem</span>
+            <h2 id="candidateName">Candidato</h2>
+            <p id="candidateRole">Vaga</p>
+          </div>
+          <button class="icon-button" id="closeCandidateDialog" aria-label="Fechar">×</button>
+        </header>
+
+        <div class="candidate-actions" aria-label="Ações do candidato">
+          <button type="button" data-candidate-action="Entrevista"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-calendar" /></svg></span> Entrevista</button>
+          <button type="button" data-candidate-action="Dispensar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-x-circle" /></svg></span> Dispensar</button>
+          <button type="button" data-candidate-action="Gestor"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span> Gestor</button>
+          <button type="button" data-candidate-action="Currículo"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-file" /></svg></span> Currículo</button>
+          <button type="button" data-candidate-action="Contactar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-mail" /></svg></span> Contactar</button>
+          <button type="button" data-candidate-action="Ocultar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-eye-off" /></svg></span> Ocultar</button>
+          <button type="button" data-candidate-action="Aprovar no banco"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span> Aprovar no banco</button>
+          <button type="button" data-candidate-action="Bloquear"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-ban" /></svg></span> Bloquear</button>
+        </div>
+
+        <div class="candidate-modal-body">
+          <section class="candidate-profile">
+            <div class="profile-section">
+              <h3>Etiquetas</h3>
+              <div class="tag-row">
+                <span class="stage-pill" id="profileStage">Triagem</span>
+                <span class="role-tag" id="profileRole">Vaga</span>
+              </div>
+            </div>
+
+            <div class="profile-section" id="candidateProfileCompletionSection" hidden>
+              <h3>Conclusão do perfil</h3>
+              <div class="profile-completion-alert" id="candidateProfileCompletionCard"></div>
+            </div>
+
+            <div class="profile-section">
+              <h3>Contato</h3>
+              <p id="candidateEmail">email@exemplo.com</p>
+              <p id="candidatePhone">(63) 99999-9999</p>
+            </div>
+
+            <div class="profile-section">
+              <h3>Banco de talentos</h3>
+              <button class="neutral-pill talent-bank-link" id="candidateTalentBank" type="button">
+                Fora do banco
+              </button>
+            </div>
+
+            <div class="profile-section">
+              <h3>Histórico desta vaga</h3>
+              <div class="history-list" id="candidateHistory"></div>
+            </div>
+
+            <div class="profile-section profile-resume">
+              <h3>Perfil</h3>
+              <strong id="profileName">Candidato</strong>
+              <p id="profileContact">email@exemplo.com</p>
+              <h3>Testes técnicos</h3>
+              <div class="candidate-tests" id="candidateTests"></div>
+            </div>
+          </section>
+
+          <aside class="activity-panel">
+            <div class="activity-heading">
+              <h3>Comentários e atividade</h3>
+              <button type="button" id="toggleActivities">Ocultar</button>
+            </div>
+            <div class="activity-list" id="activityList"></div>
+            <form class="comment-form" id="commentForm">
+              <label>
+                <span class="sr-only">Escrever comentário</span>
+                <textarea id="commentInput" placeholder="Escrever um comentário..." required></textarea>
+              </label>
+              <button class="primary-button" type="submit">Enviar</button>
+            </form>
+          </aside>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="entity-dialog" id="entityDialog">
+      <div class="entity-modal">
+        <header class="entity-header">
+          <div class="entity-heading">
+            <span class="entity-status" id="entityStatus">Status</span>
+            <h2 id="entityName">Pessoa candidata</h2>
+            <p id="entitySubtitle">Vaga</p>
+          </div>
+          <button class="icon-button" id="closeEntityDialog" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="entity-actions" id="entityActions" aria-label="Ações do perfil"></div>
+        <div class="entity-body">
+          <section class="entity-profile">
+            <div class="profile-section"><h3>Etiquetas</h3><div class="tag-row" id="entityTags"></div></div>
+            <div class="profile-section"><h3>Contato</h3><p id="entityEmail"></p><p id="entityPhone"></p></div>
+            <div class="profile-section"><h3>Banco de talentos</h3><span class="neutral-pill" id="entityBankStatus">Fora do banco</span></div>
+            <div class="profile-section" id="entityFeedbackSection" hidden><h3>Feedback</h3><div class="entity-feedback" id="entityFeedback"></div></div>
+            <div class="profile-section"><h3 id="entityHistoryTitle">Histórico desta vaga</h3><div class="history-list" id="entityHistory"></div></div>
+            <div class="profile-section profile-resume"><h3>Perfil</h3><strong id="entityProfileName"></strong><p id="entityProfileContact"></p><h3>Testes técnicos</h3><p class="candidate-tests-empty" id="entityTests">Nenhum teste técnico.</p></div>
+          </section>
+          <aside class="activity-panel">
+            <div class="activity-heading"><h3>Comentários e atividade</h3><button type="button" id="toggleEntityActivities">Ocultar</button></div>
+            <div class="activity-list" id="entityActivityList"></div>
+            <form class="comment-form" id="entityCommentForm"><label><span class="sr-only">Escrever comentário</span><textarea id="entityCommentInput" placeholder="Escrever um comentário..." required></textarea></label><button class="primary-button" type="submit">Enviar</button></form>
+          </aside>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="interview-detail-dialog stack-dialog" id="interviewDetailDialog">
+      <div class="interview-detail-sheet">
+        <header class="interview-detail-dialog-header">
+          <div class="interview-detail-heading">
+            <span class="eyebrow">ENTREVISTA</span>
+            <h2 id="detailInterviewName">Candidato</h2>
+            <p id="detailInterviewVacancy">Vaga</p>
+          </div>
+          <div class="interview-detail-header-side">
+            <span class="interview-detail-status" id="detailInterviewStatus">Agendada</span>
+            <button class="icon-button" type="button" id="closeInterviewDetail" aria-label="Fechar">×</button>
+          </div>
+        </header>
+        <section class="interview-detail-section interview-detail-info">
+          <h3 class="interview-detail-section-title">Informações</h3>
+          <dl class="interview-detail-data">
+            <div><dt><svg class="ui-icon"><use href="#i-users" /></svg><span class="sr-only">Tipo</span></dt><dd id="detailInterviewType">Entrevista RH</dd></div>
+            <div><dt><svg class="ui-icon"><use href="#i-clock" /></svg><span class="sr-only">Data e hora</span></dt><dd id="detailInterviewWhen">Data</dd></div>
+            <div><dt><svg class="ui-icon"><use href="#i-home" /></svg><span class="sr-only">Local</span></dt><dd id="detailInterviewLocation">Player Contabilidade</dd></div>
+          </dl>
+          <div class="interview-test-link" id="interviewTestLink" hidden>
+            <div><span>Link do teste técnico</span><strong id="interviewTestUrl"></strong></div>
+            <button type="button" id="copyInterviewTestLink">Copiar</button>
+          </div>
+        </section>
+        <footer class="interview-detail-footer">
+          <div class="interview-detail-actions">
+            <button class="is-primary" type="button" data-interview-detail-action="reminder"><svg class="ui-icon"><use href="#i-bell" /></svg><span>Enviar lembrete por e-mail</span></button>
+            <div class="interview-action-secondary">
+              <button type="button" data-interview-detail-action="invite"><svg class="ui-icon"><use href="#i-mail" /></svg><span>Reenviar convite</span></button>
+              <button type="button" data-interview-detail-action="test"><svg class="ui-icon"><use href="#i-clipboard" /></svg><span>Gerar link do teste</span></button>
+              <button type="button" data-interview-detail-action="complete"><svg class="ui-icon"><use href="#i-check-circle" /></svg><span>Marcar como concluída</span></button>
+            </div>
+            <button class="is-danger" type="button" data-interview-detail-action="cancel">Cancelar entrevista</button>
+          </div>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="stack-dialog interview-dialog" id="interviewDialog">
+      <form id="interviewForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Agendar entrevista</h2>
+            <p id="interviewCandidateLabel">Candidato</p>
+          </div>
+          <button class="icon-button" type="button" id="closeInterviewDialog" aria-label="Fechar">×</button>
+        </header>
+
+        <label class="form-field">
+          <span>Tipo</span>
+          <select id="interviewType">
+            <option value="Entrevista RH">Entrevista RH</option>
+            <option value="Entrevista Técnica">Entrevista Técnica</option>
+          </select>
+        </label>
+
+        <div class="picker-row">
+          <button class="picker-trigger" type="button" id="openDatePicker">
+            <span class="picker-trigger-label">
+              <svg class="ui-icon"><use href="#i-calendar" /></svg>
+              Data
+            </span>
+            <strong id="interviewDateLabel">Escolher data</strong>
+          </button>
+          <button class="picker-trigger" type="button" id="openTimePicker">
+            <span class="picker-trigger-label">
+              <svg class="ui-icon"><use href="#i-clock" /></svg>
+              Horário
+            </span>
+            <strong id="interviewTimeLabel">Escolher horário</strong>
+          </button>
+        </div>
+
+        <label class="form-field">
+          <span>Duração (minutos)</span>
+          <input id="interviewDuration" type="number" min="15" step="15" value="60" required />
+        </label>
+
+        <label class="form-field">
+          <span>Link da reunião</span>
+          <input id="interviewLink" type="text" placeholder="https://meet.google.com/..." />
+          <small class="field-hint">Obrigatório se não informar o local</small>
+        </label>
+
+        <label class="form-field">
+          <span>Local (presencial)</span>
+          <input id="interviewLocation" type="text" placeholder="Sala, unidade ou endereço" />
+          <small class="field-hint">Obrigatório se não informar o link da reunião</small>
+        </label>
+
+        <label class="form-field">
+          <span>Observações para o candidato</span>
+          <textarea id="interviewNotes" rows="4" placeholder="Informações extras sobre a entrevista..."></textarea>
+        </label>
+
+        <div class="booking-availability">
+          <label class="test-switch">
+            <input id="interviewAllowBooking" type="checkbox" />
+            <span class="test-switch-track"></span>
+            Permitir candidato escolher horário
+          </label>
+          <div class="booking-link-row" id="bookingLinkRow" hidden>
+            <input id="interviewBookingLink" type="text" readonly value="" />
+            <button class="secondary-button" type="button" id="copyBookingLink">Copiar link</button>
+            <button class="secondary-button" type="button" id="openBookingPreview">Prévia</button>
+          </div>
+        </div>
+
+        <div class="schedule-footer">
+          <label class="test-switch">
+            <input id="interviewSendInvite" type="checkbox" checked />
+            <span class="test-switch-track"></span>
+            Enviar convite por e-mail
+          </label>
+          <button class="primary-button schedule-submit" type="submit">Agendar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog picker-dialog" id="datePickerDialog">
+      <header class="stack-dialog-header">
+        <h2>Escolher data</h2>
+        <button class="icon-button" type="button" id="closeDatePicker" aria-label="Fechar">×</button>
+      </header>
+      <div class="calendar-heading picker-calendar-heading">
+        <button type="button" id="datePickerPrev" aria-label="Mês anterior">‹</button>
+        <h2 id="datePickerMonth">Agosto 2026</h2>
+        <button type="button" id="datePickerNext" aria-label="Próximo mês">›</button>
+      </div>
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+      </div>
+      <div class="calendar-grid" id="datePickerGrid"></div>
+    </dialog>
+
+    <dialog class="stack-dialog picker-dialog" id="timePickerDialog">
+      <header class="stack-dialog-header">
+        <h2>Escolher horário</h2>
+        <button class="icon-button" type="button" id="closeTimePicker" aria-label="Fechar">×</button>
+      </header>
+      <div class="time-slot-grid" id="timeSlotGrid"></div>
+    </dialog>
+
+    <dialog class="stack-dialog contact-dialog" id="contactDialog">
+      <form id="contactForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Contactar candidato</h2>
+            <p id="contactCandidateLabel">Candidato</p>
+            <p class="contact-email" id="contactCandidateEmail">email@exemplo.com</p>
+          </div>
+          <button class="icon-button" type="button" id="closeContactDialog" aria-label="Fechar">×</button>
+        </header>
+
+        <div class="contact-channels" role="tablist" aria-label="Canal de contato">
+          <button type="button" class="is-active" data-contact-channel="email" role="tab" aria-selected="true">E-mail</button>
+          <button type="button" data-contact-channel="whatsapp" role="tab" aria-selected="false">WhatsApp</button>
+        </div>
+
+        <p class="lgpd-warn" id="contactLgpdWarn" hidden>Sem consentimento LGPD — envio sob responsabilidade do RH.</p>
+
+        <label class="form-field">
+          <span>Mensagem</span>
+          <textarea id="contactMessage" maxlength="4000" rows="6" placeholder="Escreva a mensagem para o candidato..."></textarea>
+          <small class="char-count" id="contactCharCount">0/4000</small>
+        </label>
+
+        <div class="email-preview-block">
+          <span id="contactPreviewLabel">Prévia do e-mail</span>
+          <div class="email-preview" id="contactPreview"></div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelContact">Cancelar</button>
+          <button class="primary-button" id="sendContact" type="submit" disabled>Enviar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog offer-dialog" id="offerDialog">
+      <header class="stack-dialog-header">
+        <div>
+          <h2>Proposta</h2>
+          <span class="offer-status" id="offerStatusPill" hidden>enviada</span>
+        </div>
+        <button class="icon-button" type="button" id="closeOfferDialog" aria-label="Fechar">×</button>
+      </header>
+
+      <div class="offer-summary" id="offerSummary"></div>
+      <div class="offer-candidate-actions" id="offerCandidateActions" hidden>
+        <span>Simular resposta do candidato</span>
+        <div>
+          <button class="secondary-button" type="button" data-offer-status="vista">Vista</button>
+          <button class="secondary-button" type="button" data-offer-status="aceita">Aceitar</button>
+          <button class="secondary-button" type="button" data-offer-status="recusada">Recusar</button>
+        </div>
+      </div>
+      <div class="offer-history" id="offerHistory"></div>
+
+      <label class="form-field">
+        <span>Mensagem</span>
+        <textarea id="offerMessage" rows="4" placeholder="Mensagem"></textarea>
+      </label>
+
+      <div class="offer-send-row">
+        <button class="offer-attach" type="button" id="offerAttachPdf">
+          <svg class="ui-icon"><use href="#i-paperclip" /></svg>
+          <span id="offerAttachLabel">Anexar PDF</span>
+        </button>
+        <input id="offerPdfInput" type="file" accept="application/pdf" hidden />
+        <button class="primary-button" type="button" id="offerSend">Enviar</button>
+      </div>
+
+      <div class="offer-footer-links">
+        <button class="secondary-button" type="button" id="offerNew">Nova proposta</button>
+        <button class="secondary-button" type="button" id="offerClose">Fechar</button>
+      </div>
+    </dialog>
+
+    <dialog class="stack-dialog offer-form-dialog" id="offerFormDialog">
+      <form id="offerForm">
+        <header class="stack-dialog-header">
+          <h2>Proposta</h2>
+          <button class="icon-button" type="button" id="closeOfferForm" aria-label="Fechar">×</button>
+        </header>
+
+        <label class="form-field">
+          <span>Valor proposto (R$)</span>
+          <input id="offerAmount" type="number" min="0" step="0.01" placeholder="2000" required />
+        </label>
+
+        <label class="form-field">
+          <span>Modalidade</span>
+          <select id="offerWorkModel">
+            <option>Presencial</option>
+            <option>Híbrido</option>
+            <option>Remoto</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Tipo de contratação</span>
+          <select id="offerContract">
+            <option>CLT</option>
+            <option>PJ</option>
+            <option>Estágio</option>
+            <option>Temporário</option>
+          </select>
+        </label>
+
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelOfferForm">Cancelar</button>
+          <button class="primary-button" type="submit">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="job-dialog manager-dialog" id="managerDialog">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">RESPONSÁVEL</span>
+          <h2>Atribuir gestor</h2>
+          <p id="managerCandidateLabel">Candidato</p>
+        </div>
+        <button class="icon-button" type="button" id="closeManagerDialog" aria-label="Fechar">×</button>
+      </div>
+      <div class="manager-list" id="managerList"></div>
+    </dialog>
+
+    <dialog class="settings-form-dialog" id="departmentFormDialog">
+      <form id="departmentForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="departmentFormTitle">Novo departamento</h2></div><button class="icon-button" type="button" data-close-settings-dialog="departmentFormDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Nome</span><input id="departmentNameInput" required /></label><label class="form-field"><span>Descrição</span><textarea id="departmentDescriptionInput" rows="3"></textarea></label><label class="test-switch"><input id="departmentActiveInput" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="departmentFormDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog" id="settingsManagerDialog">
+      <form id="settingsManagerForm"><header><div><span class="eyebrow">ACESSO AO PORTAL</span><h2 id="settingsManagerFormTitle">Novo responsável</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsManagerDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Nome completo</span><input id="settingsManagerName" required /></label><label class="form-field"><span>E-mail corporativo</span><input id="settingsManagerEmail" type="email" required /><small class="field-hint">Usado para acesso e reenvio das credenciais</small></label><label class="form-field"><span>Telefone</span><input id="settingsManagerPhone" /></label><label class="form-field"><span>Empresa</span><select id="settingsManagerCompany" required></select></label><label class="form-field"><span>Departamento</span><select id="settingsManagerDepartment" required></select></label><label class="form-field"><span>Cargo ou função</span><input id="settingsManagerRole" placeholder="Ex.: Analista de RH" /></label><label class="test-switch"><input id="settingsManagerPortalAccess" type="checkbox" checked /><span class="test-switch-track"></span>Acesso ao portal</label><label class="test-switch"><input id="settingsManagerActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsManagerDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog" id="settingsRoleDialog">
+      <form id="settingsRoleForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRoleFormTitle">Novo cargo</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsRoleDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Nome</span><input id="settingsRoleName" required /></label><label class="form-field"><span>Departamento</span><select id="settingsRoleDepartment" required></select></label><label class="form-field"><span>Descrição</span><textarea id="settingsRoleDescription" rows="4"></textarea></label><label class="test-switch"><input id="settingsRoleActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsRoleDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog company-form-dialog" id="settingsCompanyDialog">
+      <form id="settingsCompanyForm"><header><div><span class="eyebrow">EMPRESAS</span><h2 id="settingsCompanyFormTitle">Nova empresa</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsCompanyDialog" aria-label="Fechar">×</button></header>
+        <label class="form-field"><span>Nome da empresa</span><input id="settingsCompanyName" required /></label>
+        <label class="form-field"><span>Localização padrão</span><input id="settingsCompanyLocation" required /></label>
+        <label class="form-field"><span>Sobre a empresa</span><textarea id="settingsCompanyAbout" rows="4"></textarea></label>
+        <label class="form-field"><span>Benefícios padrão</span><textarea id="settingsCompanyBenefits" rows="4" placeholder="Um por linha"></textarea><small class="field-hint">Preenchido automaticamente ao criar vagas</small></label>
+        <div class="company-brand-fields"><h3>Identidade da marca</h3><label class="form-field full"><span>Slogan do portal</span><input id="settingsCompanySlogan" /></label><label class="form-field"><span>Cor principal (#RRGGBB)</span><input id="settingsCompanyPrimary" value="#194A92" pattern="#[0-9A-Fa-f]{6}" /></label><label class="form-field"><span>Cor de destaque (#RRGGBB)</span><input id="settingsCompanyAccent" value="#71C63A" pattern="#[0-9A-Fa-f]{6}" /></label></div>
+        <div class="company-logo-field"><input id="settingsCompanyLogoInput" type="file" accept="image/*" hidden /><button class="secondary-button" id="changeCompanyLogo" type="button"><svg class="ui-icon"><use href="#i-file" /></svg>Trocar logo</button><div class="company-logo-preview" id="companyLogoPreview">PC</div></div>
+        <label class="test-switch"><input id="settingsCompanyDefault" type="checkbox" /><span class="test-switch-track"></span><span><strong>Empresa padrão do portal</strong><small>Logo e cores aparecem no portal de candidatos</small></span></label>
+        <label class="test-switch"><input id="settingsCompanyActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativa</label>
+        <footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsCompanyDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer>
+      </form>
+    </dialog>
+
+    <dialog class="settings-form-dialog analysis-dialog" id="managerAnalysisDialog">
+      <div class="analysis-dialog-content">
+        <header>
+          <div><span class="eyebrow">PARECER DO GESTOR</span><h2 id="analysisCandidateName">Candidato</h2><p id="analysisCandidateRole">Vaga</p></div>
+          <button class="icon-button" id="closeManagerAnalysis" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="analysis-detail-grid">
+          <div><span>Departamento</span><strong id="analysisDepartment"></strong></div>
+          <div><span>Gestor responsável</span><strong id="analysisManager"></strong></div>
+          <div><span>Encaminhado por</span><strong id="analysisSender"></strong></div>
+          <div><span>Data limite</span><strong id="analysisDue"></strong></div>
+        </div>
+        <section class="analysis-opinion"><h3>Parecer</h3><p id="analysisOpinion"></p></section>
+        <label class="form-field"><span>Observação do RH</span><textarea id="analysisRhNote" rows="3" placeholder="Registre uma observação para a decisão..."></textarea></label>
+        <footer><button class="danger-button analysis-reject" type="button" data-analysis-decision="rejected">Reprovar</button><button class="primary-button" type="button" data-analysis-decision="approved">Aprovar análise</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="settings-form-dialog test-preview-dialog" id="testPreviewDialog">
+      <div class="test-preview-content">
+        <header>
+          <div><span class="eyebrow">PRÉVIA DO TESTE</span><h2 id="testPreviewTitle">Teste técnico</h2><p id="testPreviewMeta"></p></div>
+          <button class="icon-button" id="closeTestPreview" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="test-preview-score" id="testPreviewScore" hidden></div>
+        <div class="test-preview-body" id="testPreviewBody"></div>
+        <footer><button class="secondary-button" type="button" id="editFromPreview">Editar teste</button><button class="primary-button" type="button" id="closeTestPreviewFooter">Fechar</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="settings-form-dialog" id="settingsBenefitDialog">
+      <form id="settingsBenefitForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsBenefitFormTitle">Novo benefício</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsBenefitDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Nome</span><input id="settingsBenefitName" required /></label><label class="form-field"><span>Descrição</span><textarea id="settingsBenefitDescription" rows="4" placeholder="Explique o que o benefício oferece"></textarea></label><label class="test-switch"><input id="settingsBenefitActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsBenefitDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog" id="settingsStageDialog">
+      <form id="settingsStageForm"><header><div><span class="eyebrow">PIPELINE</span><h2>Nova etapa</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsStageDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Código</span><input id="settingsStageCode" required maxlength="32" placeholder="Ex.: ENTREVISTA_TECNICA" /><small class="field-hint">Use um código único. Não pode ser TRIAGEM, PROPOSTA ou outro código já cadastrado.</small></label><label class="form-field"><span>Nome exibido</span><input id="settingsStageName" required maxlength="60" placeholder="Ex.: Entrevista técnica" /><small class="field-hint">Colunas organizacionais não alteram o status nem enviam e-mail ao candidato.</small></label><label class="test-switch"><input id="settingsStageActive" type="checkbox" checked /><span class="test-switch-track"></span><span><strong>Ativa</strong><small>Desmarque para ocultar a coluna do kanban</small></span></label><p class="form-error" id="settingsStageError" role="alert" hidden></p><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsStageDialog">Cancelar</button><button class="primary-button" type="submit">Criar etapa</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog settings-alert-dialog" id="stageCandidatesDialog">
+      <div class="settings-alert-content"><header><div><span class="eyebrow">ATENÇÃO</span><h2>Coluna com candidaturas</h2></div><button class="icon-button" type="button" data-close-settings-dialog="stageCandidatesDialog" aria-label="Fechar">×</button></header><p>Existem candidaturas nesta coluna. Mova os cards antes de ocultar.</p><footer><button class="primary-button" type="button" data-close-settings-dialog="stageCandidatesDialog">Entendi</button></footer></div>
+    </dialog>
+
+    <dialog class="settings-form-dialog email-template-dialog" id="settingsEmailDialog">
+      <form id="settingsEmailForm"><header><div><span class="eyebrow" id="settingsEmailCode">CÓDIGO</span><h2 id="settingsEmailFormTitle">Editar modelo</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsEmailDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Nome</span><input id="settingsEmailName" required /></label><label class="form-field"><span>Assunto</span><input id="settingsEmailSubject" required /></label><label class="form-field"><span>Corpo</span><textarea id="settingsEmailBody" rows="10" required></textarea><small class="field-hint">Use {{candidateName}}, {{jobTitle}}, {{siteUrl}}, {{applicationsLink}}, entre outras variáveis.</small></label><label class="test-switch"><input id="settingsEmailActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsEmailDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="settings-form-dialog rejection-form-dialog" id="settingsRejectionDialog">
+      <form id="settingsRejectionForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRejectionFormTitle">Nova justificativa</h2></div><button class="icon-button" type="button" data-close-settings-dialog="settingsRejectionDialog" aria-label="Fechar">×</button></header><label class="form-field"><span>Mensagem</span><textarea id="settingsRejectionMessage" rows="8" required placeholder="Escreva a justificativa apresentada ao candidato"></textarea></label><label class="test-switch"><input id="settingsRejectionActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="dialog-text-button" type="button" data-close-settings-dialog="settingsRejectionDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+    </dialog>
+
+    <dialog class="job-dialog" id="jobDialog">
+      <form method="dialog" id="jobForm">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">NOVA OPORTUNIDADE</span>
+            <h2>Criar vaga</h2>
+            <p>Preencha as informações principais para iniciar o processo.</p>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Fechar">×</button>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field full">
+            <span>Título da vaga</span>
+            <input name="title" required placeholder="Ex.: Analista de Produto" />
+          </label>
+          <label class="form-field">
+            <span>Área</span>
+            <input name="area" required placeholder="Ex.: Produto" />
+          </label>
+          <label class="form-field">
+            <span>Quantidade de vagas</span>
+            <input name="openings" type="number" min="1" value="1" required />
+          </label>
+          <label class="form-field">
+            <span>Modelo de trabalho</span>
+            <select name="workModel">
+              <option>Presencial</option>
+              <option>Híbrido</option>
+              <option>Remoto</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Tipo de contrato</span>
+            <select name="contract">
+              <option>CLT</option>
+              <option>PJ</option>
+              <option>Estágio</option>
+              <option>Temporário</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="button" id="cancelDialog">Cancelar</button>
+          <button class="primary-button" id="jobSubmitButton" type="submit">Criar vaga</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog" id="dismissDialog">
+      <form id="dismissForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Dispensar candidato</h2>
+            <p id="dismissCandidateLabel">Candidato</p>
+          </div>
+          <button class="icon-button" type="button" id="closeDismissDialog" aria-label="Fechar">×</button>
+        </header>
+        <label class="form-field">
+          <span>Motivo da dispensa</span>
+          <select id="dismissReasonSelect" required>
+            <option value="">Selecione um motivo...</option>
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Observação</span>
+          <textarea id="dismissReasonNote" rows="4" placeholder="Detalhe o motivo (opcional)"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelDismiss">Cancelar</button>
+          <button class="primary-button" type="submit">Confirmar dispensa</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog" id="blockDialog">
+      <form id="blockForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Bloquear candidato</h2>
+            <p id="blockCandidateLabel">Candidato</p>
+          </div>
+          <button class="icon-button" type="button" id="closeBlockDialog" aria-label="Fechar">×</button>
+        </header>
+        <label class="form-field">
+          <span>Motivo do bloqueio</span>
+          <select id="blockReasonSelect" required>
+            <option value="">Selecione um motivo...</option>
+            <option>Perfil incompatível com a empresa</option>
+            <option>Conduta inadequada</option>
+            <option>Dados inconsistentes</option>
+            <option>Solicitação do gestor</option>
+            <option>Outro</option>
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Observação</span>
+          <textarea id="blockReasonNote" rows="4" placeholder="Detalhe o motivo (opcional)"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelBlock">Cancelar</button>
+          <button class="primary-button" type="submit">Confirmar bloqueio</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog" id="lgpdDialog">
+      <form id="lgpdForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>LGPD e retenção</h2>
+            <p>Defina o prazo padrão de retenção de dados pessoais.</p>
+          </div>
+          <button class="icon-button" type="button" id="closeLgpdDialog" aria-label="Fechar">×</button>
+        </header>
+        <label class="form-field">
+          <span>Dias de retenção</span>
+          <input id="lgpdRetentionDays" type="number" min="30" max="3650" value="365" required />
+        </label>
+        <p class="panel-note" id="lgpdRetentionNote">Candidatos e talentos sem consentimento ou com retenção vencida devem ser anonimizados.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelLgpd">Cancelar</button>
+          <button class="primary-button" type="submit">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog booking-dialog" id="bookingDialog">
+      <header class="stack-dialog-header">
+        <div>
+          <h2>Escolher horário</h2>
+          <p id="bookingCandidateLabel">Disponibilidade da entrevista</p>
+        </div>
+        <button class="icon-button" type="button" id="closeBookingDialog" aria-label="Fechar">×</button>
+      </header>
+      <div class="booking-slots" id="bookingSlotGrid"></div>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" id="cancelBooking">Cancelar</button>
+        <button class="primary-button" type="button" id="confirmBooking" disabled>Confirmar horário</button>
+      </div>
+    </dialog>
+
+    <div class="candidate-portal" id="candidatePortal" hidden>
+      <aside class="sidebar candidate-sidebar" id="candidateSidebar" aria-label="Menu do candidato">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <div>
+            <strong>Player RH</strong>
+            <span>Portal do candidato</span>
+          </div>
+          <button
+            class="icon-button sidebar-toggle candidate-sidebar-toggle"
+            id="candidateSidebarToggle"
+            type="button"
+            aria-label="Recolher menu"
+            aria-expanded="true"
+            aria-controls="candidateSidebar"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+        </div>
+
+        <nav class="main-nav" aria-label="Navegação principal">
+          <div class="nav-group">
+            <p class="nav-group-label">Oportunidades</p>
+            <button class="nav-item" type="button" data-candidate-nav="home" title="Início">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-home" /></svg></span>
+              <span class="nav-label">Início</span>
+            </button>
+            <button class="nav-item active" type="button" data-candidate-nav="jobs" title="Vagas">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
+              <span class="nav-label">Vagas</span>
+              <span class="nav-count" id="candidateJobsNavCount">0</span>
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-group-label">Minha jornada</p>
+            <button class="nav-item" type="button" data-candidate-nav="interviews" title="Entrevistas">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-calendar" /></svg></span>
+              <span class="nav-label">Entrevistas</span>
+              <span class="nav-count" id="candidateInterviewsNavCount">0</span>
+            </button>
+            <button class="nav-item" type="button" data-candidate-nav="tests" title="Testes técnicos">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-clipboard" /></svg></span>
+              <span class="nav-label">Testes técnicos</span>
+              <span class="nav-count" id="candidateTestsNavCount">0</span>
+            </button>
+            <button class="nav-item" type="button" data-candidate-nav="profile" title="Perfil">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <span class="nav-label">Perfil</span>
+            </button>
+            <button class="nav-item" type="button" data-candidate-nav="apps" title="Minhas candidaturas">
+              <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-clipboard" /></svg></span>
+              <span class="nav-label">Minhas candidaturas</span>
+              <span class="nav-count" id="candidateAppsNavCount">0</span>
+            </button>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="nav-item" type="button" id="exitCandidatePortal" title="Voltar ao RH">
+            <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-back" /></svg></span>
+            <span class="nav-label">Voltar ao RH</span>
+          </button>
+          <div class="help-card">
+            <span class="help-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-help" /></svg></span>
+            <div>
+              <strong>Precisa de ajuda?</strong>
+              <button type="button" id="candidateHelpBtn">Falar com o suporte</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main-content candidate-shell">
+        <header class="topbar candidate-topbar">
+          <div class="topbar-title">
+            <span>Portal do candidato</span>
+            <strong id="candidatePageTitle">Oportunidades abertas</strong>
+          </div>
+          <div class="topbar-actions candidate-topbar-actions">
+            <button class="icon-button" type="button" id="candidateShareBtn" hidden aria-label="Compartilhar vaga" title="Compartilhar">
+              <svg class="ui-icon"><use href="#i-share" /></svg>
+            </button>
+            <button class="profile-button candidate-profile-button" type="button" id="candidateProfileBtn" aria-label="Menu do perfil" aria-expanded="false" aria-controls="candidateProfilePopover">
+              <span class="avatar" id="candidateSidebarAvatar">LL</span>
+              <span class="profile-copy">
+                <strong id="candidateSidebarName">Levi Luz Sousa</strong>
+                <small>Candidato</small>
+              </span>
+            </button>
+          </div>
+          <div class="topbar-popover profile-popover candidate-profile-popover" id="candidateProfilePopover" hidden>
+            <header><span class="avatar" id="candidatePopoverAvatar">LL</span><span><strong id="candidatePopoverName">Levi Luz Sousa</strong><small>Candidato</small></span></header>
+            <button type="button" data-candidate-profile-action="profile"><span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Meu perfil</strong><small>Atualize seus dados profissionais.</small></span></button>
+            <button type="button" data-candidate-profile-action="logout"><span class="popover-icon"><svg class="ui-icon"><use href="#i-logout" /></svg></span><span><strong>Sair</strong><small>Encerrar a sessão neste protótipo.</small></span></button>
+          </div>
+        </header>
+
+        <main class="dashboard-page candidate-main">
+          <section class="candidate-view candidate-home-layout" id="candidateHomeView" hidden>
+            <header class="candidate-page-intro candidate-home-intro">
+              <span class="panel-kicker">SEXTA-FEIRA, 28 DE AGOSTO</span>
+            </header>
+            <div class="candidate-home-grid">
+              <article class="candidate-panel candidate-home-welcome" id="candidateHomeWelcome"></article>
+              <div class="dashboard-metrics candidate-dashboard-metrics" id="candidateHomeStats" aria-label="Resumo do candidato"></div>
+              <div class="candidate-home-columns">
+                <article class="candidate-panel candidate-home-journey">
+                  <div class="candidate-profile-section-head">
+                    <div>
+                      <h2>Minha jornada</h2>
+                      <p class="candidate-section-note">Veja o momento atual de cada processo seletivo.</p>
+                    </div>
+                    <button class="secondary-button candidate-home-section-action" type="button" data-candidate-next-action="apps">Ver candidaturas</button>
+                  </div>
+                  <div class="candidate-home-journey-list" id="candidateHomeJourneyList"></div>
+                </article>
+                <aside class="candidate-home-side">
+                  <article class="candidate-panel candidate-home-agenda">
+                    <div class="candidate-profile-section-head">
+                      <div>
+                        <h2>Próximos compromissos</h2>
+                        <p class="candidate-section-note">Entrevistas e testes que pedem sua atenção.</p>
+                      </div>
+                    </div>
+                    <div id="candidateHomeAgenda"></div>
+                  </article>
+                  <article class="candidate-panel candidate-home-recommendations">
+                    <div class="candidate-profile-section-head">
+                      <div>
+                        <h2>Vagas para você</h2>
+                        <p class="candidate-section-note">Oportunidades abertas com melhor compatibilidade.</p>
+                      </div>
+                      <button class="secondary-button candidate-home-section-action" type="button" data-candidate-next-action="jobs">Explorar vagas</button>
+                    </div>
+                    <div id="candidateHomeRecommendations"></div>
+                  </article>
+                </aside>
+              </div>
+              <article class="candidate-panel candidate-home-recent">
+                <div class="candidate-profile-section-head">
+                  <div>
+                    <h2>Atividade recente</h2>
+                    <p class="candidate-section-note">Acompanhe as últimas atualizações da sua jornada.</p>
+                  </div>
+                </div>
+                <div id="candidateHomeRecentList"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="candidate-view candidate-jobs-layout" id="candidateJobsView">
+            <header class="candidate-page-intro">
+              <p id="candidatePageSubtitle">Busque vagas por cargo, local ou modelo de trabalho.</p>
+            </header>
+            <div class="candidate-toolbar">
+              <div class="candidate-toolbar-row">
+                <label class="candidate-search-bar">
+                  <span class="sr-only">Buscar vagas</span>
+                  <svg class="ui-icon" aria-hidden="true"><use href="#i-search" /></svg>
+                  <input id="candidateJobSearch" type="search" placeholder="Buscar por título, palavra-chave, local..." />
+                  <button type="button" class="candidate-search-filter" id="candidateFilterBtn" aria-label="Abrir filtros" aria-expanded="false" aria-controls="candidateFiltersDialog">
+                    <svg class="ui-icon"><use href="#i-sliders" /></svg>
+                  </button>
+                </label>
+                <button class="primary-button candidate-bulk-apply-btn" type="button" id="candidateBulkApplyBtn" hidden>
+                  Continuar com <span id="candidateBulkApplyCount">2</span> candidaturas
+                </button>
+                <p class="candidate-results-count" id="candidateResultsCount" hidden></p>
+              </div>
+            </div>
+            <div class="candidate-job-list" id="candidateJobList"></div>
+          </section>
+
+          <section class="candidate-view candidate-detail-view" id="candidateJobDetailView" hidden>
+            <div class="candidate-detail-stack" id="candidateJobDetailCard"></div>
+          </section>
+
+          <section class="candidate-view candidate-apply-layout" id="candidateApplyView" hidden>
+            <button class="page-back-link candidate-detail-back" type="button" id="candidateApplyBack">
+              <span aria-hidden="true">←</span> Voltar para a vaga
+            </button>
+            <div class="candidate-apply-stack" id="candidateApplyBody"></div>
+          </section>
+
+          <section class="candidate-view candidate-apply-success-layout" id="candidateApplySuccessView" hidden>
+            <div class="candidate-apply-success" id="candidateApplySuccessBody"></div>
+          </section>
+
+          <section class="candidate-view candidate-profile-layout" id="candidateProfileView" hidden>
+            <form class="candidate-profile-page" id="candidateProfileForm">
+              <aside class="candidate-profile-aside">
+                <article class="candidate-profile-summary candidate-panel">
+                  <span class="avatar candidate-profile-avatar" id="candidateProfileAvatar">LL</span>
+                  <h2 id="candidateProfileName">Levi Luz Sousa</h2>
+                  <p id="candidateProfileEmail">leviluzbr@gmail.com</p>
+                  <div class="candidate-profile-completion">
+                    <div class="candidate-profile-completion-head">
+                      <span>Perfil para matching</span>
+                      <strong id="candidateProfileCompletion">0%</strong>
+                    </div>
+                    <div class="candidate-profile-completion-bar" aria-hidden="true">
+                      <span id="candidateProfileCompletionBar"></span>
+                    </div>
+                    <p id="candidateProfileCompletionHint">Complete os campos profissionais para calcular sua compatibilidade com as vagas.</p>
+                  </div>
+                  <button class="candidate-outline-btn" type="button" id="candidateEvaluationsBtn">
+                    <svg class="ui-icon"><use href="#i-clipboard" /></svg>
+                    Avaliações
+                  </button>
+                </article>
+              </aside>
+
+              <article class="candidate-panel candidate-profile-section candidate-profile-section-dados">
+                <div class="candidate-profile-section-head">
+                  <h2>Dados pessoais</h2>
+                </div>
+                <div class="candidate-profile-fields">
+                  <label class="candidate-field">
+                    <span>Telefone</span>
+                    <input id="candidatePhone" type="tel" placeholder="(00) 00000-0000" />
+                  </label>
+                  <div class="candidate-field-row candidate-field-row-location">
+                    <label class="candidate-field">
+                      <span>Cidade</span>
+                      <input id="candidateCity" type="text" placeholder="Cidade" autocomplete="address-level2" />
+                    </label>
+                    <label class="candidate-field candidate-field-uf">
+                      <span>UF</span>
+                      <input id="candidateUf" type="text" placeholder="TO" maxlength="2" autocomplete="address-level1" inputmode="text" aria-describedby="candidateUfHint" />
+                      <small id="candidateUfHint" class="sr-only">Use a sigla do estado com 2 letras</small>
+                    </label>
+                  </div>
+                  <label class="candidate-field">
+                    <span>Data de nascimento</span>
+                    <input id="candidateBirthDate" type="date" />
+                  </label>
+                </div>
+              </article>
+
+              <article class="candidate-panel candidate-profile-section candidate-profile-section-perfil">
+                <div class="candidate-profile-section-head">
+                  <h2>Perfil profissional</h2>
+                  <p class="candidate-section-note">Estes dados alimentam o cálculo de compatibilidade com as vagas abertas.</p>
+                </div>
+                <div class="candidate-profile-fields">
+                  <label class="candidate-field">
+                    <span>Área de atuação</span>
+                    <select id="candidateArea" required>
+                      <option value="">Selecionar área...</option>
+                      <option>Tecnologia</option>
+                      <option>Recursos Humanos</option>
+                      <option>Contabilidade</option>
+                      <option>Financeiro</option>
+                      <option>Administrativo</option>
+                    </select>
+                  </label>
+                  <label class="candidate-field">
+                    <span>Nível de experiência</span>
+                    <select id="candidateSeniority" required>
+                      <option value="">Selecionar nível...</option>
+                      <option>Júnior</option>
+                      <option>Pleno</option>
+                      <option>Sênior</option>
+                    </select>
+                  </label>
+                  <label class="candidate-field">
+                    <span>Modelo de trabalho preferido</span>
+                    <select id="candidateWorkModelPref">
+                      <option value="">Sem preferência</option>
+                      <option>Presencial</option>
+                      <option>Híbrido</option>
+                      <option>Remoto</option>
+                    </select>
+                  </label>
+                </div>
+              </article>
+
+              <article class="candidate-panel candidate-profile-section candidate-profile-section-wide">
+                <h2>Habilidades e competências</h2>
+                <p class="candidate-section-note">Selecione as competências que você domina. Elas são comparadas com os requisitos da vaga.</p>
+                <div class="candidate-skill-picker">
+                  <div class="candidate-skill-block">
+                    <span class="candidate-skill-label">Selecionadas</span>
+                    <div class="candidate-skill-selected" id="candidateSkillSelected" aria-live="polite"></div>
+                  </div>
+                  <div class="candidate-skill-block candidate-skill-catalog-block" id="candidateSkillCatalogBlock" hidden>
+                    <span class="candidate-skill-label">Catálogo</span>
+                    <div class="candidate-skill-catalog" id="candidateSkillCatalog" role="group" aria-label="Catálogo de habilidades"></div>
+                  </div>
+                  <button class="candidate-skill-add" type="button" id="candidateSkillAdd" aria-expanded="false" aria-controls="candidateSkillCatalogBlock">+ Adicionar habilidade</button>
+                </div>
+              </article>
+
+              <article class="candidate-panel candidate-profile-section candidate-profile-section-wide">
+                <h2>Apresentação</h2>
+                <div class="candidate-profile-presentation-grid">
+                  <label class="candidate-field">
+                    <span>Objetivo profissional</span>
+                    <textarea id="candidateObjective" rows="4" placeholder="Ex.: Atuar como analista de sistemas em empresa de tecnologia"></textarea>
+                  </label>
+                  <label class="candidate-field">
+                    <span>Resumo profissional</span>
+                    <textarea id="candidateSummary" rows="4" placeholder="Conte sua experiência, principais resultados e diferenciais"></textarea>
+                  </label>
+                  <label class="candidate-field candidate-field-wide">
+                    <span>Formação acadêmica</span>
+                    <textarea id="candidateEducation" rows="3" placeholder="Curso, instituição e situação"></textarea>
+                  </label>
+                </div>
+              </article>
+
+              <div class="candidate-profile-actions">
+                <button class="candidate-apply-btn" type="submit">Salvar perfil</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="candidate-view candidate-journey-layout" id="candidateInterviewsView" hidden>
+            <header class="candidate-page-intro candidate-interviews-intro">
+              <span class="panel-kicker">MINHA JORNADA</span>
+              <h1>Entrevistas</h1>
+              <p>Consulte seus próximos encontros e os detalhes de cada entrevista.</p>
+            </header>
+            <div class="candidate-journey-list" id="candidateInterviewsBody"></div>
+          </section>
+
+          <section class="candidate-view candidate-journey-layout" id="candidateTestsView" hidden>
+            <header class="candidate-page-intro candidate-tests-intro">
+              <span class="panel-kicker">MINHA JORNADA</span>
+              <h1>Testes técnicos</h1>
+              <p>Veja os testes técnicos pendentes e o histórico das suas avaliações.</p>
+            </header>
+            <div class="candidate-journey-list" id="candidateTestsBody"></div>
+          </section>
+
+          <section class="candidate-view candidate-test-taking-layout" id="candidateTestTakingView" hidden>
+            <div id="candidateTestTakingBody"></div>
+          </section>
+
+          <section class="candidate-view candidate-apps-layout" id="candidateAppsView" hidden>
+            <header class="candidate-page-intro candidate-apps-intro">
+              <span class="panel-kicker">PROCESSOS SELETIVOS</span>
+              <h1>Minhas candidaturas</h1>
+              <p id="candidateAppsIntro">Consulte suas candidaturas, filtre por etapa e acompanhe cada processo.</p>
+            </header>
+            <div class="candidate-apps-page">
+              <div class="candidate-apps-stats" id="candidateAppsStats" aria-label="Resumo das candidaturas"></div>
+              <article class="candidate-panel candidate-apps-panel">
+                <div class="candidate-apps-body" id="candidateAppsBody"></div>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <dialog class="stack-dialog candidate-filter-dialog" id="candidateFiltersDialog">
+        <form id="candidateFiltersForm">
+          <header class="stack-dialog-header">
+            <div>
+              <h2>Filtros</h2>
+            </div>
+            <button class="icon-button" type="button" id="closeCandidateFiltersDialog" aria-label="Fechar">×</button>
+          </header>
+          <label class="form-field">
+            <span>Tipo de contratação</span>
+            <select id="candidateFilterContract" name="contract">
+              <option value="all">Todos</option>
+              <option value="CLT">CLT</option>
+              <option value="PJ">PJ</option>
+              <option value="Estágio">Estágio</option>
+              <option value="Temporário">Temporário</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Modalidade</span>
+            <select id="candidateFilterWorkModel" name="workModel">
+              <option value="all">Todas</option>
+              <option value="Presencial">Presencial</option>
+              <option value="Híbrido">Híbrido</option>
+              <option value="Remoto">Remoto</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Localização</span>
+            <input id="candidateFilterLocation" name="location" type="text" autocomplete="off" />
+          </label>
+          <label class="form-field">
+            <span>Nível de experiência</span>
+            <select id="candidateFilterSeniority" name="seniority">
+              <option value="all">Todos</option>
+              <option value="Júnior">Júnior</option>
+              <option value="Pleno">Pleno</option>
+              <option value="Sênior">Sênior</option>
+            </select>
+          </label>
+          <label class="test-switch">
+            <input id="candidateFilterPcd" name="pcdOnly" type="checkbox" />
+            <span class="test-switch-track" aria-hidden="true"></span>
+            Apenas vagas para PcD
+          </label>
+          <footer class="dialog-actions candidate-filter-actions">
+            <button class="dialog-text-button" type="button" id="candidateFiltersClear">Limpar</button>
+            <button class="primary-button" type="submit">Aplicar</button>
+          </footer>
+        </form>
+      </dialog>
+
+      <dialog class="stack-dialog candidate-success-dialog" id="candidateApplicationSuccessDialog">
+        <form method="dialog">
+          <header class="stack-dialog-header">
+            <div>
+              <span class="eyebrow">CANDIDATURA ENVIADA</span>
+              <h2>Candidatura concluída</h2>
+              <p id="candidateApplicationSuccessCopy">Sua candidatura foi enviada com sucesso.</p>
+            </div>
+            <button class="icon-button" type="button" id="closeCandidateApplicationSuccess" aria-label="Fechar">×</button>
+          </header>
+          <div class="candidate-success-content">
+            <div class="candidate-apply-success-icon" aria-hidden="true">
+              <svg class="ui-icon"><use href="#i-check-circle" /></svg>
+            </div>
+            <div class="candidate-success-message">
+              <strong>Seu perfil foi enviado para o RH.</strong>
+              <p>Você já pode acompanhar o andamento em Minhas candidaturas.</p>
+            </div>
+            <div class="candidate-success-details">
+              <div>
+                <span id="candidateApplicationSuccessJobLabel">Vaga</span>
+                <strong id="candidateApplicationSuccessJob">—</strong>
+              </div>
+              <div>
+                <span>Currículo</span>
+                <strong id="candidateApplicationSuccessResume">—</strong>
+              </div>
+            </div>
+            <div class="candidate-success-next">
+              <span>Próxima etapa</span>
+              <strong>Triagem</strong>
+            </div>
+          </div>
+          <footer class="dialog-actions">
+            <button class="primary-button" type="button" id="candidateApplicationSuccessContinue">Ver minhas candidaturas</button>
+          </footer>
+        </form>
+      </dialog>
+
+      <dialog class="stack-dialog candidate-test-dialog" id="candidateTestDialog">
+        <form method="dialog">
+          <header class="stack-dialog-header">
+            <div>
+              <span class="eyebrow">TESTE TÉCNICO</span>
+              <h2 id="candidateTestDialogTitle">Teste técnico</h2>
+              <p id="candidateTestDialogDescription">Confira os detalhes antes de começar.</p>
+            </div>
+            <button class="icon-button" type="button" id="closeCandidateTestDialog" aria-label="Fechar">×</button>
+          </header>
+          <div class="candidate-test-dialog-content">
+            <div class="candidate-test-dialog-meta">
+              <div><span>Questões</span><strong id="candidateTestDialogQuestions">0</strong></div>
+              <div><span>Nota mínima</span><strong id="candidateTestDialogScore">0%</strong></div>
+              <div><span>Vaga</span><strong id="candidateTestDialogJob">—</strong></div>
+            </div>
+            <p>Ao iniciar, você poderá responder a avaliação e enviar suas respostas ao final. Reserve um momento tranquilo para concluir.</p>
+          </div>
+          <footer class="dialog-actions">
+            <button class="dialog-text-button" type="button" id="cancelCandidateTest">Agora não</button>
+            <button class="primary-button" type="button" id="candidateTestStart">Iniciar teste</button>
+          </footer>
+        </form>
+      </dialog>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span>
+      <div>
+        <strong>Vaga criada com sucesso</strong>
+        <small>A oportunidade já aparece na listagem.</small>
+      </div>
+    </div>
+
+    <script src="./app.js?v=candidate-menu-95"></script>
+  </body>
+</html>
