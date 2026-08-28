@@ -983,6 +983,7 @@ const interviews = [
     waiting: true,
     meet: "Teams",
     location: "Player Contabilidade",
+    owner: "Larissa Dias",
     candidateId: 108,
   },
   {
@@ -994,6 +995,7 @@ const interviews = [
     status: "Agendada",
     waiting: false,
     meet: "",
+    owner: "Camila Monteiro",
     candidateId: 107,
   },
   {
@@ -1005,6 +1007,7 @@ const interviews = [
     status: "Agendada",
     waiting: true,
     meet: "",
+    owner: "Larissa Dias",
     candidateId: 109,
   },
   {
@@ -1016,6 +1019,7 @@ const interviews = [
     status: "Agendada",
     waiting: false,
     meet: "Meet",
+    owner: "Larissa Dias",
     candidateId: 106,
   },
   {
@@ -1027,6 +1031,7 @@ const interviews = [
     status: "Agendada",
     waiting: false,
     meet: "Meet",
+    owner: "Mariana Costa",
     candidateId: 104,
   },
   {
@@ -1038,6 +1043,7 @@ const interviews = [
     status: "Agendada",
     waiting: true,
     meet: "Teams",
+    owner: "Larissa Dias",
     candidateId: 102,
   },
 ];
@@ -1608,6 +1614,9 @@ const resultEmpty = document.querySelector("#resultEmpty");
 const interviewList = document.querySelector("#interviewList");
 const interviewEmpty = document.querySelector("#interviewEmpty");
 const calendarGrid = document.querySelector("#calendarGrid");
+const interviewLayout = document.querySelector(".interview-layout");
+const interviewCalendarViewPanel = document.querySelector("#interviewCalendarView");
+const fullCalendarGrid = document.querySelector("#fullCalendarGrid");
 const kanban = document.querySelector("#kanban");
 const jobCandidateList = document.querySelector("#jobCandidateList");
 const candidateSearch = document.querySelector("#candidateSearch");
@@ -1646,6 +1655,27 @@ let selectedInterviewDetailId = null;
 let selectedInterviewDay = "";
 let interviewRangeFilter = "upcoming";
 let calendarCursor = new Date(2026, 7, 1);
+let interviewCalendarView = "agenda";
+let calendarStatusFilter = "all";
+let calendarOwnerFilter = "all";
+const selectedCalendarFilters = new Set([
+  "feriado",
+  "facultativo",
+  "comemorativa",
+  "entrevista",
+]);
+const hrCalendarEvents = [
+  { id: "holiday-08-01", date: "2026-08-01", title: "Dia do Pediatra", category: "feriado" },
+  { id: "commemorative-08-05", date: "2026-08-05", title: "Dia do Agricultor", category: "comemorativa" },
+  { id: "commemorative-08-08", date: "2026-08-08", title: "Dia Mundial da Amamentação", category: "comemorativa" },
+  { id: "holiday-08-09", date: "2026-08-09", title: "Dia dos Pais", category: "feriado" },
+  { id: "commemorative-08-11", date: "2026-08-11", title: "Dia do Estudante", category: "comemorativa" },
+  { id: "commemorative-08-18", date: "2026-08-18", title: "Dia do Estagiário", category: "comemorativa" },
+  { id: "commemorative-08-19", date: "2026-08-19", title: "Dia do Historiador", category: "comemorativa" },
+  { id: "commemorative-08-22", date: "2026-08-22", title: "Dia do Folclore", category: "comemorativa" },
+  { id: "commemorative-08-27", date: "2026-08-27", title: "Dia do Psicólogo", category: "comemorativa" },
+  { id: "commemorative-08-31", date: "2026-08-31", title: "Dia do Nutricionista", category: "comemorativa" },
+];
 let jobBoardTitle = "";
 let jobBoardView = "kanban";
 let expandedCardId = null;
@@ -2273,6 +2303,101 @@ function renderCalendar() {
   calendarGrid.innerHTML = cells.join("");
 }
 
+function calendarEventsForMonth() {
+  const interviewEvents = interviews.map((item) => ({
+    id: `interview-${item.id}`,
+    date: dayKey(item.at),
+    title: item.name,
+    detail: item.type,
+    category: "entrevista",
+    interviewId: item.id,
+    status: item.status,
+    owner: item.owner || "Larissa Dias",
+  }));
+  return [
+    ...hrCalendarEvents.filter((event) => selectedCalendarFilters.has(event.category)),
+    ...interviewEvents.filter(
+      (event) =>
+        selectedCalendarFilters.has("entrevista") &&
+        (calendarStatusFilter === "all" || event.status === calendarStatusFilter) &&
+        (calendarOwnerFilter === "all" || event.owner === calendarOwnerFilter),
+    ),
+  ];
+}
+
+function fullCalendarEventClass(category) {
+  return {
+    feriado: "is-blue",
+    facultativo: "is-lilac",
+    comemorativa: "is-green",
+    entrevista: "is-navy",
+  }[category] || "is-green";
+}
+
+function renderFullCalendar() {
+  if (!fullCalendarGrid) return;
+  const year = calendarCursor.getFullYear();
+  const month = calendarCursor.getMonth();
+  const first = new Date(year, month, 1);
+  const mondayOffset = (first.getDay() + 6) % 7;
+  const todayKey = "2026-08-25";
+  const events = calendarEventsForMonth();
+  const cells = [];
+
+  for (let index = 0; index < 42; index += 1) {
+    const date = new Date(year, month, index - mondayOffset + 1);
+    const key = dayKey(date);
+    const inMonth = date.getMonth() === month;
+    const dayEvents = events.filter((event) => event.date === key);
+    const classes = ["full-calendar-day"];
+    if (!inMonth) classes.push("is-muted");
+    if (key === todayKey) classes.push("is-today");
+    if (selectedInterviewDay === key) classes.push("is-selected");
+
+    const eventMarkup = dayEvents
+      .slice(0, 4)
+      .map(
+        (event) => `
+          <button
+            type="button"
+            class="full-calendar-event ${fullCalendarEventClass(event.category)}"
+            ${event.interviewId ? `data-full-calendar-interview="${event.interviewId}"` : ""}
+            title="${escapeHtml(event.title)}"
+          >
+            <span>${escapeHtml(event.title)}</span>
+            ${event.detail ? `<small>${escapeHtml(event.detail)}</small>` : ""}
+          </button>
+        `,
+      )
+      .join("");
+    const moreMarkup =
+      dayEvents.length > 4
+        ? `<span class="full-calendar-more">+${dayEvents.length - 4} eventos</span>`
+        : "";
+
+    cells.push(`
+      <article class="${classes.join(" ")}" data-full-calendar-day="${key}">
+        <button type="button" class="full-calendar-day-number" data-full-calendar-day-select="${key}" aria-label="${date.toLocaleDateString("pt-BR")}">${date.getDate()}</button>
+        <div class="full-calendar-events">${eventMarkup}${moreMarkup}</div>
+      </article>
+    `);
+  }
+
+  document.querySelector("#fullCalendarMonth").textContent = `${monthNames[month]} ${year}`;
+  fullCalendarGrid.innerHTML = cells.join("");
+}
+
+function syncInterviewCalendarView() {
+  const fullCalendarMode = interviewCalendarView === "calendar";
+  if (interviewLayout) interviewLayout.hidden = fullCalendarMode;
+  if (interviewCalendarViewPanel) interviewCalendarViewPanel.hidden = !fullCalendarMode;
+  document.querySelectorAll("[data-interview-view]").forEach((button) => {
+    const active = button.dataset.interviewView === interviewCalendarView;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+}
+
 function renderAgenda() {
   const filtered = getFilteredInterviews();
   document.querySelector("#interviewsNavCount").textContent = interviews.length;
@@ -2323,6 +2448,8 @@ function renderAgenda() {
   interviewEmpty.hidden = filtered.length !== 0;
   interviewList.hidden = filtered.length === 0;
   renderCalendar();
+  renderFullCalendar();
+  syncInterviewCalendarView();
 }
 
 function renderInterviewDetail() {
@@ -3119,8 +3246,8 @@ function renderJobCandidateList() {
   if (!items.length) {
     jobCandidateList.innerHTML = `
       <div class="empty-state">
-        <h3>Nenhum candidato nesta vaga</h3>
-        <p>Os candidatos que se inscreverem aparecem aqui no kanban e na lista.</p>
+        <h3>${jobBoardTitle ? "Nenhum candidato nesta vaga" : "Nenhum candidato encontrado"}</h3>
+        <p>${jobBoardTitle ? "Os candidatos que se inscreverem aparecem aqui no kanban e na lista." : "Ajuste a busca ou os filtros para visualizar candidatos."}</p>
       </div>
     `;
     return;
@@ -3135,7 +3262,7 @@ function renderJobCandidateList() {
           </label>
           <div>
             <h3>${candidate.name}</h3>
-            <p>${candidate.email}</p>
+            <p>${candidate.email} · ${candidate.vacancy}</p>
           </div>
           <span class="stage-pill ${candidate.stage === "Entrevista RH" ? "stage-interview" : ""}">${candidate.stage}</span>
           <span class="${candidate.attachment ? "attachment-ok" : ""}">${
@@ -3148,7 +3275,8 @@ function renderJobCandidateList() {
 }
 
 function syncJobBoardView() {
-  const listMode = Boolean(jobBoardTitle) && jobBoardView === "list";
+  const listMode = jobBoardView === "list";
+  pipelinePage.classList.toggle("is-list-view", listMode);
   kanban.hidden = listMode;
   jobCandidateList.hidden = !listMode;
   document.querySelectorAll("[data-job-view]").forEach((button) => {
@@ -4490,6 +4618,73 @@ document.querySelector("#calendarPrev").addEventListener("click", () => {
 
 document.querySelector("#calendarNext").addEventListener("click", () => {
   calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + 1, 1);
+  renderAgenda();
+});
+
+document.querySelectorAll("[data-interview-view]").forEach((button) => {
+  button.addEventListener("click", () => {
+    interviewCalendarView = button.dataset.interviewView || "agenda";
+    syncInterviewCalendarView();
+  });
+});
+
+document.querySelector("#fullCalendarPrev")?.addEventListener("click", () => {
+  calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() - 1, 1);
+  renderAgenda();
+});
+
+document.querySelector("#fullCalendarNext")?.addEventListener("click", () => {
+  calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + 1, 1);
+  renderAgenda();
+});
+
+document.querySelector("#fullCalendarToday")?.addEventListener("click", () => {
+  calendarCursor = new Date(2026, 7, 1);
+  selectedInterviewDay = "2026-08-25";
+  interviewRangeFilter = "today";
+  renderAgenda();
+});
+
+document.querySelector("#clearCalendarFilters")?.addEventListener("click", () => {
+  selectedCalendarFilters.clear();
+  document.querySelectorAll("[data-calendar-filter]").forEach((input) => {
+    input.checked = false;
+  });
+  calendarStatusFilter = "all";
+  calendarOwnerFilter = "all";
+  const statusFilter = document.querySelector("#calendarStatusFilter");
+  const ownerFilter = document.querySelector("#calendarOwnerFilter");
+  if (statusFilter) statusFilter.value = "all";
+  if (ownerFilter) ownerFilter.value = "all";
+  renderFullCalendar();
+});
+
+document.querySelector("#interviewCalendarView")?.addEventListener("change", (event) => {
+  const input = event.target.closest("[data-calendar-filter]");
+  if (input) {
+    if (input.checked) selectedCalendarFilters.add(input.dataset.calendarFilter);
+    else selectedCalendarFilters.delete(input.dataset.calendarFilter);
+  }
+  const statusFilter = event.target.closest("#calendarStatusFilter");
+  const ownerFilter = event.target.closest("#calendarOwnerFilter");
+  if (statusFilter) calendarStatusFilter = statusFilter.value;
+  if (ownerFilter) calendarOwnerFilter = ownerFilter.value;
+  if (!input && !statusFilter && !ownerFilter) return;
+  renderFullCalendar();
+});
+
+document.querySelector("#interviewCalendarView")?.addEventListener("click", (event) => {
+  const interviewButton = event.target.closest("[data-full-calendar-interview]");
+  if (interviewButton) {
+    const interview = interviews.find((item) => item.id === Number(interviewButton.dataset.fullCalendarInterview));
+    if (interview) openInterviewDetail(interview);
+    return;
+  }
+  const dayButton = event.target.closest("[data-full-calendar-day-select]");
+  if (!dayButton) return;
+  const key = dayButton.dataset.fullCalendarDaySelect;
+  selectedInterviewDay = selectedInterviewDay === key ? "" : key;
+  selectedInterviewId = null;
   renderAgenda();
 });
 

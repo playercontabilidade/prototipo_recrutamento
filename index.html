@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=candidate-menu-95" />
+    <link rel="stylesheet" href="./styles.css?v=calendar-view-105" />
   </head>
   <body>
     <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
@@ -718,10 +718,22 @@
               <h1>Pipeline</h1>
               <p>Acompanhe candidatos, etapas e próximos movimentos do processo seletivo.</p>
             </div>
-            <button class="primary-button dashboard-new-job" type="button">
-              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
-              Nova vaga
-            </button>
+            <div class="pipeline-heading-actions">
+              <div class="job-board-toggle pipeline-view-toggle" role="tablist" aria-label="Visualização do pipeline">
+                <button type="button" role="tab" data-job-view="kanban" aria-selected="true" class="active">
+                  <svg class="ui-icon"><use href="#i-columns" /></svg>
+                  Kanban
+                </button>
+                <button type="button" role="tab" data-job-view="list" aria-selected="false">
+                  <svg class="ui-icon"><use href="#i-list" /></svg>
+                  Lista
+                </button>
+              </div>
+              <button class="primary-button dashboard-new-job" type="button">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+                Nova vaga
+              </button>
+            </div>
           </header>
 
           <header class="dashboard-welcome job-board-heading" id="jobBoardHeading" hidden>
@@ -801,7 +813,7 @@
           <div class="pipeline-bulk-bar" id="pipelineBulkBar" hidden>
             <strong><span id="pipelineBulkCount">0</span> candidatos selecionados</strong>
             <label class="select-field">
-              <span>Mover para</span>
+              <span>Alterar etapa para</span>
               <select id="pipelineBulkStage">
                 <option value="">Selecione uma etapa</option>
               </select>
@@ -1100,10 +1112,22 @@
             <div>
               <h1>Agenda de entrevistas</h1>
             </div>
-            <button class="primary-button" id="newInterviewButton" type="button">
-              <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
-              Nova entrevista
-            </button>
+            <div class="interview-heading-actions">
+              <div class="interview-view-switcher" role="tablist" aria-label="Visualização da agenda">
+                <button type="button" role="tab" data-interview-view="agenda" aria-selected="true" class="is-active">
+                  <svg class="ui-icon"><use href="#i-list" /></svg>
+                  Agenda
+                </button>
+                <button type="button" role="tab" data-interview-view="calendar" aria-selected="false">
+                  <svg class="ui-icon"><use href="#i-calendar" /></svg>
+                  Calendário
+                </button>
+              </div>
+              <button class="primary-button" id="newInterviewButton" type="button">
+                <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
+                Nova entrevista
+              </button>
+            </div>
           </header>
 
           <div class="interview-layout">
@@ -1147,6 +1171,78 @@
               </p>
             </aside>
           </div>
+          <section class="interview-calendar-view" id="interviewCalendarView" hidden>
+            <aside class="dashboard-panel interview-calendar-filters">
+              <header>
+                <span class="panel-kicker">ORGANIZAÇÃO</span>
+                <h2>Filtros</h2>
+              </header>
+              <div class="calendar-filter-list" role="group" aria-label="Filtrar eventos do calendário">
+                <label class="calendar-filter-option">
+                  <input type="checkbox" data-calendar-filter="feriado" checked />
+                  <span class="calendar-filter-dot is-blue"></span>
+                  <span>Feriados</span>
+                </label>
+                <label class="calendar-filter-option">
+                  <input type="checkbox" data-calendar-filter="facultativo" checked />
+                  <span class="calendar-filter-dot is-lilac"></span>
+                  <span>Pontos facultativos</span>
+                </label>
+                <label class="calendar-filter-option">
+                  <input type="checkbox" data-calendar-filter="comemorativa" checked />
+                  <span class="calendar-filter-dot is-green"></span>
+                  <span>Datas comemorativas</span>
+                </label>
+                <label class="calendar-filter-option">
+                  <input type="checkbox" data-calendar-filter="entrevista" checked />
+                  <span class="calendar-filter-dot is-navy"></span>
+                  <span>Entrevistas</span>
+                </label>
+              </div>
+              <div class="calendar-filter-fields">
+                <label class="form-field calendar-filter-field">
+                  <span>Status</span>
+                  <select id="calendarStatusFilter">
+                    <option value="all">Todos os status</option>
+                    <option value="Agendada">Agendada</option>
+                    <option value="Concluída">Concluída</option>
+                    <option value="Cancelada">Cancelada</option>
+                  </select>
+                </label>
+                <label class="form-field calendar-filter-field">
+                  <span>Responsável</span>
+                  <select id="calendarOwnerFilter">
+                    <option value="all">Todos os responsáveis</option>
+                    <option value="Larissa Dias">Larissa Dias</option>
+                    <option value="Camila Monteiro">Camila Monteiro</option>
+                    <option value="Mariana Costa">Mariana Costa</option>
+                  </select>
+                </label>
+              </div>
+              <button class="calendar-clear-filters" id="clearCalendarFilters" type="button">Limpar filtros</button>
+            </aside>
+            <section class="dashboard-panel interview-month-panel">
+              <header class="interview-month-heading">
+                <div>
+                  <span class="panel-kicker">CALENDÁRIO DE COMPROMISSOS</span>
+                  <h2 id="fullCalendarMonth">Agosto 2026</h2>
+                </div>
+                <div class="calendar-heading-actions">
+                  <button type="button" id="fullCalendarToday">Hoje</button>
+                  <button type="button" id="fullCalendarPrev" aria-label="Mês anterior">‹</button>
+                  <button type="button" id="fullCalendarNext" aria-label="Próximo mês">›</button>
+                </div>
+              </header>
+              <div class="full-calendar-weekdays" aria-hidden="true">
+                <span>Segunda</span><span>Terça</span><span>Quarta</span><span>Quinta</span><span>Sexta</span><span>Sábado</span><span>Domingo</span>
+              </div>
+              <div class="full-calendar-grid" id="fullCalendarGrid" aria-label="Calendário mensal do RH"></div>
+              <p class="calendar-legend">
+                <span><i class="legend-today"></i> Hoje</span>
+                <span><i class="legend-event"></i> Compromisso ou evento</span>
+              </p>
+            </section>
+          </section>
         </section>
 
         <section class="dashboard-page tecnicos-page" id="tecnicosPage" hidden>
@@ -2334,6 +2430,6 @@
       </div>
     </div>
 
-    <script src="./app.js?v=candidate-menu-95"></script>
+    <script src="./app.js?v=calendar-view-105"></script>
   </body>
 </html>
