@@ -1623,6 +1623,36 @@
       </form>
     </dialog>
 
+    <dialog class="stack-dialog" id="candidateRescheduleDialog">
+      <form id="candidateRescheduleForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Pedir reagendamento</h2>
+            <p id="candidateRescheduleLabel">Entrevista</p>
+          </div>
+          <button class="icon-button" type="button" id="closeCandidateReschedule" aria-label="Fechar">×</button>
+        </header>
+        <label class="form-field">
+          <span>Motivo</span>
+          <select id="candidateRescheduleReason" required>
+            <option value="">Selecione...</option>
+            <option value="Conflito de agenda">Conflito de agenda</option>
+            <option value="Problema de saúde">Problema de saúde</option>
+            <option value="Imprevisto pessoal">Imprevisto pessoal</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Mensagem</span>
+          <textarea id="candidateRescheduleMessage" rows="3" placeholder="Conte mais detalhes ao RH (opcional)"></textarea>
+        </label>
+        <footer class="schedule-footer">
+          <button type="button" class="secondary-button" id="dismissCandidateReschedule">Voltar</button>
+          <button type="submit" class="primary-button">Enviar pedido</button>
+        </footer>
+      </form>
+    </dialog>
+
     <dialog class="stack-dialog interview-dialog" id="interviewDialog">
       <form id="interviewForm">
         <header class="stack-dialog-header">

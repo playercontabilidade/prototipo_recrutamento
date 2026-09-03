@@ -1268,25 +1268,26 @@ const interviews = [
     duration: 60,
   },
   {
-    id: 607,
-    name: "Kemilly Cristyne Neves Tavares",
-    vacancy: "Analista de Departamento Pessoal",
-    at: "2026-08-26T09:00:00",
-    endAt: "2026-08-26T10:00:00",
+    id: 608,
+    name: "Levi Luz Sousa",
+    vacancy: "Suporte de Sistemas",
+    at: "2026-08-29T10:00:00",
+    endAt: "2026-08-29T11:00:00",
     type: "Entrevista RH",
     stage: "Entrevista RH",
     modality: "Videochamada",
-    status: "Confirmada",
-    waiting: false,
+    status: "Aguardando confirmação",
+    waiting: true,
     meet: "Meet",
-    link: "https://meet.google.com/demo-atrasada",
+    link: "https://meet.google.com/player-rh-entrevista",
     location: "",
-    owner: "Larissa Dias",
-    interviewers: ["Larissa Dias"],
+    owner: "Mariana Costa",
+    interviewers: ["Mariana Costa"],
     sheet: "Ficha RH padrão",
-    notes: "Seed de entrevista sem resultado após o horário.",
-    candidateInstructions: "Entre 5 minutos antes.",
-    candidateId: 104,
+    notes: "",
+    candidateInstructions: "Entre 5 minutos antes com o nome completo.",
+    candidateId: null,
+    candidateEmail: "leviluzbr@gmail.com",
     inviteSent: true,
     reminderSent: false,
     duration: 60,
@@ -1891,6 +1892,7 @@ let interviewTimeEnd = "";
 let interviewFormMode = "create";
 let editingInterviewId = null;
 let pendingInterviewForceConflict = false;
+let pendingPortalRescheduleInterviewId = null;
 let datePickerCursor = new Date(2026, 7, 1);
 const TODAY_KEY = "2026-08-27";
 let selectedFunnelStage = "Proposta";
@@ -9064,17 +9066,120 @@ function defaultCandidateJobFilters() {
 let candidateJobFilters = defaultCandidateJobFilters();
 
 function getCandidateInterviewItems() {
-  return candidatePortalUser.applications
-    .filter((app) => /entrevista/i.test(app.stage))
-    .map((app) => ({
-      ...app,
-      ...(candidateInterviewDetails[app.jobId] || {
-        at: "",
-        type: "Entrevista RH",
-        status: "Aguardando confirmação",
-        format: "Detalhes serão enviados pelo RH",
-      }),
-    }));
+  const portalEmail = normalize(candidatePortalUser.email);
+  const linkedCandidateIds = new Set(
+    candidates
+      .filter((item) => normalize(item.email) === portalEmail)
+      .map((item) => item.id),
+  );
+  return interviews
+    .filter((item) => {
+      if (item.candidateEmail && normalize(item.candidateEmail) === portalEmail) {
+        return true;
+      }
+      if (item.candidateId != null && linkedCandidateIds.has(item.candidateId)) {
+        return true;
+      }
+      return normalize(item.name) === normalize(candidatePortalUser.name);
+    })
+    .map((item) => {
+      const job =
+        jobs.find((entry) => normalize(entry.title) === normalize(item.vacancy)) ||
+        null;
+      return {
+        ...item,
+        title: item.vacancy,
+        jobId: job?.id || item.candidateId || item.id,
+        format:
+          item.modality === "Presencial"
+            ? item.location || "Presencial"
+            : item.link || item.meet || item.modality,
+        interviewer: (item.interviewers || []).join(", ") || item.owner || "RH",
+        meetingLink: item.link || "",
+      };
+    })
+    .sort((a, b) => new Date(a.at) - new Date(b.at));
+}
+
+function confirmCandidateInterview(id) {
+  const item = interviews.find((entry) => entry.id === id);
+  if (!item || item.status !== "Aguardando confirmação") return;
+  item.status = "Confirmada";
+  interviewActivity(item, "Candidato confirmou a entrevista");
+  refreshInterviewSurfaces(item);
+  showToast("Entrevista confirmada", "Sua presença foi confirmada.");
+}
+
+function requestCandidateReschedule(id, reason, message) {
+  const item = interviews.find((entry) => entry.id === id);
+  if (!item || !interviewIsActive(item)) return;
+  item.status = "Reagendamento solicitado";
+  item.rescheduleRequest = {
+    reason,
+    message,
+    at: `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`,
+  };
+  interviewActivity(item, `Candidato pediu reagendamento: ${reason}`);
+  refreshInterviewSurfaces(item);
+  showToast("Reagendamento", "Pedido enviado ao RH.");
+}
+
+function openCandidateRescheduleDialog(item) {
+  pendingPortalRescheduleInterviewId = item.id;
+  document.querySelector("#candidateRescheduleLabel").textContent =
+    `${item.vacancy} · ${formatInterviewWhen(item.at)}`;
+  document.querySelector("#candidateRescheduleReason").value = "";
+  document.querySelector("#candidateRescheduleMessage").value = "";
+  document.querySelector("#candidateRescheduleDialog")?.showModal();
+}
+
+function renderCandidateInterviews() {
+  const body = document.querySelector("#candidateInterviewsBody");
+  if (!body) return;
+  const items = getCandidateInterviewItems();
+  const cards = items
+    .map((item) => {
+      const overdue = interviewIsOverdue(item);
+      const canConfirm = item.status === "Aguardando confirmação";
+      const canReschedule = interviewIsActive(item);
+      return `
+      <article class="candidate-journey-card candidate-interview-card">
+        <span class="candidate-journey-icon"><svg class="ui-icon"><use href="${iconSpriteBase}#i-calendar"></use></svg></span>
+        <div class="candidate-journey-copy">
+          <span class="panel-kicker">${escapeHtml(item.modality || "ENTREVISTA")}</span>
+          <h2>${escapeHtml(item.title)}</h2>
+          <p>${formatCandidateInterviewDate(item.at)} · ${escapeHtml(item.format || "")}</p>
+          ${item.candidateInstructions ? `<p>${escapeHtml(item.candidateInstructions)}</p>` : ""}
+          ${overdue ? `<p class="interview-wait">Atenção: horário já passou sem resultado no RH.</p>` : ""}
+          <div class="candidate-interview-actions">
+            ${
+              canConfirm
+                ? `<button class="primary-button candidate-journey-action" type="button" data-candidate-interview-confirm="${item.id}">Confirmar</button>`
+                : ""
+            }
+            ${
+              canReschedule
+                ? `<button class="secondary-button candidate-journey-action" type="button" data-candidate-interview-reschedule="${item.id}">Pedir reagendamento</button>`
+                : ""
+            }
+            ${
+              item.meetingLink
+                ? `<a class="secondary-button candidate-journey-action" href="${escapeHtml(item.meetingLink)}" target="_blank" rel="noopener noreferrer">Abrir link</a>`
+                : ""
+            }
+          </div>
+        </div>
+        <div class="candidate-interview-status-wrap">
+          ${overdue ? `<span class="interview-overdue-badge">Atrasada</span>` : ""}
+          <span class="candidate-journey-status is-${normalize(item.status).replace(/\s+/g, "-")}">${escapeHtml(item.status)}</span>
+        </div>
+      </article>
+    `;
+    })
+    .join("");
+  body.innerHTML =
+    cards ||
+    `<article class="candidate-panel candidate-empty-panel"><h2>Nenhuma entrevista agendada</h2><p>Quando o RH marcar uma conversa, os detalhes aparecerão aqui.</p></article>`;
 }
 
 function getCandidateTestItems() {
@@ -9110,11 +9215,14 @@ function getCandidateHomeMatchAverage(apps) {
 function renderCandidateHome() {
   const apps = candidatePortalUser.applications;
   const profile = getCandidateProfileCompletion();
-  const interviews = getCandidateInterviewItems().filter((item) => item.status !== "Concluída");
+  const interviews = getCandidateInterviewItems().filter((item) => interviewIsActive(item));
   const pendingTests = getCandidateTestItems().filter((item) => item.status !== "Concluído");
   const nextInterview = [...interviews].sort((a, b) => new Date(a.at || "2999-01-01") - new Date(b.at || "2999-01-01"))[0];
   const nextTest = pendingTests[0];
-  const pendingCount = (profile < 80 ? 1 : 0) + pendingTests.length + interviews.filter((item) => !candidateConfirmedInterviewIds.has(item.jobId)).length;
+  const pendingCount =
+    (profile < 80 ? 1 : 0) +
+    pendingTests.length +
+    interviews.filter((item) => item.status === "Aguardando confirmação").length;
   const matchAverage = getCandidateHomeMatchAverage(apps);
   const recommendations = publicJobs()
     .filter((job) => !apps.some((app) => app.jobId === job.id))
@@ -9241,44 +9349,6 @@ function renderCandidateHome() {
           .join("")
       : `<p class="candidate-empty">Nenhuma atividade recente.</p>`;
   }
-}
-
-function renderCandidateInterviews() {
-  const body = document.querySelector("#candidateInterviewsBody");
-  if (!body) return;
-  const items = getCandidateInterviewItems();
-  const cards = items.map((item) => {
-    const confirmed = candidateConfirmedInterviewIds.has(item.jobId);
-    return `
-      <article class="candidate-journey-card candidate-interview-card">
-        <span class="candidate-journey-icon"><svg class="ui-icon"><use href="${iconSpriteBase}#i-calendar"></use></svg></span>
-        <div class="candidate-journey-copy">
-          <span class="panel-kicker">PRÓXIMO ENCONTRO</span>
-          <h2>${escapeHtml(item.title)}</h2>
-          <p>${confirmed ? `${escapeHtml(item.type)} · ${escapeHtml(item.format)}` : "Confirme sua presença para liberar os detalhes de acesso."}</p>
-          ${
-            item.status === "Agendada" && !confirmed
-              ? `<button class="secondary-button candidate-journey-action" type="button" data-candidate-interview-confirm="${item.jobId}">${confirmed ? "Presença confirmada" : "Confirmar presença"}</button>`
-              : ""
-          }
-          ${
-            confirmed
-              ? `
-                <div class="candidate-interview-confirmed-details">
-                  <div><span>Horário</span><strong>${formatCandidateInterviewDate(item.at)}</strong></div>
-                  <div><span>Entrevistador(a)</span><strong>${escapeHtml(item.interviewer || "Pessoa do RH")}</strong></div>
-                  <div><span>Link de acesso</span><a href="${escapeHtml(item.meetingLink || "#")}" target="_blank" rel="noopener noreferrer">Entrar na entrevista <span aria-hidden="true">↗</span></a></div>
-                </div>
-              `
-              : `<strong>Convite disponível após a confirmação</strong>`
-          }
-          <button class="secondary-button candidate-journey-action candidate-journey-view-job" type="button" data-candidate-journey-job="${item.jobId}">Ver candidatura</button>
-        </div>
-        <span class="candidate-journey-status ${confirmed ? "is-confirmed" : "is-scheduled"}">${confirmed ? "Confirmada" : escapeHtml(item.status)}</span>
-      </article>
-    `;
-  }).join("");
-  body.innerHTML = cards || `<article class="candidate-panel candidate-empty-panel"><h2>Nenhuma entrevista agendada</h2><p>Quando o RH marcar uma conversa, os detalhes aparecerão aqui.</p></article>`;
 }
 
 function openCandidateTest(testId, jobId) {
@@ -10656,13 +10726,32 @@ on("#candidateInterviewsBody", "click", (event) => {
     return;
   }
   const confirmButton = event.target.closest("[data-candidate-interview-confirm]");
-  if (!confirmButton) return;
-  const jobId = Number(confirmButton.dataset.candidateInterviewConfirm);
-  if (candidateConfirmedInterviewIds.has(jobId)) return;
-  candidateConfirmedInterviewIds.add(jobId);
-  renderCandidateInterviews();
-  showToast("Presença confirmada", "O RH será avisado sobre sua confirmação.");
+  if (confirmButton) {
+    confirmCandidateInterview(Number(confirmButton.dataset.candidateInterviewConfirm));
+    return;
+  }
+  const rescheduleButton = event.target.closest("[data-candidate-interview-reschedule]");
+  if (!rescheduleButton) return;
+  const item = interviews.find(
+    (entry) => entry.id === Number(rescheduleButton.dataset.candidateInterviewReschedule),
+  );
+  if (item) openCandidateRescheduleDialog(item);
 });
+on("#candidateRescheduleForm", "submit", (event) => {
+  event.preventDefault();
+  const reason = document.querySelector("#candidateRescheduleReason")?.value.trim();
+  const message = document.querySelector("#candidateRescheduleMessage")?.value.trim() || "";
+  if (!pendingPortalRescheduleInterviewId || !reason) return;
+  requestCandidateReschedule(pendingPortalRescheduleInterviewId, reason, message);
+  pendingPortalRescheduleInterviewId = null;
+  document.querySelector("#candidateRescheduleDialog")?.close();
+});
+on("#closeCandidateReschedule", "click", () =>
+  document.querySelector("#candidateRescheduleDialog")?.close(),
+);
+on("#dismissCandidateReschedule", "click", () =>
+  document.querySelector("#candidateRescheduleDialog")?.close(),
+);
 on("#candidateTestsBody", "click", (event) => {
   const testButton = event.target.closest("[data-candidate-test-id]");
   if (!testButton) return;

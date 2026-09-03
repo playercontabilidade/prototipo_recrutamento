@@ -6874,11 +6874,48 @@ body {
   font-weight: 800;
 }
 
-.interview-detail-notes {
-  margin: 12px 0 0;
-  color: var(--ink-700);
-  font-size: 12px;
-  line-height: 1.45;
+.candidate-interview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.candidate-interview-status-wrap {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  align-content: start;
+}
+
+.interview-badge.is-aguardando-confirmacao,
+.interview-detail-status.is-aguardando-confirmacao {
+  color: #854d0e;
+  background: #fef3c7;
+}
+
+.interview-badge.is-confirmada,
+.interview-detail-status.is-confirmada {
+  color: var(--brand-700);
+  background: var(--brand-50);
+}
+
+.interview-badge.is-reagendamento-solicitado,
+.interview-detail-status.is-reagendamento-solicitado {
+  color: #9a3412;
+  background: #ffedd5;
+}
+
+.interview-badge.is-realizada,
+.interview-detail-status.is-realizada {
+  color: var(--brand-700);
+  background: var(--brand-50);
+}
+
+.interview-badge.is-nao-compareceu,
+.interview-detail-status.is-nao-compareceu {
+  color: #7f1d1d;
+  background: #fee2e2;
 }
 
 .interview-reschedule-request {
