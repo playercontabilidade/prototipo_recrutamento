@@ -331,6 +331,53 @@ const jobs = [
   },
 ];
 
+function ensureJobDefaults(job) {
+  const openingsById = {
+    1: 2,
+    2: 2,
+    3: 2,
+    4: 1,
+    5: 3,
+    6: 1,
+    7: 2,
+    8: 1,
+    9: 1,
+    10: 2,
+    11: 1,
+    12: 1,
+    13: 2,
+    14: 1,
+    15: 1,
+    16: 1,
+    17: 1,
+    18: 2,
+  };
+  const statusById = {
+    12: "Encerrada",
+    14: "Aguardando aprovação",
+    16: "Cancelada",
+  };
+  if (statusById[job.id]) job.status = statusById[job.id];
+  job.openings = Number(job.openings || openingsById[job.id] || 1);
+  job.applicantsSeed = Number(job.applicantsSeed ?? job.applicants ?? 0);
+  job.manager = job.manager || "Larissa Dias";
+  job.requester = job.requester || (job.id % 2 === 0 ? "Eduardo Ribeiro" : "Camila Monteiro");
+  job.openedAt = job.openedAt || job.publishedAt || "2026-08-20";
+  job.hireBy = job.hireBy || job.deadline || "2026-09-30";
+  job.deadline = job.deadline || job.hireBy;
+  job.archived = Boolean(job.archived);
+  job.contract = job.contract || (job.details || "").split(" · ").pop()?.trim() || "CLT";
+  job.history = Array.isArray(job.history)
+    ? job.history
+    : [
+        ["Criação", `Vaga criada · ${job.openedAt}`],
+        ["Status", `${job.status} · ${job.manager}`],
+      ];
+  return job;
+}
+
+jobs.forEach(ensureJobDefaults);
+
 const candidates = [
   {
     id: 101,
@@ -509,6 +556,78 @@ const candidateConsentDefaults = {
   104: false,
   107: false,
 };
+const candidateAppliedAtDefaults = {
+  101: "2026-08-19",
+  102: "2026-08-23",
+  103: "2026-08-22",
+  104: "2026-08-20",
+  105: "2026-08-26",
+  106: "2026-08-21",
+  107: "2026-08-15",
+  108: "2026-08-24",
+  109: "2026-08-23",
+  110: "2026-08-18",
+};
+const candidateOwnerDefaults = {
+  101: "Larissa Dias",
+  102: "Larissa Dias",
+  103: "Camila Monteiro",
+  104: "Larissa Dias",
+  105: "Mariana Costa",
+  106: "Camila Monteiro",
+  107: "Larissa Dias",
+  108: "Eduardo Ribeiro",
+  109: "Larissa Dias",
+  110: "Larissa Dias",
+};
+const candidateOriginDefaults = {
+  101: "LinkedIn",
+  102: "Indicação",
+  103: "Site",
+  104: "Indeed",
+  105: "Site",
+  106: "LinkedIn",
+  107: "Indicação",
+  108: "Site",
+  109: "Indeed",
+  110: "LinkedIn",
+};
+const candidateTagDefaults = {
+  101: ["Prioridade", "DP"],
+  102: ["Retorno"],
+  103: ["Técnico"],
+  104: ["Documentos"],
+  105: ["Fit alto"],
+  106: ["Entrevista"],
+  107: ["Avaliação pendente"],
+  108: ["Dev"],
+  109: ["DP"],
+  110: ["Proposta"],
+};
+const candidateFitDefaults = {
+  101: 82,
+  102: 74,
+  103: 68,
+  104: null,
+  105: 88,
+  106: 79,
+  107: null,
+  108: 71,
+  109: 76,
+  110: 85,
+};
+const candidateEvaluationDefaults = {
+  101: "avaliado",
+  102: "pendente",
+  103: "pendente",
+  104: "pendente",
+  105: "avaliado",
+  106: "avaliado",
+  107: "pendente",
+  108: "pendente",
+  109: "avaliado",
+  110: "avaliado",
+};
 candidates.forEach((candidate) => {
   const job = jobs.find((item) => item.title === candidate.vacancy);
   candidate.skills = candidate.skills || candidateSkillDefaults[candidate.vacancy] || ["Comunicação"];
@@ -519,6 +638,18 @@ candidates.forEach((candidate) => {
   candidate.lgpdConsent = candidateConsentDefaults[candidate.id] ?? true;
   candidate.consentAt = candidate.consentAt || (candidate.lgpdConsent ? "2026-07-01T12:00:00" : null);
   candidate.retainUntil = candidate.retainUntil || "2027-08-27";
+  candidate.appliedAt = candidate.appliedAt || candidateAppliedAtDefaults[candidate.id] || "2026-08-20";
+  candidate.owner = candidate.owner || candidateOwnerDefaults[candidate.id] || "Larissa Dias";
+  candidate.origin = candidate.origin || candidateOriginDefaults[candidate.id] || "Site";
+  candidate.tags = candidate.tags || candidateTagDefaults[candidate.id] || [];
+  candidate.fitCultural =
+    candidate.fitCultural === undefined ? candidateFitDefaults[candidate.id] ?? null : candidate.fitCultural;
+  candidate.evaluationStatus =
+    candidate.evaluationStatus || candidateEvaluationDefaults[candidate.id] || "pendente";
+  candidate.manager = candidate.manager || job?.manager || "";
+  candidate.lastAction = candidate.lastAction || null;
+  candidate.nextAction = candidate.nextAction || "";
+  candidate.nextActionAt = candidate.nextActionAt || "";
 });
 
 const talents = [
@@ -719,6 +850,46 @@ const results = [
     status: "contratados",
     proposal: 1890,
     workModel: "Presencial",
+    contract: "CLT",
+  },
+  {
+    id: 303,
+    name: "Marcos Ribeiro Alves",
+    email: "marcos.ribeiro@email.com",
+    vacancy: "Suporte de Sistemas",
+    status: "contratados",
+    proposal: 2450,
+    workModel: "Presencial",
+    contract: "CLT",
+  },
+  {
+    id: 304,
+    name: "Renata Farias Lopes",
+    email: "renata.farias@email.com",
+    vacancy: "Analista Financeiro",
+    status: "contratados",
+    proposal: 4200,
+    workModel: "Híbrido",
+    contract: "CLT",
+  },
+  {
+    id: 305,
+    name: "Thiago Nunes Barreto",
+    email: "thiago.barreto@email.com",
+    vacancy: "Engenheiro(a) DevOps",
+    status: "contratados",
+    proposal: 9800,
+    workModel: "Remoto",
+    contract: "PJ",
+  },
+  {
+    id: 306,
+    name: "Aline Prado Correia",
+    email: "aline.prado@email.com",
+    vacancy: "Analista de Dados",
+    status: "contratados",
+    proposal: 6300,
+    workModel: "Híbrido",
     contract: "CLT",
   },
   {
@@ -978,73 +1149,147 @@ const interviews = [
     name: "Lucas José Da Silva",
     vacancy: "Desenvolvedor(a) Full Stack",
     at: "2026-08-15T11:00:00",
+    endAt: "2026-08-15T12:00:00",
     type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
     status: "Agendada",
     waiting: true,
     meet: "Teams",
-    location: "Player Contabilidade",
+    link: "https://teams.microsoft.com/l/meetup-join/demo-601",
+    location: "",
     owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
+    candidateInstructions: "Entre com o nome completo na sala.",
     candidateId: 108,
+    duration: 60,
   },
   {
     id: 602,
     name: "Alan Pimentas",
     vacancy: "Assistente / Analista Fiscal",
     at: "2026-08-18T09:30:00",
+    endAt: "2026-08-18T10:30:00",
     type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Presencial",
     status: "Agendada",
     waiting: false,
     meet: "",
+    link: "",
+    location: "Player Contabilidade — Sala 2",
     owner: "Camila Monteiro",
+    interviewers: ["Camila Monteiro"],
+    sheet: "Ficha RH padrão",
     candidateId: 107,
+    duration: 60,
   },
   {
     id: 603,
     name: "Suany Costa Dias",
     vacancy: "Analista de Departamento Pessoal",
     at: "2026-08-21T16:00:00",
+    endAt: "2026-08-21T17:00:00",
     type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Telefone",
     status: "Agendada",
     waiting: true,
     meet: "",
+    link: "",
+    location: "",
     owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
     candidateId: 109,
+    duration: 60,
   },
   {
     id: 604,
     name: "Guilherme Rodrigues Mendes",
     vacancy: "Assistente / Analista Contábil",
     at: "2026-08-25T14:30:00",
+    endAt: "2026-08-25T15:30:00",
     type: "Entrevista RH",
-    status: "Agendada",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
+    status: "Confirmada",
     waiting: false,
     meet: "Meet",
+    link: "https://meet.google.com/demo-604",
+    location: "",
     owner: "Larissa Dias",
+    interviewers: ["Larissa Dias", "Camila Monteiro"],
+    sheet: "Ficha técnica",
+    candidateInstructions: "Tenha o currículo em PDF aberto.",
     candidateId: 106,
+    duration: 60,
   },
   {
     id: 605,
     name: "Kemilly Cristyne Neves Tavares",
     vacancy: "Analista de Departamento Pessoal",
     at: "2026-08-27T10:00:00",
+    endAt: "2026-08-27T11:00:00",
     type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
     status: "Agendada",
     waiting: false,
     meet: "Meet",
+    link: "https://meet.google.com/demo-605",
+    location: "",
     owner: "Mariana Costa",
+    interviewers: ["Mariana Costa", "Larissa Dias"],
+    sheet: "Ficha RH padrão",
     candidateId: 104,
+    duration: 60,
   },
   {
     id: 606,
     name: "Pollyanna Cesario de Souza",
     vacancy: "Analista de Departamento Pessoal",
     at: "2026-08-28T15:00:00",
+    endAt: "2026-08-28T16:00:00",
     type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
     status: "Agendada",
     waiting: true,
     meet: "Teams",
+    link: "https://teams.microsoft.com/l/meetup-join/demo-606",
+    location: "",
     owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
+    candidateInstructions: "Confirme presença até a véspera.",
     candidateId: 102,
+    duration: 60,
+  },
+  {
+    id: 607,
+    name: "Kemilly Cristyne Neves Tavares",
+    vacancy: "Analista de Departamento Pessoal",
+    at: "2026-08-26T09:00:00",
+    endAt: "2026-08-26T10:00:00",
+    type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
+    status: "Confirmada",
+    waiting: false,
+    meet: "Meet",
+    link: "https://meet.google.com/demo-atrasada",
+    location: "",
+    owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
+    notes: "Seed de entrevista sem resultado após o horário.",
+    candidateInstructions: "Entre 5 minutos antes.",
+    candidateId: 104,
+    inviteSent: true,
+    reminderSent: false,
+    duration: 60,
   },
 ];
 
@@ -1635,6 +1880,9 @@ const lgpdDialog = document.querySelector("#lgpdDialog");
 const bookingDialog = document.querySelector("#bookingDialog");
 const activityList = document.querySelector("#activityList");
 let selectedCandidateId = null;
+let selectedCandidateDossierTab = "overview";
+let showArchivedCandidateComments = false;
+let pendingReplaceDocId = null;
 const selectedPipelineCandidateIds = new Set();
 let selectedActionCandidate = null;
 let interviewDate = "";
@@ -1645,6 +1893,16 @@ let selectedFunnelStage = "Proposta";
 let pipelineStageFilter = "all";
 let pipelineProfileFilter = "all";
 let pipelineSlaFilter = "all";
+let pipelineTagFilter = "all";
+let pipelineScoreFilter = "all";
+let pipelineOwnerFilter = "all";
+let pipelineOriginFilter = "all";
+let pipelinePeriodFilter = "all";
+let pipelineEvaluationFilter = "all";
+let pipelinePendingFilter = "all";
+let pendingMoveCandidate = null;
+let pendingMoveStage = "";
+let pendingPipelineAction = null;
 let selectedTalentTab = "aprovados";
 let selectedTalentId = null;
 let selectedResultTab = "contratados";
@@ -1863,19 +2121,61 @@ const statusClass = {
   Aberta: "status-open",
   Pausada: "status-paused",
   Rascunho: "status-draft",
+  "Aguardando aprovação": "status-approval",
+  Encerrada: "status-closed",
+  Cancelada: "status-canceled",
 };
+
+function jobIsVisibleInPortal(job) {
+  return Boolean(job) &&
+    !job.archived &&
+    ["Aberta", "Pausada"].includes(job.status);
+}
+
+function jobAcceptsApplications(job) {
+  return jobIsVisibleInPortal(job) &&
+    job.status === "Aberta" &&
+    jobRemainingCount(job) > 0;
+}
+
+function jobCanHire(job) {
+  return Boolean(job) &&
+    !job.archived &&
+    ["Aberta", "Pausada"].includes(job.status) &&
+    jobRemainingCount(job) > 0;
+}
+
+function jobFilledCount(job) {
+  return jobHiredCandidates(job).length;
+}
+
+function jobRemainingCount(job) {
+  return Math.max(0, Number(job.openings || 1) - jobFilledCount(job));
+}
+
+function jobPositionsLabel(job) {
+  const filled = jobFilledCount(job);
+  const total = Number(job.openings || 1);
+  return `${filled}/${total}`;
+}
+
+function pushJobHistory(job, title, detail) {
+  if (!job.history) job.history = [];
+  job.history.unshift([title, `${detail} · agora`]);
+}
 
 function getFilteredJobs() {
   const query = normalize(searchInput.value.trim());
   const selectedStatus = statusFilter.value;
+  const showArchived = Boolean(document.querySelector("#jobShowArchived")?.checked);
 
   return jobs.filter((job) => {
+    if (!showArchived && job.archived) return false;
     const matchesQuery =
       !query ||
-      normalize(`${job.title} ${job.area} ${job.details}`).includes(query);
+      normalize(`${job.title} ${job.area} ${job.details} ${job.manager || ""} ${job.requester || ""}`).includes(query);
     const matchesStatus =
       selectedStatus === "all" || job.status === selectedStatus;
-
     return matchesQuery && matchesStatus;
   });
 }
@@ -1885,13 +2185,14 @@ function candidateAvatars(job) {
     return '<span class="cell-label">Nenhum candidato</span>';
   }
 
-  const avatars = job.initials
+  const shown = job.initials.slice(0, job.applicants);
+  const avatars = shown
     .map(
       (initials) =>
         `<span class="candidate-avatar" aria-hidden="true">${initials}</span>`,
     )
     .join("");
-  const remaining = Math.max(job.applicants - job.initials.length, 0);
+  const remaining = Math.max(job.applicants - shown.length, 0);
 
   return `${avatars}${
     remaining
@@ -1900,9 +2201,172 @@ function candidateAvatars(job) {
   }`;
 }
 
+function jobHiredCandidates(job) {
+  return results.filter(
+    (item) =>
+      item.status === "contratados" &&
+      (item.jobId === job.id ||
+        (item.jobId == null && item.vacancy === job.title)),
+  );
+}
+
+// Candidatos inscritos são um número de demonstração maior que o pipeline visível,
+// então acompanhamos apenas a variação: cada saída do pipeline desconta um inscrito.
+function syncJobMetrics(job) {
+  if (!job) return;
+  const inPipeline = candidates.filter((candidate) => candidate.vacancy === job.title).length;
+  if (typeof job.applicantsSeed !== "number") job.applicantsSeed = Number(job.applicants || 0);
+  if (typeof job.pipelineSeed !== "number") job.pipelineSeed = inPipeline;
+  job.filled = jobHiredCandidates(job).length;
+  job.applicants = Math.max(0, job.applicantsSeed - (job.pipelineSeed - inPipeline));
+}
+
+function jobPrimaryActions(job) {
+  if (job.archived) {
+    return [
+      { id: "desarquivar", label: "Desarquivar vaga" },
+      { id: "historico", label: "Ver histórico" },
+    ];
+  }
+  const actions = [{ id: "candidatos", label: "Candidatos" }];
+  if (["Aberta", "Pausada", "Aguardando aprovação", "Rascunho"].includes(job.status)) {
+    actions.push({ id: "editar", label: "Editar" });
+  }
+  if (["Aberta", "Pausada", "Encerrada"].includes(job.status)) {
+    actions.push({ id: "compartilhar", label: "Compartilhar" });
+  }
+  if (job.status === "Encerrada") {
+    actions.push({ id: "contratados", label: "Contratados" });
+  }
+  return actions;
+}
+
+function jobMoreActionGroups(job) {
+  if (job.archived) return [];
+  const groups = [];
+  const processo = [];
+  const gestao = [];
+  const desfecho = [];
+
+  if (job.status === "Rascunho") {
+    processo.push(
+      { id: "enviar-aprovacao", label: "Enviar para aprovação" },
+      { id: "publicar", label: "Publicar/Abrir vaga" },
+    );
+    gestao.push({ id: "duplicar", label: "Duplicar vaga" });
+  } else if (job.status === "Aguardando aprovação") {
+    processo.push(
+      { id: "aprovar", label: "Aprovar vaga" },
+      { id: "reprovar", label: "Reprovar vaga" },
+    );
+  } else if (job.status === "Aberta") {
+    processo.push({ id: "pausar", label: "Pausar vaga" });
+    gestao.push(
+      { id: "duplicar", label: "Duplicar vaga" },
+      { id: "adicionar-candidato", label: "Adicionar candidato" },
+      { id: "banco", label: "Banco de Talentos" },
+      { id: "contratados", label: "Ver contratados" },
+    );
+    desfecho.push(
+      { id: "encerrar", label: "Encerrar vaga" },
+      { id: "cancelar", label: "Cancelar vaga" },
+    );
+  } else if (job.status === "Pausada") {
+    processo.push({ id: "reabrir", label: "Reabrir vaga" });
+    gestao.push({ id: "duplicar", label: "Duplicar vaga" });
+    desfecho.push(
+      { id: "encerrar", label: "Encerrar vaga" },
+      { id: "cancelar", label: "Cancelar vaga" },
+    );
+  } else if (job.status === "Encerrada") {
+    processo.push({ id: "reabrir", label: "Reabrir vaga" });
+    gestao.push(
+      { id: "duplicar", label: "Duplicar vaga" },
+      { id: "contratados", label: "Ver contratados" },
+    );
+    desfecho.push({ id: "arquivar", label: "Arquivar vaga" });
+  } else if (job.status === "Cancelada") {
+    gestao.push({ id: "duplicar", label: "Duplicar vaga" });
+    desfecho.push({ id: "arquivar", label: "Arquivar vaga" });
+  }
+
+  if (processo.length) groups.push({ label: "Processo", actions: processo });
+  if (gestao.length) groups.push({ label: "Gestão", actions: gestao });
+  if (desfecho.length) groups.push({ label: "Desfecho", actions: desfecho });
+  return groups;
+}
+
+function jobActionsForStatus(job) {
+  const primary = jobPrimaryActions(job);
+  const more = jobMoreActionGroups(job).flatMap((group) => group.actions);
+  const seen = new Set();
+  return [...primary, ...more].filter((action) => {
+    if (seen.has(action.id)) return false;
+    seen.add(action.id);
+    return true;
+  });
+}
+
+function renderJobMoreActionsMenu(job) {
+  const menu = document.querySelector("#jobMoreActionsMenu");
+  const trigger = document.querySelector("#jobMoreActionsBtn");
+  if (!menu || !trigger) return;
+  const groups = jobMoreActionGroups(job);
+  if (!groups.length) {
+    menu.hidden = true;
+    trigger.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    menu.innerHTML = "";
+    return;
+  }
+  trigger.hidden = false;
+  menu.innerHTML = groups
+    .map(
+      (group) => `
+        <div class="candidate-more-section">
+          <span class="candidate-more-label">${group.label}</span>
+          ${group.actions
+            .map(
+              (action) =>
+                `<button type="button" data-job-detail-action="${action.id}" role="menuitem">${action.label}</button>`,
+            )
+            .join("")}
+        </div>
+      `,
+    )
+    .join("");
+}
+
+function renderJobDetailActions(job) {
+  const primaryHost = document.querySelector("#jobDetailPrimaryActions");
+  if (!primaryHost) return;
+  primaryHost.innerHTML = jobPrimaryActions(job)
+    .map(
+      (action) =>
+        `<button type="button" class="secondary-button" data-job-detail-action="${action.id}">${action.label}</button>`,
+    )
+    .join("");
+  renderJobMoreActionsMenu(job);
+}
+
+function closeJobMoreActions() {
+  const menu = document.querySelector("#jobMoreActionsMenu");
+  const trigger = document.querySelector("#jobMoreActionsBtn");
+  if (!menu || !trigger) return;
+  menu.hidden = true;
+  trigger.setAttribute("aria-expanded", "false");
+}
+
+function toggleJobMoreActions() {
+  const menu = document.querySelector("#jobMoreActionsMenu");
+  const trigger = document.querySelector("#jobMoreActionsBtn");
+  if (!menu || !trigger || trigger.hidden) return;
+  const opening = menu.hidden;
+  menu.hidden = !opening;
+  trigger.setAttribute("aria-expanded", String(opening));
+}
+
 function jobTemplate(job) {
-  const pauseLabel = job.status === "Pausada" ? "Reabrir vaga" : "Pausar vaga";
-  const closeLabel = job.status === "Encerrada" ? "Reabrir vaga" : "Encerrar vaga";
   const related = candidates.filter((c) => c.vacancy === job.title);
   const match = related.length
     ? {
@@ -1916,13 +2380,18 @@ function jobTemplate(job) {
         seniority: job.seniority,
         area: job.area,
       });
+  const remaining = jobRemainingCount(job);
+  const menu = jobActionsForStatus(job)
+    .map((action) => `<button type="button" data-job-action="${action.id}">${action.label}</button>`)
+    .join("");
   return `
-    <article class="job-card" data-job-id="${job.id}" tabindex="0" aria-label="Abrir vaga ${job.title}">
+    <article class="job-card${job.archived ? " is-archived" : ""}" data-job-id="${job.id}" tabindex="0" aria-label="Abrir vaga ${job.title}">
       <div class="job-main">
         <span class="job-symbol" aria-hidden="true">${job.title.charAt(0)}</span>
         <div class="job-title">
           <h3>${job.title}</h3>
           <p>${job.details} · ${job.workModel}</p>
+          <p class="job-card-meta-line">Resp.: ${escapeHtml(job.manager || "—")} · Solicitante: ${escapeHtml(job.requester || "—")}</p>
         </div>
       </div>
       <div class="job-cell">
@@ -1930,19 +2399,19 @@ function jobTemplate(job) {
         <div class="candidate-row">${candidateAvatars(job)}</div>
       </div>
       <div class="job-cell">
-        <span class="cell-label">Publicação</span>
-        <strong>${job.published}</strong>
+        <span class="cell-label">Posições</span>
+        <strong>${jobPositionsLabel(job)}</strong>
+        <span class="cell-label">${remaining} restante${remaining === 1 ? "" : "s"}</span>
+      </div>
+      <div class="job-cell">
+        <span class="cell-label">Prazo</span>
+        <strong>${job.hireBy ? formatBRDate(job.hireBy) : "—"}</strong>
       </div>
       <div class="job-actions">
         <span class="match-score" title="${matchTitleAttr(match)}">${match.total}%</span>
-        <span class="status ${statusClass[job.status]}">${job.status}</span>
+        <span class="status ${statusClass[job.status] || "status-draft"}">${job.status}</span>
         <button class="more-button" type="button" aria-label="Mais ações para ${job.title}">⋮</button>
-        <div class="job-menu" hidden>
-          <button type="button" data-job-action="candidatos">Ver candidatos</button>
-          <button type="button" data-job-action="editar">Editar vaga</button>
-          <button type="button" data-job-action="pausar">${pauseLabel}</button>
-          <button type="button" data-job-action="encerrar">${closeLabel}</button>
-        </div>
+        <div class="job-menu" hidden>${menu}</div>
       </div>
     </article>
   `;
@@ -1959,6 +2428,291 @@ function renderJobs() {
   }`;
   emptyState.hidden = filteredJobs.length !== 0;
   jobList.hidden = filteredJobs.length === 0;
+}
+
+let selectedJobId = null;
+let pendingJobStatusAction = null;
+
+function getSelectedJob() {
+  return jobs.find((item) => item.id === selectedJobId) || null;
+}
+
+function openJobDetails(job) {
+  if (!job) return;
+  selectedJobId = job.id;
+  syncJobMetrics(job);
+  const dialog = document.querySelector("#jobDetailDialog");
+  if (!dialog) return;
+  const filled = jobFilledCount(job);
+  const total = Number(job.openings || 1);
+  const remaining = jobRemainingCount(job);
+  const progress = total ? Math.min(100, Math.round((filled / total) * 100)) : 0;
+  document.querySelector("#jobDetailStatus").textContent = job.archived ? `${job.status} · Arquivada` : job.status;
+  document.querySelector("#jobDetailStatus").className = `status ${statusClass[job.status] || "status-draft"}`;
+  document.querySelector("#jobDetailTitle").textContent = job.title;
+  document.querySelector("#jobDetailSubtitle").textContent = `${job.area || "—"} · ${job.workModel || "—"} · ${job.contract || "CLT"}`;
+  document.querySelector("#jobDetailManager").textContent = job.manager || "—";
+  document.querySelector("#jobDetailRequester").textContent = job.requester || "—";
+  document.querySelector("#jobDetailOpenedAt").textContent = job.openedAt ? formatBRDate(job.openedAt) : "—";
+  document.querySelector("#jobDetailHireBy").textContent = job.hireBy ? formatBRDate(job.hireBy) : "—";
+  document.querySelector("#jobDetailOpenings").textContent = String(total);
+  document.querySelector("#jobDetailFilled").textContent = String(filled);
+  document.querySelector("#jobDetailRemaining").textContent = String(remaining);
+  const progressBar = document.querySelector("#jobDetailProgressBar");
+  if (progressBar) {
+    progressBar.style.width = `${progress}%`;
+    progressBar.parentElement?.classList.toggle("is-complete", remaining === 0 && total > 0);
+  }
+  document.querySelector("#jobDetailDescription").textContent =
+    job.description || job.details || "Sem descrição cadastrada.";
+  document.querySelector("#jobDetailPositionsInput").value = total;
+  const hired = jobHiredCandidates(job);
+  const hiredSection = document.querySelector("#jobDetailHiredSection");
+  const hiredList = document.querySelector("#jobDetailHiredList");
+  if (hiredSection && hiredList) {
+    hiredSection.hidden = hired.length === 0;
+    hiredList.innerHTML = hired
+      .map((item) => `<li><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.email)}</span></li>`)
+      .join("");
+  }
+  renderJobDetailActions(job);
+  document.querySelector("#jobDetailHistory").innerHTML = (job.history || [])
+    .map(
+      ([title, detail]) => `
+        <div class="history-item">
+          <strong>${escapeHtml(title)}</strong>
+          <span>${escapeHtml(detail)}</span>
+        </div>
+      `,
+    )
+    .join("") || `<p class="field-hint">Nenhum histórico registrado.</p>`;
+  const suggest = document.querySelector("#jobDetailCloseSuggest");
+  if (suggest) {
+    suggest.hidden = !(remaining === 0 && job.status === "Aberta");
+  }
+  const openingsField = document.querySelector(".job-detail-openings-field");
+  if (openingsField) {
+    openingsField.hidden = ["Encerrada", "Cancelada"].includes(job.status) || job.archived;
+  }
+  closeJobMoreActions();
+  if (!dialog.open) dialog.showModal();
+}
+
+function refreshJobViews(job) {
+  if (job) syncJobMetrics(job);
+  renderJobs();
+  renderDashboard();
+  renderJobFilter();
+  renderResults();
+  renderPipeline();
+  if (document.querySelector("#jobDetailDialog")?.open && job && selectedJobId === job.id) {
+    openJobDetails(job);
+  }
+}
+
+function openJobStatusDialog(job, action, config) {
+  pendingJobStatusAction = { job, action, config };
+  document.querySelector("#jobStatusDialogTitle").textContent = config.title;
+  document.querySelector("#jobStatusDialogLabel").textContent = config.jobLabel || job.title;
+  const hint = document.querySelector("#jobStatusDialogHint");
+  const reasonField = document.querySelector("#jobStatusReasonField");
+  const reasonInput = document.querySelector("#jobStatusReason");
+  if (hint) {
+    hint.hidden = !config.hint;
+    hint.textContent = config.hint || "";
+  }
+  document.querySelector("#jobStatusReasonLabel").textContent = config.reasonLabel || "Motivo";
+  if (reasonField && reasonInput) {
+    reasonField.hidden = config.reasonRequired === false;
+    reasonInput.required = config.reasonRequired !== false;
+    reasonInput.value = "";
+  }
+  document.querySelector("#jobStatusNote").value = "";
+  const confirmBtn = document.querySelector("#confirmJobStatus");
+  confirmBtn.textContent = config.confirmLabel || "Confirmar";
+  confirmBtn.classList.toggle("is-danger", Boolean(config.danger));
+  document.querySelector("#jobStatusDialog").showModal();
+}
+
+function setJobStatus(job, nextStatus, detail) {
+  const previous = job.status;
+  job.status = nextStatus;
+  if (nextStatus === "Aberta" && !job.openedAt) job.openedAt = TODAY_KEY;
+  pushJobHistory(job, "Status", detail || `${previous} → ${nextStatus}`);
+  refreshJobViews(job);
+  showToast("Status da vaga", `${job.title} agora está ${nextStatus.toLowerCase()}.`);
+}
+
+function duplicateJob(job) {
+  const copy = {
+    ...job,
+    id: Date.now(),
+    title: `${job.title} (cópia)`,
+    status: "Rascunho",
+    applicants: 0,
+    applicantsSeed: 0,
+    pipelineSeed: 0,
+    initials: [],
+    filled: 0,
+    archived: false,
+    published: "Agora",
+    openedAt: TODAY_KEY,
+    history: [["Duplicação", `Criada a partir de ${job.title} · agora`]],
+  };
+  jobs.unshift(copy);
+  ensureJobDefaults(copy);
+  copy.status = "Rascunho";
+  copy.filled = 0;
+  copy.archived = false;
+  refreshJobViews(copy);
+  showToast("Vaga duplicada", `${copy.title} foi criada como rascunho.`);
+  openJobDetails(copy);
+}
+
+function maybeSuggestJobClose(job) {
+  if (!job || job.status !== "Aberta") return;
+  if (jobRemainingCount(job) > 0) return;
+  showToast(
+    "Posições preenchidas",
+    `${job.title}: ${jobPositionsLabel(job)}. Encerre a vaga para finalizar o processo.`,
+  );
+  if (document.querySelector("#jobDetailDialog")?.open && selectedJobId === job.id) {
+    openJobDetails(job);
+  }
+}
+
+function runJobAction(job, action) {
+  if (!job || !action) return;
+  selectedJobId = job.id;
+  closeJobMoreActions();
+
+  if (action === "detalhes") {
+    openJobDetails(job);
+    return;
+  }
+  if (action === "candidatos") {
+    document.querySelector("#jobDetailDialog")?.close();
+    goToPage("jobs", { jobTitle: job.title, jobBoard: true });
+    return;
+  }
+  if (action === "editar") {
+    document.querySelector("#jobDetailDialog")?.close();
+    openJobForm(job);
+    return;
+  }
+  if (action === "duplicar") {
+    duplicateJob(job);
+    return;
+  }
+  if (action === "enviar-aprovacao") {
+    setJobStatus(job, "Aguardando aprovação", "Enviada para aprovação");
+    return;
+  }
+  if (action === "aprovar") {
+    setJobStatus(job, "Aberta", "Aprovada e liberada para publicação");
+    return;
+  }
+  if (action === "reprovar") {
+    openJobStatusDialog(job, "reprovar", {
+      title: "Reprovar vaga",
+      hint: "A vaga voltará para rascunho e precisará de nova aprovação.",
+      reasonLabel: "Motivo da reprovação",
+      confirmLabel: "Reprovar vaga",
+      danger: true,
+    });
+    return;
+  }
+  if (action === "publicar") {
+    setJobStatus(job, "Aberta", "Vaga publicada/aberta");
+    return;
+  }
+  if (action === "pausar") {
+    openJobStatusDialog(job, "pausar", {
+      title: "Pausar vaga",
+      hint: "Novas candidaturas ficam suspensas até a reabertura.",
+      reasonRequired: false,
+      confirmLabel: "Pausar vaga",
+    });
+    return;
+  }
+  if (action === "reabrir") {
+    openJobStatusDialog(job, "reabrir", {
+      title: "Reabrir vaga",
+      hint:
+        job.status === "Encerrada"
+          ? "A vaga voltará a ficar aberta para receber candidaturas."
+          : "A vaga voltará a receber candidaturas normalmente.",
+      reasonRequired: false,
+      confirmLabel: "Reabrir vaga",
+    });
+    return;
+  }
+  if (action === "encerrar") {
+    openJobStatusDialog(job, "encerrar", {
+      title: "Encerrar vaga",
+      hint: "O processo seletivo será finalizado. Candidatos em andamento permanecem no histórico.",
+      reasonRequired: false,
+      confirmLabel: "Encerrar vaga",
+    });
+    return;
+  }
+  if (action === "cancelar") {
+    openJobStatusDialog(job, "cancelar", {
+      title: "Cancelar vaga",
+      hint: "Esta ação interrompe o processo. Informe o motivo do cancelamento.",
+      reasonLabel: "Motivo do cancelamento",
+      confirmLabel: "Cancelar vaga",
+      danger: true,
+    });
+    return;
+  }
+  if (action === "arquivar") {
+    openJobStatusDialog(job, "arquivar", {
+      title: "Arquivar vaga",
+      hint: "A vaga sairá da listagem principal, mas o histórico será preservado.",
+      reasonRequired: false,
+      confirmLabel: "Arquivar vaga",
+    });
+    return;
+  }
+  if (action === "desarquivar") {
+    job.archived = false;
+    pushJobHistory(job, "Arquivo", "Vaga desarquivada");
+    refreshJobViews(job);
+    showToast("Vaga desarquivada", `${job.title} voltou para a listagem.`);
+    return;
+  }
+  if (action === "compartilhar") {
+    const link = `${location.origin}${location.pathname}#vaga-${job.id}`;
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).catch(() => {});
+    pushJobHistory(job, "Compartilhamento", "Link público copiado");
+    refreshJobViews(job);
+    showToast("Compartilhar vaga", "Link demonstrativo copiado.");
+    return;
+  }
+  if (action === "banco") {
+    document.querySelector("#jobDetailDialog")?.close();
+    goToPage("talentos");
+    showToast("Banco de Talentos", `Busque perfis compatíveis com ${job.title}.`);
+    return;
+  }
+  if (action === "adicionar-candidato") {
+    document.querySelector("#jobDetailDialog")?.close();
+    goToPage("jobs", { jobTitle: job.title, jobBoard: true });
+    showToast("Adicionar candidato", "Use as sugestões do banco ou cadastre pelo pipeline da vaga.");
+    return;
+  }
+  if (action === "contratados") {
+    document.querySelector("#jobDetailDialog")?.close();
+    goToPage("resultados", { resultTab: "contratados" });
+    return;
+  }
+  if (action === "historico") {
+    openJobDetails(job);
+    document.querySelector("#jobDetailHistory")?.scrollIntoView({ block: "nearest" });
+    return;
+  }
+  showToast(action, `${action} em ${job.title}.`);
 }
 
 function padCount(value) {
@@ -2189,6 +2943,97 @@ function formatInterviewWhen(iso) {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${day}/${month}/${date.getFullYear()} às ${hours}:${minutes}`;
 }
+
+const INTERVIEW_ACTIVE_STATUSES = [
+  "Agendada",
+  "Aguardando confirmação",
+  "Confirmada",
+  "Reagendamento solicitado",
+];
+const INTERVIEW_TERMINAL_STATUSES = ["Cancelada", "Não compareceu", "Realizada"];
+const interviewSheets = ["Ficha RH padrão", "Ficha técnica", "Ficha gestores"];
+
+function toLocalDateTimeIso(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function interviewIsActive(item) {
+  return Boolean(item) && !INTERVIEW_TERMINAL_STATUSES.includes(item.status);
+}
+
+function interviewInterval(item) {
+  const start = new Date(item.at);
+  const end = item.endAt
+    ? new Date(item.endAt)
+    : new Date(start.getTime() + (Number(item.duration) || 60) * 60000);
+  return { start, end };
+}
+
+function interviewsOverlap(a, b) {
+  const left = interviewInterval(a);
+  const right = interviewInterval(b);
+  return left.start < right.end && right.start < left.end;
+}
+
+function interviewIsOverdue(item, nowIso = `${TODAY_KEY}T18:00:00`) {
+  if (!interviewIsActive(item)) return false;
+  return interviewInterval(item).end < new Date(nowIso);
+}
+
+function findInterviewConflicts(draft, { ignoreId } = {}) {
+  return interviews.filter((item) => {
+    if (!interviewIsActive(item)) return false;
+    if (ignoreId != null && item.id === ignoreId) return false;
+    if (!interviewsOverlap(draft, item)) return false;
+    const sameCandidate =
+      draft.candidateId != null && item.candidateId === draft.candidateId;
+    const draftInterviewers = draft.interviewers || [];
+    const itemInterviewers = item.interviewers || [];
+    const sameInterviewer = draftInterviewers.some((name) =>
+      itemInterviewers.includes(name),
+    );
+    return sameCandidate || sameInterviewer;
+  });
+}
+
+function normalizeInterviewRecord(item) {
+  if (!item) return item;
+  if (item.status === "Concluída") item.status = "Realizada";
+  if (item.waiting && item.status === "Agendada") {
+    item.status = "Aguardando confirmação";
+  }
+  if (!item.modality) {
+    item.modality = item.meet || item.link ? "Videochamada" : "Presencial";
+  }
+  if (!item.endAt) {
+    const start = new Date(item.at);
+    item.endAt = toLocalDateTimeIso(
+      new Date(start.getTime() + (Number(item.duration) || 60) * 60000),
+    );
+  }
+  if (!Array.isArray(item.interviewers)) {
+    item.interviewers = item.owner ? [item.owner] : ["Larissa Dias"];
+  }
+  if (!item.stage) item.stage = item.type || "Entrevista RH";
+  if (item.inviteSent == null) item.inviteSent = Boolean(item.waiting);
+  if (item.reminderSent == null) item.reminderSent = false;
+  if (!item.sheet) item.sheet = interviewSheets[0];
+  if (item.notes == null) item.notes = "";
+  if (item.candidateInstructions == null) item.candidateInstructions = "";
+  if (item.rescheduleRequest === undefined) item.rescheduleRequest = null;
+  if (item.cancelReason == null) item.cancelReason = "";
+  if (item.startedAt == null) item.startedAt = "";
+  if (item.link == null) item.link = "";
+  if (item.location == null) item.location = "";
+  if (!item.duration) {
+    const { start, end } = interviewInterval(item);
+    item.duration = Math.max(15, Math.round((end - start) / 60000));
+  }
+  return item;
+}
+
+interviews.forEach(normalizeInterviewRecord);
 
 function interviewRangeStart(range) {
   const today = new Date("2026-08-25T00:00:00");
@@ -2818,11 +3663,18 @@ function getFilteredCandidates() {
   const stage = pipelineStageFilter;
   const profile = pipelineProfileFilter;
   const sla = pipelineSlaFilter;
+  const tag = pipelineTagFilter;
+  const score = pipelineScoreFilter;
+  const owner = pipelineOwnerFilter;
+  const origin = pipelineOriginFilter;
+  const period = pipelinePeriodFilter;
+  const evaluation = pipelineEvaluationFilter;
+  const pending = pipelinePendingFilter;
 
   let list = candidates.filter((candidate) => {
     const matchesQuery =
       !query ||
-      normalize(`${candidate.name} ${candidate.email} ${candidate.vacancy}`).includes(query);
+      normalize(`${candidate.name} ${candidate.email} ${candidate.vacancy} ${(candidate.tags || []).join(" ")}`).includes(query);
     const matchesVacancy = vacancy === "all" || candidate.vacancy === vacancy;
     const matchesStage = stage === "all" || candidate.stage === stage;
     const completion = getCandidateProfileCompletion(candidate);
@@ -2835,7 +3687,50 @@ function getFilteredCandidates() {
       sla === "all" ||
       (sla === "overdue" && overdue) ||
       (sla === "on-time" && !overdue);
-    return matchesQuery && matchesVacancy && matchesStage && matchesProfile && matchesSla;
+    const matchesTag = tag === "all" || (candidate.tags || []).includes(tag);
+    const matchScore = computeMatch(candidate.vacancy, candidate).total;
+    const matchesScore =
+      score === "all" ||
+      (score === "high" && matchScore >= 80) ||
+      (score === "mid" && matchScore >= 60 && matchScore < 80) ||
+      (score === "low" && matchScore < 60);
+    const matchesOwner = owner === "all" || candidate.owner === owner;
+    const matchesOrigin = origin === "all" || candidate.origin === origin;
+    const appliedDays = candidate.appliedAt
+      ? Math.floor(
+          (new Date(`${TODAY_KEY}T12:00:00`) - new Date(`${candidate.appliedAt}T12:00:00`)) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 999;
+    const matchesPeriod =
+      period === "all" ||
+      (period === "7" && appliedDays <= 7) ||
+      (period === "15" && appliedDays <= 15) ||
+      (period === "30" && appliedDays <= 30);
+    const matchesEvaluation = evaluation === "all" || candidate.evaluationStatus === evaluation;
+    const hasPendingTest = testsForCandidate(candidate).some((item) => item.status === "Pendente");
+    const matchesPending =
+      pending === "all" ||
+      (pending === "evaluation" && candidate.evaluationStatus === "pendente") ||
+      (pending === "test" && hasPendingTest) ||
+      (pending === "profile" && completion < 80) ||
+      (pending === "sla" && overdue) ||
+      (pending === "any" &&
+        (candidate.evaluationStatus === "pendente" || hasPendingTest || completion < 80 || overdue));
+    return (
+      matchesQuery &&
+      matchesVacancy &&
+      matchesStage &&
+      matchesProfile &&
+      matchesSla &&
+      matchesTag &&
+      matchesScore &&
+      matchesOwner &&
+      matchesOrigin &&
+      matchesPeriod &&
+      matchesEvaluation &&
+      matchesPending
+    );
   });
 
   if (vacancy !== "all") {
@@ -2870,7 +3765,27 @@ function candidateComments(candidate) {
   return candidate.history.filter(([title]) => title === "Comentário");
 }
 
+function ensureCandidateComments(candidate) {
+  if (!Array.isArray(candidate.comments)) {
+    candidate.comments = candidateComments(candidate).map(([, detail], index) => ({
+      id: `${candidate.id}-${index}`,
+      message: detail.split(" · ")[0],
+      author: detail.split(" · ")[1] || "Equipe RH",
+      time: "Histórico",
+      archived: false,
+    }));
+  }
+  return candidate.comments;
+}
+
 function addCandidateComment(candidate, message) {
+  ensureCandidateComments(candidate).unshift({
+    id: `${candidate.id}-${Date.now()}`,
+    message,
+    author: "Larissa Dias",
+    time: "Agora",
+    archived: false,
+  });
   candidate.activities.unshift(["LD", "Larissa Dias", message, "Agora"]);
   candidate.history.unshift(["Comentário", `${message} · Larissa Dias`]);
 }
@@ -2953,15 +3868,31 @@ function candidateCardTemplate(candidate) {
   const dup = dups.length > 1;
   const dupSources = [...new Set(dups.map((item) => ({ candidates: "pipeline", talents: "banco", results: "resultados" })[item.source] || item.source))];
   const offerStatus = candidate.proposal?.status;
+  const hasPendingTest = testsForCandidate(candidate).some((item) => item.status === "Pendente");
+  const pendingEvaluation = candidate.evaluationStatus === "pendente";
+  const rejected = candidate.stage === "Recusou Proposta" || candidate.evaluationStatus === "reprovado";
+  const appliedLabel = candidate.appliedAt ? formatBRDate(candidate.appliedAt) : "—";
+  const timeLabel = sla.overdue
+    ? `Parado ${sla.days}d`
+    : `${sla.days}d na etapa`;
+  const fitLabel = candidate.fitCultural == null ? "Fit —" : `Fit ${candidate.fitCultural}%`;
+  const tagsMarkup = (candidate.tags || [])
+    .slice(0, 3)
+    .map((tag) => `<span class="pipeline-card-tag">${escapeHtml(tag)}</span>`)
+    .join("");
   const cardFlags = [
-    sla.overdue ? `<span class="sla-badge" title="${sla.days} dias nesta etapa (limite ${sla.limit})">Parado ${sla.days}d</span>` : "",
+    sla.overdue ? `<span class="sla-badge" title="${sla.days} dias nesta etapa (limite ${sla.limit})">SLA vencido</span>` : "",
+    pendingEvaluation ? `<span class="eval-pending-badge">Avaliação pendente</span>` : "",
+    hasPendingTest ? `<span class="test-pending-badge">Teste pendente</span>` : "",
+    rejected ? `<span class="rejected-badge">Reprovado / recusou</span>` : "",
     dup ? `<span class="dup-badge" title="Mesmo e-mail em: ${dupSources.join(", ")}">Duplicado · ${dupSources.join("/")}</span>` : "",
-    profileCompletion < 80 ? `<span class="profile-completion-badge" title="Perfil ${profileCompletion}% concluído">Perfil ${profileCompletion}% completo</span>` : "",
+    profileCompletion < 80 ? `<span class="profile-completion-badge" title="Perfil ${profileCompletion}% concluído">Perfil ${profileCompletion}%</span>` : "",
     offerStatus ? `<span class="offer-status status-${offerStatus}">${offerStatusLabel(offerStatus)}</span>` : "",
+    candidate.alert ? `<span class="alert-badge" title="Pendência operacional">Alerta</span>` : "",
   ].join("");
   return `
     <article
-      class="pipeline-card stage-${stageClass(candidate.stage)}${selected}${bulkSelected ? " is-bulk-selected" : ""}${expandedCardId === candidate.id ? " is-expanded" : ""}"
+      class="pipeline-card stage-${stageClass(candidate.stage)}${selected}${bulkSelected ? " is-bulk-selected" : ""}${expandedCardId === candidate.id ? " is-expanded" : ""}${rejected ? " is-rejected" : ""}${pendingEvaluation ? " is-eval-pending" : ""}"
       data-candidate-id="${candidate.id}"
       draggable="true"
       tabindex="0"
@@ -2981,6 +3912,15 @@ function candidateCardTemplate(candidate) {
       </div>
       ${cardFlags ? `<div class="candidate-card-flags">${cardFlags}</div>` : ""}
       <div class="candidate-vacancy">${candidate.vacancy}</div>
+      <div class="pipeline-card-meta">
+        <span title="Data da candidatura">Candidatura ${appliedLabel}</span>
+        <span title="Tempo na etapa">${timeLabel}</span>
+        <span title="Score geral">Score ${match.total}%</span>
+        <span title="Fit cultural">${fitLabel}</span>
+        <span title="Responsável">${escapeHtml(candidate.owner || "—")}</span>
+        <span title="Origem">${escapeHtml(candidate.origin || "—")}</span>
+      </div>
+      ${tagsMarkup ? `<div class="pipeline-card-tags">${tagsMarkup}</div>` : ""}
       <div class="candidate-card-footer">
         <button type="button" class="card-pdf${candidate.attachment ? " is-ok" : ""}" data-card-action="curriculo">
           ${candidate.attachment ? "PDF anexado" : "Sem currículo"}
@@ -2992,9 +3932,6 @@ function candidateCardTemplate(candidate) {
           </button>
           <button type="button" class="card-tool${isHistory ? " is-active" : ""}" data-card-action="historico" aria-label="Histórico de ${candidate.name}">
             ${spriteIcon("clock")}
-          </button>
-          <button type="button" class="card-tool" data-card-action="ocultar" aria-label="Ocultar ${candidate.name}">
-            ${spriteIcon("eye-off")}
           </button>
         </div>
       </div>
@@ -3032,20 +3969,238 @@ function renderJobFilter() {
   ].join("");
 }
 
+function getActivePipelineFilters() {
+  const scoreLabels = {
+    high: "Score ≥ 80%",
+    mid: "Score 60–79%",
+    low: "Score < 60%",
+  };
+  const periodLabels = {
+    "7": "Últimos 7 dias",
+    "15": "Últimos 15 dias",
+    "30": "Últimos 30 dias",
+  };
+  const evaluationLabels = {
+    pendente: "Avaliação pendente",
+    avaliado: "Avaliado",
+    reprovado: "Reprovado",
+  };
+  const pendingLabels = {
+    any: "Com pendência",
+    evaluation: "Avaliação pendente",
+    test: "Teste pendente",
+    profile: "Perfil incompleto",
+    sla: "SLA vencido",
+  };
+  const profileLabels = {
+    incomplete: "Perfil < 80%",
+    complete: "Perfil ≥ 80%",
+  };
+  const slaLabels = {
+    overdue: "Somente atrasados",
+    "on-time": "Dentro do prazo",
+  };
+  return [
+    pipelineStageFilter !== "all" && { key: "stage", label: `Etapa: ${pipelineStageFilter}` },
+    pipelineTagFilter !== "all" && { key: "tag", label: `Tag: ${pipelineTagFilter}` },
+    pipelineScoreFilter !== "all" && { key: "score", label: scoreLabels[pipelineScoreFilter] || "Score" },
+    pipelineOwnerFilter !== "all" && { key: "owner", label: `Resp.: ${pipelineOwnerFilter}` },
+    pipelineOriginFilter !== "all" && { key: "origin", label: `Origem: ${pipelineOriginFilter}` },
+    pipelinePeriodFilter !== "all" && { key: "period", label: periodLabels[pipelinePeriodFilter] || "Período" },
+    pipelineEvaluationFilter !== "all" && {
+      key: "evaluation",
+      label: evaluationLabels[pipelineEvaluationFilter] || "Avaliação",
+    },
+    pipelinePendingFilter !== "all" && {
+      key: "pending",
+      label: pendingLabels[pipelinePendingFilter] || "Pendências",
+    },
+    pipelineProfileFilter !== "all" && {
+      key: "profile",
+      label: profileLabels[pipelineProfileFilter] || "Perfil",
+    },
+    pipelineSlaFilter !== "all" && { key: "sla", label: slaLabels[pipelineSlaFilter] || "Prazo" },
+  ].filter(Boolean);
+}
+
+function syncPipelineFilterButton() {
+  const button = document.querySelector("#pipelineFilterBtn");
+  const countEl = document.querySelector("#pipelineFilterCount");
+  const activeCount = getActivePipelineFilters().length;
+  if (!button || !countEl) return;
+  button.classList.toggle("is-active", activeCount > 0);
+  button.setAttribute("aria-expanded", String(Boolean(document.querySelector("#pipelineFiltersDialog")?.open)));
+  countEl.hidden = activeCount === 0;
+  countEl.textContent = String(activeCount);
+}
+
+function renderPipelineFilterChips() {
+  const host = document.querySelector("#pipelineActiveFilters");
+  if (!host) return;
+  const chips = getActivePipelineFilters();
+  syncPipelineFilterButton();
+  if (!chips.length) {
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+  host.hidden = false;
+  host.innerHTML = `
+    ${chips
+      .map(
+        (chip) => `
+          <button type="button" class="pipeline-filter-chip" data-clear-pipeline-filter="${chip.key}" title="Remover filtro">
+            <span>${escapeHtml(chip.label)}</span>
+            <span aria-hidden="true">×</span>
+          </button>
+        `,
+      )
+      .join("")}
+    <button type="button" class="pipeline-filter-clear-all" id="pipelineClearActiveFilters">Limpar filtros</button>
+  `;
+}
+
+function clearPipelineAdvancedFilters(options = {}) {
+  pipelineStageFilter = "all";
+  pipelineTagFilter = "all";
+  pipelineScoreFilter = "all";
+  pipelineOwnerFilter = "all";
+  pipelineOriginFilter = "all";
+  pipelinePeriodFilter = "all";
+  pipelineEvaluationFilter = "all";
+  pipelinePendingFilter = "all";
+  pipelineProfileFilter = "all";
+  pipelineSlaFilter = "all";
+  if (options.render !== false) {
+    renderPipelineFilters();
+    renderPipeline();
+  }
+}
+
+function clearSinglePipelineFilter(key) {
+  const map = {
+    stage: () => {
+      pipelineStageFilter = "all";
+    },
+    tag: () => {
+      pipelineTagFilter = "all";
+    },
+    score: () => {
+      pipelineScoreFilter = "all";
+    },
+    owner: () => {
+      pipelineOwnerFilter = "all";
+    },
+    origin: () => {
+      pipelineOriginFilter = "all";
+    },
+    period: () => {
+      pipelinePeriodFilter = "all";
+    },
+    evaluation: () => {
+      pipelineEvaluationFilter = "all";
+    },
+    pending: () => {
+      pipelinePendingFilter = "all";
+    },
+    profile: () => {
+      pipelineProfileFilter = "all";
+    },
+    sla: () => {
+      pipelineSlaFilter = "all";
+    },
+  };
+  map[key]?.();
+  renderPipelineFilters();
+  renderPipeline();
+}
+
+function openPipelineFiltersDialog() {
+  renderPipelineFilters();
+  const dialog = document.querySelector("#pipelineFiltersDialog");
+  dialog?.showModal();
+  syncPipelineFilterButton();
+}
+
+function closePipelineFiltersDialog() {
+  document.querySelector("#pipelineFiltersDialog")?.close();
+  syncPipelineFilterButton();
+}
+
+function applyPipelineFiltersFromDialog(event) {
+  event?.preventDefault();
+  pipelineStageFilter = document.querySelector("#pipelineStageFilter")?.value || "all";
+  pipelineTagFilter = document.querySelector("#pipelineTagFilter")?.value || "all";
+  pipelineScoreFilter = document.querySelector("#pipelineScoreFilter")?.value || "all";
+  pipelineOwnerFilter = document.querySelector("#pipelineOwnerFilter")?.value || "all";
+  pipelineOriginFilter = document.querySelector("#pipelineOriginFilter")?.value || "all";
+  pipelinePeriodFilter = document.querySelector("#pipelinePeriodFilter")?.value || "all";
+  pipelineEvaluationFilter = document.querySelector("#pipelineEvaluationFilter")?.value || "all";
+  pipelinePendingFilter = document.querySelector("#pipelinePendingFilter")?.value || "all";
+  pipelineProfileFilter = document.querySelector("#pipelineProfileFilter")?.value || "all";
+  pipelineSlaFilter = document.querySelector("#pipelineSlaFilter")?.value || "all";
+  closePipelineFiltersDialog();
+  renderPipeline();
+}
+
 function renderPipelineFilters() {
   const stageFilter = document.querySelector("#pipelineStageFilter");
   const bulkStage = document.querySelector("#pipelineBulkStage");
+  const tagFilter = document.querySelector("#pipelineTagFilter");
+  const ownerFilter = document.querySelector("#pipelineOwnerFilter");
+  const originFilter = document.querySelector("#pipelineOriginFilter");
   const stageOptions = pipelineStages
     .map((stage) => `<option value="${escapeHtml(stage)}">${escapeHtml(stage)}</option>`)
     .join("");
   if (stageFilter) {
     stageFilter.innerHTML = `<option value="all">Todas as etapas</option>${stageOptions}`;
     stageFilter.value = pipelineStages.includes(pipelineStageFilter) ? pipelineStageFilter : "all";
-    pipelineStageFilter = stageFilter.value;
   }
   if (bulkStage) {
     bulkStage.innerHTML = `<option value="">Selecione uma etapa</option>${stageOptions}`;
   }
+  if (tagFilter) {
+    const tags = [...new Set(candidates.flatMap((candidate) => candidate.tags || []))].sort();
+    tagFilter.innerHTML = [
+      '<option value="all">Todas as tags</option>',
+      ...tags.map(
+        (tag) =>
+          `<option value="${escapeHtml(tag)}"${tag === pipelineTagFilter ? " selected" : ""}>${escapeHtml(tag)}</option>`,
+      ),
+    ].join("");
+  }
+  if (ownerFilter) {
+    const owners = [...new Set(candidates.map((candidate) => candidate.owner).filter(Boolean))].sort();
+    ownerFilter.innerHTML = [
+      '<option value="all">Todos os responsáveis</option>',
+      ...owners.map(
+        (owner) =>
+          `<option value="${escapeHtml(owner)}"${owner === pipelineOwnerFilter ? " selected" : ""}>${escapeHtml(owner)}</option>`,
+      ),
+    ].join("");
+  }
+  if (originFilter) {
+    const origins = [...new Set(candidates.map((candidate) => candidate.origin).filter(Boolean))].sort();
+    originFilter.innerHTML = [
+      '<option value="all">Todas as origens</option>',
+      ...origins.map(
+        (origin) =>
+          `<option value="${escapeHtml(origin)}"${origin === pipelineOriginFilter ? " selected" : ""}>${escapeHtml(origin)}</option>`,
+      ),
+    ].join("");
+  }
+  const scoreFilter = document.querySelector("#pipelineScoreFilter");
+  const periodFilter = document.querySelector("#pipelinePeriodFilter");
+  const evaluationFilter = document.querySelector("#pipelineEvaluationFilter");
+  const pendingFilter = document.querySelector("#pipelinePendingFilter");
+  const profileFilter = document.querySelector("#pipelineProfileFilter");
+  const slaFilter = document.querySelector("#pipelineSlaFilter");
+  if (scoreFilter) scoreFilter.value = pipelineScoreFilter;
+  if (periodFilter) periodFilter.value = pipelinePeriodFilter;
+  if (evaluationFilter) evaluationFilter.value = pipelineEvaluationFilter;
+  if (pendingFilter) pendingFilter.value = pipelinePendingFilter;
+  if (profileFilter) profileFilter.value = pipelineProfileFilter;
+  if (slaFilter) slaFilter.value = pipelineSlaFilter;
 }
 
 function updatePipelineBulkBar() {
@@ -3062,21 +4217,33 @@ function clearPipelineSelection() {
   renderPipeline();
 }
 
-function updateCandidateStage(candidate, stage) {
+function updateCandidateStage(candidate, stage, meta = {}) {
   if (!candidate || candidate.stage === stage) return false;
   const previousStage = candidate.stage;
   candidate.stage = stage;
   candidate.stageEnteredAt = `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`;
+  const reason = meta.reason ? ` · ${meta.reason}` : "";
+  const note = meta.note ? ` — ${meta.note}` : "";
   candidate.history.unshift([
     `Etapa: ${stage}`,
-    `Movido de ${previousStage} · agora`,
+    `Movido de ${previousStage}${reason}${note} · agora`,
   ]);
   candidate.activities.unshift([
     "LD",
     "Larissa Dias",
-    `Moveu de ${previousStage} para ${stage}`,
+    `Moveu de ${previousStage} para ${stage}${reason}`,
     "Agora",
   ]);
+  if (meta.nextAction) candidate.nextAction = meta.nextAction;
+  if (meta.nextActionAt) candidate.nextActionAt = meta.nextActionAt;
+  candidate.lastAction = {
+    type: "move",
+    from: previousStage,
+    to: stage,
+    reason: meta.reason || "",
+    note: meta.note || "",
+    at: `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`,
+  };
   const application = candidatePortalUser.applications.find(
     (item) =>
       normalize(item.title) === normalize(candidate.vacancy) &&
@@ -3091,6 +4258,73 @@ function updateCandidateStage(candidate, stage) {
     ];
   }
   return true;
+}
+
+function neighborStage(current, direction) {
+  const index = pipelineStages.indexOf(current);
+  if (index < 0) return null;
+  return pipelineStages[index + direction] || null;
+}
+
+function openMoveStageDialog(candidate, targetStage = "") {
+  if (!candidate) return;
+  pendingMoveCandidate = candidate;
+  pendingMoveStage = targetStage || "";
+  selectedCandidateId = candidate.id;
+  const label = document.querySelector("#moveStageCandidateLabel");
+  const select = document.querySelector("#moveStageSelect");
+  const reason = document.querySelector("#moveStageReason");
+  const note = document.querySelector("#moveStageNote");
+  const nextAction = document.querySelector("#moveStageNextAction");
+  const nextDate = document.querySelector("#moveStageNextActionDate");
+  if (label) label.textContent = `${candidate.name} · ${candidate.vacancy}`;
+  if (select) {
+    select.innerHTML = [
+      '<option value="">Selecione a etapa...</option>',
+      ...pipelineStages
+        .filter((stage) => stage !== candidate.stage)
+        .map(
+          (stage) =>
+            `<option value="${escapeHtml(stage)}"${stage === targetStage ? " selected" : ""}>${escapeHtml(stage)}</option>`,
+        ),
+    ].join("");
+  }
+  if (reason) reason.value = "";
+  if (note) note.value = "";
+  if (nextAction) nextAction.value = candidate.nextAction || "";
+  if (nextDate) nextDate.value = candidate.nextActionAt || "";
+  document.querySelector("#moveStageDialog")?.showModal();
+}
+
+function confirmMoveStage(event) {
+  event.preventDefault();
+  const candidate = pendingMoveCandidate;
+  const stage = document.querySelector("#moveStageSelect")?.value;
+  const reason = document.querySelector("#moveStageReason")?.value.trim();
+  const note = document.querySelector("#moveStageNote")?.value.trim();
+  const nextAction = document.querySelector("#moveStageNextAction")?.value.trim();
+  const nextActionAt = document.querySelector("#moveStageNextActionDate")?.value || "";
+  if (!candidate || !stage || !reason) return;
+  if (!updateCandidateStage(candidate, stage, { reason, note, nextAction, nextActionAt })) {
+    document.querySelector("#moveStageDialog")?.close();
+    return;
+  }
+  pendingMoveCandidate = null;
+  pendingMoveStage = "";
+  document.querySelector("#moveStageDialog")?.close();
+  renderPipeline();
+  renderDashboard();
+  if (candidateDialog.open) renderCandidateDetails(candidate);
+  showToast("Etapa atualizada", `${candidate.name} agora está em ${stage}.`);
+  if (stage === "Proposta") {
+    openOfferDialog(candidate, { compose: !candidate.proposal?.amount });
+  }
+}
+
+function moveCandidate(candidateId, stage) {
+  const candidate = candidates.find((item) => item.id === candidateId);
+  if (!candidate || candidate.stage === stage) return;
+  openMoveStageDialog(candidate, stage);
 }
 
 function applyPipelineBulkStage() {
@@ -3149,6 +4383,7 @@ function renderPipeline() {
   updateSlaCounter();
   renderTalentSuggestions();
   updatePipelineBulkBar();
+  renderPipelineFilterChips();
 }
 
 function updateSlaCounter() {
@@ -3253,24 +4488,33 @@ function renderJobCandidateList() {
     return;
   }
   jobCandidateList.innerHTML = items
-    .map(
-      (candidate) => `
-        <article class="job-candidate-row${selectedPipelineCandidateIds.has(candidate.id) ? " is-bulk-selected" : ""}" data-candidate-id="${candidate.id}" tabindex="0">
+    .map((candidate) => {
+      const match = computeMatch(candidate.vacancy, candidate);
+      const sla = slaStatus(candidate);
+      const pendingEvaluation = candidate.evaluationStatus === "pendente";
+      return `
+        <article class="job-candidate-row${selectedPipelineCandidateIds.has(candidate.id) ? " is-bulk-selected" : ""}${pendingEvaluation ? " is-eval-pending" : ""}" data-candidate-id="${candidate.id}" tabindex="0">
           <label class="job-candidate-select" data-pipeline-select="${candidate.id}" title="Selecionar ${candidate.name}">
             <input type="checkbox" ${selectedPipelineCandidateIds.has(candidate.id) ? "checked" : ""} />
             <span aria-hidden="true"></span>
           </label>
           <div>
             <h3>${candidate.name}</h3>
-            <p>${candidate.email} · ${candidate.vacancy}</p>
+            <p>${candidate.email} · ${candidate.vacancy} · ${escapeHtml(candidate.owner || "—")} · ${escapeHtml(candidate.origin || "—")}</p>
+            <div class="job-candidate-meta">
+              <span>Score ${match.total}%</span>
+              <span>${candidate.fitCultural == null ? "Fit —" : `Fit ${candidate.fitCultural}%`}</span>
+              <span>${sla.overdue ? `SLA ${sla.days}d` : `${sla.days}d na etapa`}</span>
+              ${pendingEvaluation ? `<span class="eval-pending-badge">Avaliação pendente</span>` : ""}
+            </div>
           </div>
           <span class="stage-pill ${candidate.stage === "Entrevista RH" ? "stage-interview" : ""}">${candidate.stage}</span>
           <span class="${candidate.attachment ? "attachment-ok" : ""}">${
             candidate.attachment ? "PDF anexado" : "Sem currículo"
           }</span>
         </article>
-      `,
-    )
+      `;
+    })
     .join("");
 }
 
@@ -3292,8 +4536,15 @@ function testsForCandidate(candidate) {
   if (!assigned) return [];
   return assigned
     .map((entry) => {
-      const test = tests.find((item) => item.id === entry.id);
-      return test ? { ...entry, test } : null;
+      const catalog = tests.find((item) => item.id === entry.id);
+      if (catalog) return { ...entry, test: catalog };
+      if (entry.title) {
+        return {
+          ...entry,
+          test: { id: entry.id || entry.title, title: entry.title },
+        };
+      }
+      return null;
     })
     .filter(Boolean);
 }
@@ -3304,23 +4555,50 @@ function findCandidateByEmail(email) {
 
 function renderCandidateDetails(candidate) {
   document.querySelector("#candidateStage").textContent = candidate.stage;
-  document.querySelector("#profileStage").textContent = candidate.stage;
   document.querySelector("#candidateStage").classList.toggle(
-    "stage-interview",
-    candidate.stage === "Entrevista RH",
-  );
-  document.querySelector("#profileStage").classList.toggle(
     "stage-interview",
     candidate.stage === "Entrevista RH",
   );
   document.querySelector("#candidateName").textContent = candidate.name;
   document.querySelector("#profileName").textContent = candidate.name;
   document.querySelector("#candidateRole").textContent = candidate.vacancy;
-  document.querySelector("#profileRole").textContent = candidate.vacancy;
   document.querySelector("#candidateEmail").textContent = candidate.email;
-  document.querySelector("#candidatePhone").textContent = candidate.phone;
+  document.querySelector("#candidatePhone").textContent = candidate.phone || "Não informado";
   document.querySelector("#profileContact").textContent =
-    `${candidate.email} · ${candidate.phone}`;
+    `${candidate.email}${candidate.phone ? ` · ${candidate.phone}` : ""}`;
+  const match = computeMatch(candidate.vacancy, candidate);
+  const candidateAvatar = document.querySelector("#candidateAvatar");
+  candidateAvatar.innerHTML = candidate.photo
+    ? `<img src="${escapeHtml(candidate.photo)}" alt="" />`
+    : initials(candidate.name);
+  document.querySelector("#candidateStatus").textContent = candidate.status || "Em processo";
+  document.querySelector("#candidateOwner").textContent = candidate.owner || candidate.manager || "Sem responsável";
+  document.querySelector("#candidateScore").textContent = `${match.total}%`;
+  document.querySelector("#candidateFit").textContent =
+    candidate.fitCultural == null ? "Pendente" : `${candidate.fitCultural}%`;
+  const enteredAt = new Date(candidate.stageEnteredAt || `${TODAY_KEY}T12:00:00`);
+  const today = new Date(`${TODAY_KEY}T12:00:00`);
+  const processDays = Math.max(0, Math.floor((today - enteredAt) / 86400000));
+  document.querySelector("#candidateProcessTime").textContent =
+    processDays === 0 ? "Hoje" : `${processDays} dia${processDays === 1 ? "" : "s"}`;
+  document.querySelector("#candidateHeaderTags").innerHTML = (candidate.tags || []).length
+    ? candidate.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")
+    : `<span>Sem tags</span>`;
+  document.querySelector("#candidateLocation").textContent =
+    [candidate.city, candidate.uf].filter(Boolean).join(" / ") || "Não informada";
+  document.querySelector("#candidateSalary").textContent =
+    candidate.salaryExpectation || candidate.proposal?.amount
+      ? formatOfferMoney(candidate.salaryExpectation || candidate.proposal.amount)
+      : "Não informada";
+  document.querySelector("#candidateAvailability").textContent =
+    candidate.availability || "A combinar";
+  document.querySelector("#candidateOrigin").textContent =
+    candidate.origin || "Não informada";
+  document.querySelector("#candidateSummary").textContent =
+    candidate.summary || candidate.objective || "Sem resumo informado.";
+  document.querySelector("#candidateResumeStatus").textContent = candidate.attachment
+    ? candidate.resumeFileName || "Currículo anexado em PDF"
+    : "Nenhum arquivo anexado.";
   const profileCompletionSection = document.querySelector("#candidateProfileCompletionSection");
   const profileCompletionCard = document.querySelector("#candidateProfileCompletionCard");
   const profileCompletion = getCandidateProfileCompletionData(candidate);
@@ -3372,20 +4650,152 @@ function renderCandidateDetails(candidate) {
         .join("")
     : `<p class="candidate-tests-empty">Nenhum teste técnico neste processo.</p>`;
 
-  activityList.innerHTML = candidate.activities
+  const candidateInterviews = interviews.filter(
+    (item) =>
+      item.candidateId === candidate.id ||
+      (item.name === candidate.name && item.vacancy === candidate.vacancy),
+  );
+  const interviewGroups = {
+    Próximas: candidateInterviews.filter((item) =>
+      ["Agendada", "Confirmada", "Aguardando"].includes(item.status || "Agendada"),
+    ),
+    Realizadas: candidateInterviews.filter((item) =>
+      ["Realizada", "Concluída"].includes(item.status),
+    ),
+    Canceladas: candidateInterviews.filter((item) => item.status === "Cancelada"),
+  };
+  document.querySelector("#candidateInterviewsList").innerHTML = candidateInterviews.length
+    ? Object.entries(interviewGroups)
+        .map(
+          ([label, items]) => `
+            <div class="candidate-dossier-group">
+              <h4>${label} <span>${items.length}</span></h4>
+              ${
+                items.length
+                  ? items
+                      .map(
+                        (item) => `
+                          <button type="button" class="candidate-dossier-list-item is-button" data-open-interview="${item.id}">
+                            <div>
+                              <strong>${escapeHtml(item.type || "Entrevista")}</strong>
+                              <span>${formatInterviewWhen(item.at)}</span>
+                            </div>
+                            <span class="role-tag">${escapeHtml(item.status || "Agendada")}</span>
+                          </button>
+                        `,
+                      )
+                      .join("")
+                  : `<p class="candidate-dossier-empty">Nenhuma entrevista nesta seção.</p>`
+              }
+            </div>
+          `,
+        )
+        .join("")
+    : `<p class="candidate-dossier-empty">Nenhuma entrevista registrada.</p>`;
+
+  const fit = candidate.fitCultural;
+  document.querySelector("#candidateFitContent").innerHTML =
+    fit == null
+      ? `<p class="candidate-dossier-empty">Fit Cultural ainda não aplicado.</p>`
+      : `
+        <div class="candidate-fit-score"><strong>${fit}%</strong><span>Resultado geral</span></div>
+        <div class="candidate-fit-pillars">
+          <span>Colaboração <strong>${Math.min(100, fit + 4)}%</strong></span>
+          <span>Adaptabilidade <strong>${Math.max(0, fit - 3)}%</strong></span>
+          <span>Comunicação <strong>${Math.min(100, fit + 1)}%</strong></span>
+        </div>
+        <p>Respostas e pilares consolidados nesta avaliação.</p>
+      `;
+
+  const documentChecklist = ensureCandidateDocuments(candidate);
+  document.querySelector("#candidateDocumentsList").innerHTML = documentChecklist
     .map(
-      ([avatar, author, message, time]) => `
-        <article class="activity-item">
-          <span class="activity-avatar">${avatar}</span>
-          <div class="activity-copy">
-            <strong>${author}</strong>
-            <p>${message}</p>
-            <time>${time}</time>
+      (doc) => `
+        <article class="candidate-dossier-list-item">
+          <div>
+            <strong>${escapeHtml(doc.name)}</strong>
+            <span>${doc.fileName ? escapeHtml(doc.fileName) : "Aguardando envio"}</span>
+          </div>
+          <div class="candidate-doc-actions">
+            <button type="button" class="role-tag is-doc-${normalize(doc.status)}" data-doc-status="${doc.id}" title="Alterar status">
+              ${escapeHtml(doc.status)}
+            </button>
+            <button type="button" class="dialog-text-button" data-replace-doc="${doc.id}">
+              ${doc.fileName ? "Substituir" : "Enviar"}
+            </button>
           </div>
         </article>
       `,
     )
     .join("");
+
+  const comments = ensureCandidateComments(candidate);
+  const archivedCount = comments.filter((comment) => comment.archived).length;
+  const visibleComments = comments.filter(
+    (comment) => showArchivedCandidateComments || !comment.archived,
+  );
+  activityList.innerHTML =
+    (archivedCount
+      ? `<div class="candidate-comment-toolbar">
+          <button type="button" id="toggleArchivedComments" class="dialog-text-button">
+            ${showArchivedCandidateComments ? "Ocultar arquivados" : `Mostrar arquivados (${archivedCount})`}
+          </button>
+        </div>`
+      : "") +
+    (visibleComments.length
+      ? visibleComments
+          .map(
+            (comment) => `
+              <article class="activity-item candidate-comment-item${comment.archived ? " is-archived" : ""}" data-comment-id="${comment.id}">
+                <span class="activity-avatar">${initials(comment.author)}</span>
+                <div class="activity-copy">
+                  <strong>${escapeHtml(comment.author)}</strong>
+                  <p>${escapeHtml(comment.message)}</p>
+                  <time>${escapeHtml(comment.archived ? "Arquivado" : comment.time)}</time>
+                  <div class="candidate-comment-actions">
+                    <button type="button" data-edit-comment="${comment.id}" ${comment.archived ? "disabled" : ""}>Editar</button>
+                    <button type="button" data-archive-comment="${comment.id}">${comment.archived ? "Restaurar" : "Arquivar"}</button>
+                  </div>
+                </div>
+              </article>
+            `,
+          )
+          .join("")
+      : `<p class="candidate-dossier-empty">Nenhum comentário ativo.</p>`);
+  setCandidateDossierTab(selectedCandidateDossierTab);
+}
+
+function ensureCandidateDocuments(candidate) {
+  if (!Array.isArray(candidate.documentChecklist) || !candidate.documentChecklist.length) {
+    const uploaded = Array.isArray(candidate.documents) ? candidate.documents : [];
+    candidate.documentChecklist = [
+      { id: "rg", name: "Documento de identidade", status: "Pendente", fileName: "" },
+      { id: "cpf", name: "CPF", status: "Pendente", fileName: "" },
+      { id: "comprovante", name: "Comprovante de residência", status: "Pendente", fileName: "" },
+      { id: "contrato", name: "Documentos pré-admissionais", status: "Pendente", fileName: "" },
+    ];
+    uploaded.forEach((fileName, index) => {
+      const target = candidate.documentChecklist[index] || candidate.documentChecklist[0];
+      if (!target) return;
+      target.fileName = fileName;
+      target.status = "Enviado";
+    });
+  }
+  return candidate.documentChecklist;
+}
+
+function setCandidateDossierTab(tab) {
+  selectedCandidateDossierTab = tab;
+  document.querySelectorAll("[data-candidate-tab]").forEach((button) => {
+    const active = button.dataset.candidateTab === tab;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  document.querySelectorAll("[data-candidate-panel]").forEach((panel) => {
+    const active = panel.dataset.candidatePanel === tab;
+    panel.hidden = !active;
+    panel.classList.toggle("is-active", active);
+  });
 }
 
 function openCandidate(candidateId) {
@@ -3399,20 +4809,11 @@ function openCandidate(candidateId) {
     );
   });
   renderCandidateDetails(candidate);
-  activityList.hidden = false;
-  document.querySelector("#toggleActivities").textContent = "Ocultar";
+  selectedCandidateDossierTab = "overview";
+  setCandidateDossierTab("overview");
+  setCandidateActivityCollapsed(false);
+  closeCandidateMoreActions();
   candidateDialog.showModal();
-}
-
-function moveCandidate(candidateId, stage) {
-  const candidate = candidates.find((item) => item.id === candidateId);
-  if (!updateCandidateStage(candidate, stage)) return;
-  renderPipeline();
-  renderDashboard();
-  showToast("Etapa atualizada", `${candidate.name} agora está em ${stage}.`);
-  if (stage === "Proposta") {
-    openOfferDialog(candidate, { compose: !candidate.proposal?.amount });
-  }
 }
 
 function escapeHtml(value) {
@@ -3430,7 +4831,7 @@ function formatBRDate(key) {
 }
 
 function closeOverlayDialogs() {
-  [datePickerDialog, timePickerDialog, interviewDialog, contactDialog, offerFormDialog, offerDialog, dismissDialog, lgpdDialog, bookingDialog, document.querySelector("#blockDialog")].forEach(
+  [datePickerDialog, timePickerDialog, interviewDialog, contactDialog, offerFormDialog, offerDialog, dismissDialog, lgpdDialog, bookingDialog, document.querySelector("#blockDialog"), document.querySelector("#moveStageDialog"), document.querySelector("#pipelineActionDialog"), document.querySelector("#pipelineFiltersDialog")].forEach(
     (dialog) => {
       if (dialog?.open) dialog.close();
     },
@@ -3528,7 +4929,10 @@ function removeCandidateFromPipeline(candidate) {
   selectedCandidateId = null;
   closeOverlayDialogs();
   if (candidateDialog.open) candidateDialog.close();
+  const job = jobs.find((item) => item.title === candidate.vacancy);
+  if (job) syncJobMetrics(job);
   renderPipeline();
+  renderJobs();
   renderDashboard();
 }
 
@@ -3670,19 +5074,45 @@ function hireCandidate(candidate) {
     openOfferDialog(candidate, { compose: true });
     return;
   }
+  const job = jobs.find((item) => item.title === candidate.vacancy);
+  if (!job) {
+    showToast("Vaga não encontrada", "Não foi possível localizar a vaga deste candidato.");
+    return;
+  }
+  if (!jobCanHire(job)) {
+    const message =
+      jobRemainingCount(job) <= 0
+        ? "Todas as posições desta vaga já foram preenchidas."
+        : "Esta vaga não permite concluir contratações no status atual.";
+    showToast("Contratação indisponível", message);
+    return;
+  }
+  if (
+    candidateDialog.open &&
+    !window.confirm(`Confirmar contratação de ${candidate.name} para ${job.title}?`)
+  ) {
+    return;
+  }
   if (candidate.proposal.status !== "aceita") {
     showToast(
       "Proposta ainda não aceita",
       `Status atual: ${offerStatusLabel(candidate.proposal.status || "enviada")}. Contratação liberada com aviso.`,
     );
   }
-  const exists = results.some((item) => normalize(item.email) === normalize(candidate.email));
+  const exists = results.some(
+    (item) =>
+      item.status === "contratados" &&
+      normalize(item.email) === normalize(candidate.email) &&
+      (item.jobId === job.id ||
+        (item.jobId == null && item.vacancy === job.title)),
+  );
   if (!exists) {
     results.unshift({
       id: Date.now(),
+      jobId: job.id,
       name: candidate.name,
       email: candidate.email,
-      vacancy: candidate.vacancy,
+      vacancy: job.title,
       status: "contratados",
       proposal: candidate.proposal.amount,
       workModel: candidate.proposal.workModel,
@@ -3690,9 +5120,17 @@ function hireCandidate(candidate) {
     });
   }
   removeCandidateFromPipeline(candidate);
-  renderResults();
-  goToPage("resultados", { resultTab: "contratados" });
-  showToast("Candidato contratado", `${candidate.name} foi para Contratados.`);
+  syncJobMetrics(job);
+  pushJobHistory(job, "Contratação", `${candidate.name} contratado · ${jobPositionsLabel(job)}`);
+  maybeSuggestJobClose(job);
+  refreshJobViews(job);
+  const remaining = jobRemainingCount(job);
+  showToast(
+    "Candidato contratado",
+    `${candidate.name} contratado. Posições: ${jobPositionsLabel(job)}${
+      remaining === 0 ? " · considere encerrar a vaga" : ""
+    }.`,
+  );
 }
 
 function meetFromLink(link) {
@@ -3805,43 +5243,407 @@ function confirmBookingSlot() {
   showToast("Horário escolhido", `Candidato selecionou ${formatBRDate(interviewDate)} às ${interviewTime}.`);
 }
 
-function openCandidateResume(candidate) {
+function openCandidateResume(candidate, options = {}) {
   const html = `<!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Currículo · ${escapeHtml(candidate.name)}</title>
-    <style>
-      body { font-family: Inter, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 24px 48px; color: #1c2430; }
-      h1 { margin: 0 0 6px; font-size: 28px; }
-      .role { margin: 0 0 18px; color: #5b6573; }
-      .meta { display: grid; gap: 4px; margin-bottom: 28px; color: #3d4654; }
-      section { margin-top: 22px; }
-      h2 { margin: 0 0 8px; font-size: 15px; color: #194A92; }
-      p { margin: 0; line-height: 1.55; }
-    </style>
-  </head>
-  <body>
-    <h1>${escapeHtml(candidate.name)}</h1>
-    <p class="role">${escapeHtml(candidate.vacancy)}</p>
-    <div class="meta">
-      <span>${escapeHtml(candidate.email)}</span>
-      <span>${escapeHtml(candidate.phone || "")}</span>
-    </div>
-    <section>
-      <h2>Resumo</h2>
-      <p>Currículo anexado ao processo seletivo de ${escapeHtml(candidate.vacancy)}.</p>
-    </section>
-    <section>
-      <h2>Contato</h2>
-      <p>${escapeHtml(candidate.email)}${candidate.phone ? ` · ${escapeHtml(candidate.phone)}` : ""}</p>
-    </section>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Currículo · ${escapeHtml(candidate.name)}</title>
+  <style>
+    body { font-family: Inter, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 24px 48px; color: #1c2430; }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    .role { margin: 0 0 18px; color: #5b6573; }
+    .meta { display: grid; gap: 4px; margin-bottom: 28px; color: #3d4654; }
+    section { margin-top: 22px; }
+    h2 { margin: 0 0 8px; font-size: 15px; color: #194A92; }
+    p { margin: 0; line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <h1>${escapeHtml(candidate.name)}</h1>
+  <p class="role">${escapeHtml(candidate.vacancy)}</p>
+  <div class="meta">
+    <span>${escapeHtml(candidate.email)}</span>
+    <span>${escapeHtml(candidate.phone || "")}</span>
+  </div>
+  <section>
+    <h2>Resumo</h2>
+    <p>Currículo anexado ao processo seletivo de ${escapeHtml(candidate.vacancy)}.</p>
+  </section>
+  <section>
+    <h2>Contato</h2>
+    <p>${escapeHtml(candidate.email)}${candidate.phone ? ` · ${escapeHtml(candidate.phone)}` : ""}</p>
+  </section>
+</body>
 </html>`;
-  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  if (options.download) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `curriculo-${normalize(candidate.name).replaceAll(" ", "-") || "candidato"}.html`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    showToast("Currículo", `Download iniciado para ${candidate.name}.`);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    return;
+  }
   const popup = window.open(url, "_blank", "noopener");
   if (!popup) {
     showToast("Currículo", "Permita pop-ups para abrir o currículo em outra aba.");
+  }
+}
+
+function openPipelineActionDialog(candidate, action, config) {
+  pendingPipelineAction = { candidate, action, config };
+  selectedCandidateId = candidate.id;
+  document.querySelector("#pipelineActionTitle").textContent = config.title;
+  document.querySelector("#pipelineActionCandidateLabel").textContent =
+    `${candidate.name} · ${candidate.vacancy}`;
+  const fieldWrap = document.querySelector("#pipelineActionFieldWrap");
+  const selectWrap = document.querySelector("#pipelineActionSelectWrap");
+  const field = document.querySelector("#pipelineActionField");
+  const select = document.querySelector("#pipelineActionSelect");
+  const note = document.querySelector("#pipelineActionNote");
+  if (note) note.value = "";
+  if (config.mode === "select") {
+    fieldWrap.hidden = true;
+    selectWrap.hidden = false;
+    document.querySelector("#pipelineActionSelectLabel").textContent = config.label;
+    select.innerHTML = config.options
+      .map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`)
+      .join("");
+    select.required = true;
+    field.required = false;
+  } else {
+    fieldWrap.hidden = false;
+    selectWrap.hidden = true;
+    document.querySelector("#pipelineActionFieldLabel").textContent = config.label;
+    field.value = config.defaultValue || "";
+    field.type = config.inputType || "text";
+    field.placeholder = config.placeholder || "";
+    field.required = config.required !== false;
+    select.required = false;
+  }
+  document.querySelector("#confirmPipelineAction").textContent = config.confirmLabel || "Confirmar";
+  document.querySelector("#pipelineActionDialog")?.showModal();
+}
+
+function registerCandidateOperationalEvent(candidate, title, detail) {
+  candidate.history.unshift([title, `${detail} · agora`]);
+  candidate.activities.unshift(["LD", "Larissa Dias", detail, "Agora"]);
+  candidate.lastAction = {
+    type: title,
+    detail,
+    at: `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`,
+  };
+}
+
+function approveCandidateToTalentBank(candidate) {
+  const exists = talents.some((item) => normalize(item.email) === normalize(candidate.email));
+  if (!exists) {
+    talents.unshift({
+      id: Date.now(),
+      name: candidate.name,
+      email: candidate.email,
+      status: "aprovados",
+      motivo: `Aprovado a partir da vaga ${candidate.vacancy}.`,
+    });
+    renderTalents();
+  }
+  showToast(
+    "Banco de talentos",
+    exists ? `${candidate.name} já está no banco.` : `${candidate.name} foi adicionado aos aprovados.`,
+  );
+  if (candidateDialog.open) candidateDialog.close();
+  goToPage("talentos", { talentTab: "aprovados" });
+}
+
+function runPipelineCandidateAction(candidate, action) {
+  if (!candidate || !action) return;
+
+  if (action === "perfil" || action === "Visualizar perfil") {
+    openCandidate(candidate.id);
+    return;
+  }
+  if (action === "curriculo" || action === "Currículo") {
+    openCandidateResume(candidate);
+    return;
+  }
+  if (action === "baixar-curriculo" || action === "Baixar currículo") {
+    openCandidateResume(candidate, { download: true });
+    return;
+  }
+  if (action === "proxima-etapa" || action === "Próxima etapa") {
+    const next = neighborStage(candidate.stage, 1);
+    if (!next) {
+      showToast("Etapa", "Este candidato já está na última etapa.");
+      return;
+    }
+    openMoveStageDialog(candidate, next);
+    return;
+  }
+  if (action === "etapa-anterior" || action === "Etapa anterior") {
+    const previous = neighborStage(candidate.stage, -1);
+    if (!previous) {
+      showToast("Etapa", "Este candidato já está na primeira etapa.");
+      return;
+    }
+    openMoveStageDialog(candidate, previous);
+    return;
+  }
+  if (action === "escolher-etapa" || action === "Escolher etapa") {
+    openMoveStageDialog(candidate);
+    return;
+  }
+  if (action === "entrevista" || action === "Entrevista") {
+    openInterviewScheduler(candidate);
+    return;
+  }
+  if (action === "ver-entrevistas" || action === "Ver entrevistas") {
+    goToPage("entrevistas");
+    showToast("Entrevistas", `Mostrando agenda relacionada a ${candidate.name}.`);
+    return;
+  }
+  if (action === "aplicar-teste" || action === "Aplicar teste") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Aplicar teste técnico",
+      label: "Teste",
+      mode: "select",
+      options: tests.filter((item) => item.active !== false).map((item) => item.title),
+      confirmLabel: "Aplicar teste",
+    });
+    return;
+  }
+  if (action === "aplicar-fit" || action === "Aplicar Fit Cultural") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Aplicar Fit Cultural",
+      label: "Pontuação (0 a 100)",
+      inputType: "number",
+      defaultValue: candidate.fitCultural ?? 75,
+      placeholder: "75",
+      confirmLabel: "Salvar Fit Cultural",
+    });
+    return;
+  }
+  if (action === "avaliar" || action === "Avaliar") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Enviar avaliação",
+      label: "Tipo de avaliação",
+      mode: "select",
+      options: [
+        "Teste técnico",
+        "Teste comportamental",
+        "Avaliação de competências",
+        "Fit Cultural",
+      ],
+      confirmLabel: "Continuar",
+    });
+    return;
+  }
+  if (action === "Adicionar comentário") {
+    setCandidateDossierTab("comments");
+    document.querySelector("#commentInput")?.focus();
+    return;
+  }
+  if (action === "adicionar-tag" || action === "Adicionar tag") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Adicionar tag",
+      label: "Tag",
+      placeholder: "Ex.: Prioridade",
+      confirmLabel: "Adicionar",
+    });
+    return;
+  }
+  if (action === "alterar-responsavel" || action === "Alterar responsável") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Alterar responsável",
+      label: "Responsável RH",
+      mode: "select",
+      options: ["Larissa Dias", "Camila Monteiro", "Mariana Costa", "Eduardo Ribeiro"],
+      confirmLabel: "Atualizar responsável",
+    });
+    return;
+  }
+  if (action === "reprovar" || action === "Reprovar" || action === "dispensar" || action === "Dispensar") {
+    if (
+      candidateDialog.open &&
+      !window.confirm(`Reprovar ${candidate.name}? Esta ação remove o candidato da pipeline.`)
+    ) {
+      return;
+    }
+    dismissCandidate(candidate);
+    return;
+  }
+  if (action === "desistencia" || action === "Desistência") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Registrar desistência",
+      label: "Motivo",
+      placeholder: "Ex.: Aceitou outra proposta",
+      confirmLabel: "Registrar desistência",
+    });
+    return;
+  }
+  if (action === "nao-comparecimento" || action === "Não comparecimento") {
+    openPipelineActionDialog(candidate, action, {
+      title: "Registrar não comparecimento",
+      label: "Motivo",
+      placeholder: "Ex.: Ausente na entrevista",
+      confirmLabel: "Registrar",
+    });
+    return;
+  }
+  if (action === "banco" || action === "Aprovar no banco") {
+    if (
+      candidateDialog.open &&
+      !window.confirm(`Enviar ${candidate.name} ao Banco de Talentos?`)
+    ) {
+      return;
+    }
+    approveCandidateToTalentBank(candidate);
+    return;
+  }
+  if (action === "ocultar" || action === "Ocultar") {
+    hideCandidate(candidate);
+    return;
+  }
+  if (action === "revogar" || action === "Revogar") {
+    if (!candidate.lastAction) {
+      showToast("Revogar", "Não há ação recente para revogar.");
+      return;
+    }
+    if (candidate.lastAction.type === "move" && candidate.lastAction.from) {
+      candidate.stage = candidate.lastAction.from;
+      candidate.stageEnteredAt = `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`;
+    }
+    registerCandidateOperationalEvent(
+      candidate,
+      "Ação revogada",
+      `Revogou: ${candidate.lastAction.type}${candidate.lastAction.detail ? ` · ${candidate.lastAction.detail}` : ""}`,
+    );
+    candidate.lastAction = null;
+    renderPipeline();
+    if (candidateDialog.open) renderCandidateDetails(candidate);
+    showToast("Ação revogada", "A última ação operacional foi desfeita no protótipo.");
+    return;
+  }
+  if (action === "compartilhar" || action === "Compartilhar") {
+    const shareUrl = `${location.origin}${location.pathname}#candidato-${candidate.id}`;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    registerCandidateOperationalEvent(candidate, "Link público", shareUrl);
+    showToast("Link público", "URL demonstrativa copiada para a área de transferência.");
+    return;
+  }
+  if (action === "Contactar") {
+    openContactDialog(candidate);
+    return;
+  }
+  if (action === "Bloquear") {
+    openBlockDialog(candidate);
+    return;
+  }
+  if (action === "Gestor") {
+    openManagerDialog(candidate);
+    return;
+  }
+  if (action === "comentarios") {
+    toggleCardPanel(candidate.id, "comments");
+    return;
+  }
+  if (action === "historico") {
+    toggleCardPanel(candidate.id, "history");
+    return;
+  }
+  if (action === "ver-proposta") {
+    openOfferDialog(candidate, { compose: !candidate.proposal?.amount });
+    return;
+  }
+  if (action === "contratar") {
+    hireCandidate(candidate);
+    return;
+  }
+  showToast(action, `${action} selecionado para ${candidate.name}.`);
+}
+
+function confirmPipelineAction(event) {
+  event.preventDefault();
+  if (!pendingPipelineAction) return;
+  const { candidate, action, config } = pendingPipelineAction;
+  const note = document.querySelector("#pipelineActionNote")?.value.trim() || "";
+  const fieldValue = document.querySelector("#pipelineActionField")?.value.trim() || "";
+  const selectValue = document.querySelector("#pipelineActionSelect")?.value || "";
+  const value = config.mode === "select" ? selectValue : fieldValue;
+  if (!value) return;
+
+  if (action === "aplicar-teste" || action === "Aplicar teste") {
+    const test = tests.find((item) => item.title === value);
+    if (test) {
+      const current = candidateTestMap[candidate.id] || [];
+      if (!current.some((item) => item.id === test.id)) {
+        candidateTestMap[candidate.id] = [...current, { id: test.id, status: "Pendente" }];
+      }
+    }
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes("Teste aplicado")) candidate.tags.push("Teste aplicado");
+    registerCandidateOperationalEvent(candidate, "Teste aplicado", `Aplicou ${value}${note ? ` — ${note}` : ""}`);
+    showToast("Teste aplicado", `${value} atribuído a ${candidate.name}.`);
+  } else if (action === "aplicar-fit" || action === "Aplicar Fit Cultural") {
+    const score = Math.max(0, Math.min(100, Number(value) || 0));
+    candidate.fitCultural = score;
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes("Fit Cultural")) candidate.tags.push("Fit Cultural");
+    registerCandidateOperationalEvent(candidate, "Fit Cultural", `Score ${score}%${note ? ` — ${note}` : ""}`);
+    showToast("Fit Cultural", `Pontuação ${score}% registrada.`);
+  } else if (action === "avaliar" || action === "Avaliar") {
+    const current = candidateTestMap[candidate.id] || [];
+    candidateTestMap[candidate.id] = [
+      ...current,
+      { id: `eval-${Date.now()}`, title: value, status: "Enviada" },
+    ];
+    candidate.evaluationStatus = "Enviada";
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes("Avaliação enviada")) candidate.tags.push("Avaliação enviada");
+    if (value === "Fit Cultural" && !candidate.tags.includes("Fit Cultural")) {
+      candidate.tags.push("Fit Cultural");
+    }
+    registerCandidateOperationalEvent(
+      candidate,
+      "Avaliação enviada",
+      `${value}${note ? ` — ${note}` : ""}`,
+    );
+    showToast("Avaliação enviada", `${value} enviado para ${candidate.name}.`);
+  } else if (action === "adicionar-tag" || action === "Adicionar tag") {
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes(value)) candidate.tags.push(value);
+    registerCandidateOperationalEvent(candidate, "Tag adicionada", value);
+    showToast("Tag", `Tag "${value}" adicionada.`);
+  } else if (action === "alterar-responsavel" || action === "Alterar responsável") {
+    candidate.owner = value;
+    registerCandidateOperationalEvent(candidate, "Responsável", `Alterado para ${value}${note ? ` — ${note}` : ""}`);
+    showToast("Responsável", `Responsável atualizado para ${value}.`);
+  } else if (action === "desistencia" || action === "Desistência") {
+    registerCandidateOperationalEvent(candidate, "Desistência", `${value}${note ? ` — ${note}` : ""}`);
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes("Desistência")) candidate.tags.push("Desistência");
+    showToast("Desistência", "Registro salvo no histórico do candidato.");
+  } else if (action === "nao-comparecimento" || action === "Não comparecimento") {
+    registerCandidateOperationalEvent(candidate, "Não comparecimento", `${value}${note ? ` — ${note}` : ""}`);
+    if (!candidate.tags) candidate.tags = [];
+    if (!candidate.tags.includes("Não compareceu")) candidate.tags.push("Não compareceu");
+    showToast("Não comparecimento", "Registro salvo no histórico do candidato.");
+  }
+
+  pendingPipelineAction = null;
+  document.querySelector("#pipelineActionDialog")?.close();
+  renderPipeline();
+  if (candidateDialog.open && selectedCandidateId === candidate.id) {
+    renderCandidateDetails(candidate);
+    if (action === "avaliar" || action === "Avaliar") {
+      setCandidateDossierTab("tests");
+    }
   }
 }
 
@@ -3932,7 +5734,7 @@ function submitInterview(event) {
   });
 
   if (candidate.stage === "Triagem") {
-    moveCandidate(candidate.id, "Entrevista RH");
+    updateCandidateStage(candidate, "Entrevista RH");
   }
 
   candidate.history.unshift([
@@ -3947,9 +5749,12 @@ function submitInterview(event) {
   ]);
 
   closeOverlayDialogs();
-  candidateDialog.close();
   renderAgenda();
-  goToPage("entrevistas", { interviewId: nextId });
+  renderPipeline();
+  if (candidateDialog.open && selectedCandidateId === candidate.id) {
+    renderCandidateDetails(candidate);
+    setCandidateDossierTab("interviews");
+  }
   showToast(
     "Entrevista agendada",
     sendInvite
@@ -4172,6 +5977,11 @@ newJobFullForm.addEventListener("submit", (event) => {
     salaryMin: Number(document.querySelector("#newJobSalaryMin").value) || null,
     salaryMax: Number(document.querySelector("#newJobSalaryMax").value) || null,
     manager: document.querySelector("#newJobManager").value,
+    requester: document.querySelector("#newJobRequester")?.value || "Camila Monteiro",
+    openings: Math.max(1, Number(document.querySelector("#newJobOpenings")?.value) || 1),
+    filled: 0,
+    hireBy: document.querySelector("#newJobHireBy")?.value || document.querySelector("#newJobDeadline").value || "2026-09-30",
+    openedAt: document.querySelector("#newJobOpenedAt")?.value || TODAY_KEY,
     pcd: document.querySelector("#newJobPcd").checked,
     deadline: document.querySelector("#newJobDeadline").value,
     description: document.querySelector("#newJobDescription").value.trim(),
@@ -4188,6 +5998,8 @@ newJobFullForm.addEventListener("submit", (event) => {
     stages: document.querySelector("#newJobStages").value.trim(), about: document.querySelector("#newJobAbout").value.trim(), keywords: document.querySelector("#newJobKeywords").value.trim(),
     testId: Number(document.querySelector("#newJobTest").value) || null,
   };
+  ensureJobDefaults(job);
+  job.history = [["Criação", `Vaga criada como ${job.status} · agora`]];
   jobs.unshift(job);
   renderJobFilter(); renderJobs(); renderDashboard(); renderPipeline();
   goToPage("jobs");
@@ -4202,6 +6014,86 @@ jobDialog.addEventListener("click", (event) => {
   if (event.target === jobDialog) {
     jobDialog.close();
   }
+});
+
+on("#jobShowArchived", "change", renderJobs);
+
+on("#closeJobDetailDialog", "click", () => {
+  closeJobMoreActions();
+  document.querySelector("#jobDetailDialog")?.close();
+});
+on("#jobDetailDialog", "click", (event) => {
+  if (event.target === event.currentTarget) event.currentTarget.close();
+});
+on("#jobDetailPrimaryActions", "click", (event) => {
+  const button = event.target.closest("[data-job-detail-action]");
+  if (!button) return;
+  runJobAction(getSelectedJob(), button.dataset.jobDetailAction);
+});
+on("#jobMoreActionsMenu", "click", (event) => {
+  const button = event.target.closest("[data-job-detail-action]");
+  if (!button) return;
+  runJobAction(getSelectedJob(), button.dataset.jobDetailAction);
+});
+on("#jobMoreActionsBtn", "click", (event) => {
+  event.stopPropagation();
+  toggleJobMoreActions();
+});
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".job-more-wrap")) closeJobMoreActions();
+});
+on("#jobDetailCloseSuggest", "click", (event) => {
+  const button = event.target.closest("[data-job-detail-action]");
+  if (!button) return;
+  runJobAction(getSelectedJob(), button.dataset.jobDetailAction);
+});
+on("#jobDetailSavePositions", "click", () => {
+  const job = getSelectedJob();
+  if (!job) return;
+  const next = Math.max(1, Number(document.querySelector("#jobDetailPositionsInput")?.value) || 1);
+  const filled = jobFilledCount(job);
+  if (next < filled) {
+    showToast("Posições", `Não é possível reduzir abaixo das ${filled} posições já preenchidas.`);
+    return;
+  }
+  job.openings = next;
+  pushJobHistory(job, "Posições", `Total ajustado para ${next}`);
+  refreshJobViews(job);
+  maybeSuggestJobClose(job);
+  showToast("Posições atualizadas", `${job.title} agora tem ${next} posição(ões).`);
+});
+
+on("#closeJobStatusDialog", "click", () => document.querySelector("#jobStatusDialog")?.close());
+on("#cancelJobStatus", "click", () => document.querySelector("#jobStatusDialog")?.close());
+on("#jobStatusForm", "submit", (event) => {
+  event.preventDefault();
+  if (!pendingJobStatusAction) return;
+  const { job, action, config } = pendingJobStatusAction;
+  const reason = document.querySelector("#jobStatusReason")?.value.trim() || "";
+  const note = document.querySelector("#jobStatusNote")?.value.trim() || "";
+  if (config?.reasonRequired !== false && !reason) return;
+
+  if (action === "reprovar") {
+    setJobStatus(job, "Rascunho", `Reprovada: ${reason}${note ? ` · ${note}` : ""}`);
+  } else if (action === "cancelar") {
+    setJobStatus(job, "Cancelada", `Cancelada: ${reason}${note ? ` · ${note}` : ""}`);
+    document.querySelector("#jobDetailDialog")?.close();
+  } else if (action === "pausar") {
+    setJobStatus(job, "Pausada", note ? `Pausada · ${note}` : "Candidaturas pausadas");
+  } else if (action === "reabrir") {
+    setJobStatus(job, "Aberta", note ? `Reaberta · ${note}` : "Vaga reaberta");
+  } else if (action === "encerrar") {
+    setJobStatus(job, "Encerrada", note ? `Encerrada · ${note}` : "Processo seletivo encerrado");
+  } else if (action === "arquivar") {
+    job.archived = true;
+    pushJobHistory(job, "Arquivo", note ? `Arquivada · ${note}` : "Vaga arquivada");
+    refreshJobViews(job);
+    document.querySelector("#jobDetailDialog")?.close();
+    showToast("Vaga arquivada", `${job.title} saiu da listagem principal.`);
+  }
+
+  pendingJobStatusAction = null;
+  document.querySelector("#jobStatusDialog")?.close();
 });
 
 function closeJobMenus() {
@@ -4220,8 +6112,9 @@ function openJobForm(job) {
     if (submit) submit.textContent = "Salvar";
     jobForm.title.value = job.title;
     jobForm.area.value = job.area || "";
+    jobForm.openings.value = job.openings || 1;
     jobForm.workModel.value = job.workModel;
-    jobForm.contract.value = (job.details.split(" · ").pop() || "CLT").trim();
+    jobForm.contract.value = job.contract || (job.details.split(" · ").pop() || "CLT").trim();
   } else {
     eyebrow.textContent = "NOVA OPORTUNIDADE";
     heading.textContent = "Criar vaga";
@@ -4237,49 +6130,70 @@ jobForm.addEventListener("submit", (event) => {
   const area = formData.get("area").trim();
   const contract = formData.get("contract");
   const workModel = formData.get("workModel");
+  const openings = Math.max(1, Number(formData.get("openings")) || 1);
   const details = `${area} · ${contract}`;
 
   if (editingJobId) {
     const job = jobs.find((item) => item.id === editingJobId);
     if (job) {
+      const filled = jobFilledCount(job);
+      if (openings < filled) {
+        showToast("Posições", `Não é possível reduzir abaixo das ${filled} posições já preenchidas.`);
+        return;
+      }
+      const previousTitle = job.title;
       job.title = title;
       job.area = area;
       job.details = details;
       job.workModel = workModel;
+      job.contract = contract;
+      job.openings = openings;
+      if (previousTitle !== title) {
+        candidates.forEach((item) => {
+          if (item.vacancy === previousTitle) item.vacancy = title;
+        });
+        results.forEach((item) => {
+          if (item.jobId == null && item.vacancy === previousTitle) {
+            item.vacancy = title;
+          }
+        });
+      }
+      pushJobHistory(job, "Edição", "Dados principais atualizados");
     }
     editingJobId = null;
     jobDialog.close();
-    renderJobFilter();
-    renderJobs();
-    renderDashboard();
-    renderPipeline();
+    refreshJobViews(job);
     showToast("Vaga atualizada", `${title} foi salva.`);
     return;
   }
 
-  jobs.unshift({
+  const job = ensureJobDefaults({
     id: Date.now(),
     title,
     area,
     details,
     workModel,
+    contract,
+    openings,
+    filled: 0,
     status: "Rascunho",
     applicants: 0,
     initials: [],
     published: "Agora",
+    openedAt: TODAY_KEY,
+    hireBy: "2026-09-30",
+    manager: "Larissa Dias",
+    requester: "Camila Monteiro",
+    history: [["Criação", "Vaga criada como rascunho · agora"]],
   });
+  jobs.unshift(job);
 
   jobDialog.close();
   searchInput.value = "";
   statusFilter.value = "all";
-  renderJobFilter();
-  renderJobs();
-  renderDashboard();
+  refreshJobViews(job);
   goToPage("jobs");
-  showToast(
-    "Vaga criada com sucesso",
-    `${title} foi adicionada como rascunho.`,
-  );
+  showToast("Vaga criada com sucesso", `${title} foi adicionada como rascunho.`);
 });
 
 jobList.addEventListener("click", (event) => {
@@ -4294,28 +6208,8 @@ jobList.addEventListener("click", (event) => {
 
   if (menuAction) {
     event.stopPropagation();
-    const action = menuAction.dataset.jobAction;
     closeJobMenus();
-    if (action === "candidatos") {
-      goToPage("jobs", { jobTitle: job.title, jobBoard: true });
-      return;
-    }
-    if (action === "editar") {
-      openJobForm(job);
-      return;
-    }
-    if (action === "pausar") {
-      job.status = job.status === "Pausada" ? "Aberta" : "Pausada";
-      renderJobs();
-      showToast("Status da vaga", `${job.title} agora está ${job.status.toLowerCase()}.`);
-      return;
-    }
-    if (action === "encerrar") {
-      job.status = job.status === "Encerrada" ? "Aberta" : "Encerrada";
-      renderJobs();
-      showToast("Status da vaga", `${job.title} agora está ${job.status.toLowerCase()}.`);
-      return;
-    }
+    runJobAction(job, menuAction.dataset.jobAction);
     return;
   }
 
@@ -4332,7 +6226,7 @@ jobList.addEventListener("click", (event) => {
   jobList
     .querySelectorAll(".job-card")
     .forEach((item) => item.classList.toggle("selected", item === card));
-  goToPage("jobs", { jobTitle: job.title, jobBoard: true });
+  openJobDetails(job);
 });
 
 jobList.addEventListener("keydown", (event) => {
@@ -5586,17 +7480,24 @@ jobCandidateList.addEventListener("keydown", (event) => {
 
 candidateSearch.addEventListener("input", renderPipeline);
 jobFilter.addEventListener("change", renderPipeline);
-on("#pipelineStageFilter", "change", (event) => {
-  pipelineStageFilter = event.target.value;
-  renderPipeline();
+on("#pipelineFilterBtn", "click", openPipelineFiltersDialog);
+on("#closePipelineFiltersDialog", "click", closePipelineFiltersDialog);
+on("#pipelineFiltersClear", "click", () => {
+  clearPipelineAdvancedFilters({ render: false });
+  renderPipelineFilters();
 });
-on("#pipelineProfileFilter", "change", (event) => {
-  pipelineProfileFilter = event.target.value;
-  renderPipeline();
+on("#pipelineFiltersForm", "submit", applyPipelineFiltersFromDialog);
+on("#pipelineFiltersDialog", "click", (event) => {
+  if (event.target === event.currentTarget) closePipelineFiltersDialog();
 });
-on("#pipelineSlaFilter", "change", (event) => {
-  pipelineSlaFilter = event.target.value;
-  renderPipeline();
+on("#pipelineActiveFilters", "click", (event) => {
+  if (event.target.closest("#pipelineClearActiveFilters")) {
+    clearPipelineAdvancedFilters();
+    return;
+  }
+  const chip = event.target.closest("[data-clear-pipeline-filter]");
+  if (!chip) return;
+  clearSinglePipelineFilter(chip.dataset.clearPipelineFilter);
 });
 on("#pipelineBulkClear", "click", clearPipelineSelection);
 on("#pipelineBulkApply", "click", applyPipelineBulkStage);
@@ -5628,34 +7529,7 @@ kanban.addEventListener("click", (event) => {
     );
     if (!candidate) return;
     const action = actionButton.dataset.cardAction;
-    if (action === "comentarios") {
-      toggleCardPanel(candidate.id, "comments");
-      return;
-    }
-    if (action === "historico") {
-      toggleCardPanel(candidate.id, "history");
-      return;
-    }
-    if (action === "ocultar") {
-      hideCandidate(candidate);
-      return;
-    }
-    if (action === "curriculo") {
-      openCandidateResume(candidate);
-      return;
-    }
-    if (action === "ver-proposta") {
-      openOfferDialog(candidate, { compose: !candidate.proposal?.amount });
-      return;
-    }
-    if (action === "dispensar") {
-      dismissCandidate(candidate);
-      return;
-    }
-    if (action === "contratar") {
-      hireCandidate(candidate);
-      return;
-    }
+    runPipelineCandidateAction(candidate, action);
     return;
   }
 
@@ -5945,75 +7819,225 @@ document.querySelectorAll("[data-candidate-action]").forEach((button) => {
     const action = button.dataset.candidateAction;
     const candidate = candidates.find((item) => item.id === selectedCandidateId);
     if (!candidate) return;
-
-    if (action === "Entrevista") {
-      openInterviewScheduler(candidate);
-      return;
-    }
-
-    if (action === "Currículo") {
-      openCandidateResume(candidate);
-      return;
-    }
-
-    if (action === "Contactar") {
-      openContactDialog(candidate);
-      return;
-    }
-
-    if (action === "Bloquear") {
-      openBlockDialog(candidate);
-      return;
-    }
-
-    if (action === "Aprovar no banco") {
-      const exists = talents.some(
-        (item) => normalize(item.email) === normalize(candidate.email),
-      );
-      if (!exists) {
-        talents.unshift({
-          id: Date.now(),
-          name: candidate.name,
-          email: candidate.email,
-          status: "aprovados",
-          motivo: `Aprovado a partir da vaga ${candidate.vacancy}.`,
-        });
-        renderTalents();
-      }
-      showToast(
-        "Banco de talentos",
-        exists
-          ? `${candidate.name} já está no banco.`
-          : `${candidate.name} foi adicionado aos aprovados.`,
-      );
-      candidateDialog.close();
-      goToPage("talentos", { talentTab: "aprovados" });
-      return;
-    }
-
-    if (action === "Dispensar") {
-      dismissCandidate(candidate);
-      return;
-    }
-
-    if (action === "Ocultar") {
-      hideCandidate(candidate);
-      return;
-    }
-
-    if (action === "Gestor") {
-      openManagerDialog(candidate);
-      return;
-    }
-
-    showToast(action, `${action} selecionado para ${candidate.name}.`);
+    closeCandidateMoreActions();
+    runPipelineCandidateAction(candidate, action);
   });
 });
 
-document.querySelector("#toggleActivities").addEventListener("click", (event) => {
-  activityList.hidden = !activityList.hidden;
-  event.currentTarget.textContent = activityList.hidden ? "Mostrar" : "Ocultar";
+function closeCandidateMoreActions() {
+  const menu = document.querySelector("#candidateMoreActionsMenu");
+  const trigger = document.querySelector("#candidateMoreActionsBtn");
+  if (!menu || !trigger) return;
+  menu.hidden = true;
+  trigger.setAttribute("aria-expanded", "false");
+}
+
+function toggleCandidateMoreActions() {
+  const menu = document.querySelector("#candidateMoreActionsMenu");
+  const trigger = document.querySelector("#candidateMoreActionsBtn");
+  if (!menu || !trigger) return;
+  const opening = menu.hidden;
+  menu.hidden = !opening;
+  trigger.setAttribute("aria-expanded", String(opening));
+}
+
+function setCandidateActivityCollapsed(collapsed) {
+  const body = document.querySelector("#candidateModalBody");
+  const panel = document.querySelector("#activityPanel");
+  const reveal = document.querySelector("#showActivities");
+  if (!body || !panel || !reveal) return;
+  if (body.querySelector(".candidate-dossier-tabs")) {
+    reveal.hidden = true;
+    panel.hidden = selectedCandidateDossierTab !== "comments";
+    return;
+  }
+  body.classList.toggle("is-activity-collapsed", collapsed);
+  panel.hidden = collapsed;
+  reveal.hidden = !collapsed;
+  if (activityList) activityList.hidden = false;
+}
+
+on("#candidateDialog", "click", (event) => {
+  const tab = event.target.closest("[data-candidate-tab]");
+  if (tab) {
+    setCandidateDossierTab(tab.dataset.candidateTab);
+    return;
+  }
+  const candidate = candidates.find((item) => item.id === selectedCandidateId);
+  if (!candidate) return;
+
+  if (event.target.closest("#toggleArchivedComments")) {
+    showArchivedCandidateComments = !showArchivedCandidateComments;
+    renderCandidateDetails(candidate);
+    return;
+  }
+
+  const openInterviewBtn = event.target.closest("[data-open-interview]");
+  if (openInterviewBtn) {
+    const interview = interviews.find(
+      (item) => String(item.id) === openInterviewBtn.dataset.openInterview,
+    );
+    if (interview) openInterviewDetail(interview);
+    return;
+  }
+
+  const replaceDocBtn = event.target.closest("[data-replace-doc]");
+  if (replaceDocBtn) {
+    pendingReplaceDocId = replaceDocBtn.dataset.replaceDoc;
+    document.querySelector("#candidateDocumentInput")?.click();
+    return;
+  }
+
+  const statusDocBtn = event.target.closest("[data-doc-status]");
+  if (statusDocBtn) {
+    const doc = ensureCandidateDocuments(candidate).find(
+      (item) => item.id === statusDocBtn.dataset.docStatus,
+    );
+    if (!doc) return;
+    const cycle = ["Pendente", "Enviado", "Aprovado", "Rejeitado"];
+    const next = cycle[(cycle.indexOf(doc.status) + 1) % cycle.length];
+    doc.status = next;
+    candidate.history.unshift([
+      "Documento",
+      `${doc.name}: ${next} · Larissa Dias · agora`,
+    ]);
+    renderCandidateDetails(candidate);
+    return;
+  }
+
+  const editButton = event.target.closest("[data-edit-comment]");
+  const archiveButton = event.target.closest("[data-archive-comment]");
+  if (editButton) {
+    const comment = ensureCandidateComments(candidate).find(
+      (item) => String(item.id) === editButton.dataset.editComment,
+    );
+    if (!comment || comment.archived) return;
+    const nextMessage = window.prompt("Editar comentário:", comment.message);
+    if (!nextMessage?.trim()) return;
+    comment.message = nextMessage.trim();
+    comment.time = "Editado agora";
+    candidate.history.unshift(["Comentário editado", `${comment.message} · Larissa Dias`]);
+    renderCandidateDetails(candidate);
+    return;
+  }
+  if (archiveButton) {
+    const comment = ensureCandidateComments(candidate).find(
+      (item) => String(item.id) === archiveButton.dataset.archiveComment,
+    );
+    if (!comment) return;
+    comment.archived = !comment.archived;
+    candidate.history.unshift([
+      comment.archived ? "Comentário arquivado" : "Comentário restaurado",
+      `${comment.message} · Larissa Dias`,
+    ]);
+    renderCandidateDetails(candidate);
+  }
 });
+
+on("#candidateReplaceResume", "click", () => {
+  document.querySelector("#candidateReplaceResumeInput")?.click();
+});
+
+on("#candidateReplaceResumeInput", "change", (event) => {
+  const candidate = candidates.find((item) => item.id === selectedCandidateId);
+  const file = event.target.files?.[0];
+  if (!candidate || !file) return;
+  if (candidate.attachment && candidate.resumeFileName) {
+    if (
+      !window.confirm(
+        `Substituir o currículo atual (${candidate.resumeFileName})? A versão anterior ficará no histórico.`,
+      )
+    ) {
+      event.target.value = "";
+      return;
+    }
+    candidate.history.unshift([
+      "Currículo anterior",
+      `${candidate.resumeFileName} · arquivado · agora`,
+    ]);
+  }
+  candidate.attachment = true;
+  candidate.resumeFileName = file.name;
+  candidate.history.unshift(["Currículo atualizado", `${file.name} · agora`]);
+  renderCandidateDetails(candidate);
+  setCandidateDossierTab("resume");
+  renderPipeline();
+  event.target.value = "";
+  showToast("Currículo atualizado", file.name);
+});
+
+on("#candidateAddDocument", "click", () => {
+  pendingReplaceDocId = null;
+  document.querySelector("#candidateDocumentInput")?.click();
+});
+
+on("#candidateDocumentInput", "change", (event) => {
+  const candidate = candidates.find((item) => item.id === selectedCandidateId);
+  const file = event.target.files?.[0];
+  if (!candidate || !file) return;
+  const checklist = ensureCandidateDocuments(candidate);
+  if (pendingReplaceDocId) {
+    const doc = checklist.find((item) => item.id === pendingReplaceDocId);
+    pendingReplaceDocId = null;
+    if (!doc) {
+      event.target.value = "";
+      return;
+    }
+    if (doc.fileName) {
+      if (
+        !window.confirm(
+          `Substituir ${doc.name} (${doc.fileName})? A versão anterior ficará no histórico.`,
+        )
+      ) {
+        event.target.value = "";
+        return;
+      }
+      candidate.history.unshift([
+        "Documento anterior",
+        `${doc.name}: ${doc.fileName} · arquivado · agora`,
+      ]);
+    }
+    doc.fileName = file.name;
+    doc.status = "Enviado";
+    candidate.history.unshift(["Documento enviado", `${doc.name}: ${file.name} · agora`]);
+  } else {
+    candidate.documents = [...(candidate.documents || []), file.name];
+    const pendingDoc = checklist.find((item) => item.status === "Pendente") || checklist[0];
+    if (pendingDoc) {
+      pendingDoc.fileName = file.name;
+      pendingDoc.status = "Enviado";
+    }
+    candidate.history.unshift(["Documento adicionado", `${file.name} · agora`]);
+  }
+  renderCandidateDetails(candidate);
+  setCandidateDossierTab("documents");
+  event.target.value = "";
+  showToast("Documento atualizado", file.name);
+});
+
+on("#candidateMoreActionsBtn", "click", (event) => {
+  event.stopPropagation();
+  toggleCandidateMoreActions();
+});
+
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".candidate-more-wrap")) closeCandidateMoreActions();
+});
+
+document.querySelector("#toggleActivities").addEventListener("click", () => {
+  setCandidateActivityCollapsed(true);
+});
+
+on("#showActivities", "click", () => {
+  setCandidateActivityCollapsed(false);
+});
+
+on("#moveStageForm", "submit", confirmMoveStage);
+on("#closeMoveStageDialog", "click", () => document.querySelector("#moveStageDialog")?.close());
+on("#cancelMoveStage", "click", () => document.querySelector("#moveStageDialog")?.close());
+on("#pipelineActionForm", "submit", confirmPipelineAction);
+on("#closePipelineActionDialog", "click", () => document.querySelector("#pipelineActionDialog")?.close());
+on("#cancelPipelineAction", "click", () => document.querySelector("#pipelineActionDialog")?.close());
 
 document.querySelector("#commentForm").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -6025,6 +8049,7 @@ document.querySelector("#commentForm").addEventListener("submit", (event) => {
   addCandidateComment(candidate, message);
   input.value = "";
   renderCandidateDetails(candidate);
+  setCandidateDossierTab("comments");
   renderPipeline();
   showToast("Comentário enviado", "A atividade foi registrada no histórico.");
 });
@@ -6428,8 +8453,11 @@ on("#talentSuggestPanel", "click", (event) => {
 });
 
 on("#slaOverdueCounter", "click", () => {
-  const overdue = candidates.filter((c) => slaStatus(c).overdue);
-  showToast("SLA vencido", `${overdue.length} candidato(s) acima do prazo da etapa.`);
+  pipelineSlaFilter = "overdue";
+  pipelinePendingFilter = "all";
+  renderPipelineFilters();
+  renderPipeline();
+  showToast("SLA vencido", "Filtro aplicado: somente candidatos atrasados na etapa.");
 });
 
 on("#closeTestPreview", "click", () => document.querySelector("#testPreviewDialog").close());
@@ -6466,6 +8494,7 @@ on("#gestorPage", "click", (event) => {
 });
 
 renderJobFilter();
+jobs.forEach(syncJobMetrics);
 renderJobs();
 renderPipeline();
 renderDashboard();
@@ -7047,11 +9076,52 @@ function clearCandidateJobFilters() {
   fillCandidateFiltersForm(defaultCandidateJobFilters());
 }
 
+function candidateJobAvailability(job, alreadyApplied = false) {
+  if (alreadyApplied) {
+    return {
+      label: "Já candidatado",
+      message: "",
+      disabled: true,
+      tone: "applied",
+    };
+  }
+  if (!jobIsVisibleInPortal(job)) {
+    return {
+      label: "Candidatar-se",
+      message: "Esta vaga não está mais disponível.",
+      disabled: true,
+      tone: "unavailable",
+    };
+  }
+  if (job.status === "Pausada") {
+    return {
+      label: "Candidatar-se",
+      message: "Esta vaga está temporariamente pausada.",
+      disabled: true,
+      tone: "paused",
+    };
+  }
+  if (jobRemainingCount(job) === 0) {
+    return {
+      label: "Candidatar-se",
+      message: "Todas as posições desta vaga já foram preenchidas.",
+      disabled: true,
+      tone: "filled",
+    };
+  }
+  return {
+    label: "Candidatar-se",
+    message: "",
+    disabled: false,
+    tone: "open",
+  };
+}
+
 function publicJobs() {
   const query = normalize(document.querySelector("#candidateJobSearch")?.value || "");
   const filters = candidateJobFilters;
   return jobs.filter((job) => {
-    if (job.status !== "Aberta" && job.status !== "Pausada") return false;
+    if (!jobIsVisibleInPortal(job)) return false;
     if (filters.contract !== "all" && (job.contract || "CLT") !== filters.contract) return false;
     if (filters.workModel !== "all" && job.workModel !== filters.workModel) return false;
     if (filters.seniority !== "all" && (job.seniority || "") !== filters.seniority) return false;
@@ -7137,7 +9207,7 @@ function setCandidatePortalView(view, options = {}) {
     "apply-success": ["Candidatura enviada", "Seu processo já está em andamento."],
   };
   if (view === "detail") {
-    const job = jobs.find((item) => item.id === selectedPublicJobId) || publicJobs()[0];
+    const job = jobs.find((item) => item.id === selectedPublicJobId);
     if (job && pageTitle) pageTitle.textContent = job.title;
     if (pageSubtitle) pageSubtitle.textContent = companies[0]?.name || "Player Contabilidade";
     if (jobsIntro) jobsIntro.hidden = true;
@@ -7218,7 +9288,12 @@ function candidateMetaGrid(job, inline = false) {
 
 function getCandidateBulkApplyJobs() {
   const appliedJobIds = new Set(candidatePortalUser.applications.map((app) => app.jobId));
-  return jobs.filter((job) => candidateSelectedJobs.has(job.id) && !appliedJobIds.has(job.id));
+  return jobs.filter(
+    (job) =>
+      candidateSelectedJobs.has(job.id) &&
+      jobAcceptsApplications(job) &&
+      !appliedJobIds.has(job.id),
+  );
 }
 
 function getCandidateApplyJobs() {
@@ -7226,7 +9301,12 @@ function getCandidateApplyJobs() {
   const appliedJobIds = new Set(candidatePortalUser.applications.map((app) => app.jobId));
   return jobIds
     .map((jobId) => jobs.find((job) => job.id === jobId))
-    .filter((job) => job && !appliedJobIds.has(job.id));
+    .filter(
+      (job) =>
+        job &&
+        jobAcceptsApplications(job) &&
+        !appliedJobIds.has(job.id),
+    );
 }
 
 function updateCandidateBulkApplyButton() {
@@ -7261,7 +9341,15 @@ function renderCandidateJobList() {
     .map((job) => {
       const match = computeMatch(job, profile);
       const candidateApplication = candidatePortalUser.applications.find((app) => app.jobId === job.id);
-      if (candidateApplication) candidateSelectedJobs.delete(job.id);
+      const availability = candidateJobAvailability(job, Boolean(candidateApplication));
+      const canSelect = jobAcceptsApplications(job) && !candidateApplication;
+      if (!canSelect) candidateSelectedJobs.delete(job.id);
+      const availabilityBadge =
+        availability.tone === "paused" || availability.tone === "filled"
+          ? `<span class="candidate-job-availability is-${availability.tone}">${
+              availability.tone === "paused" ? "Pausada" : "Vagas preenchidas"
+            }</span>`
+          : "";
       return `
         <article class="candidate-job-card${candidateSelectedJobs.has(job.id) ? " is-selected" : ""}" data-public-job="${job.id}" tabindex="0" role="button">
           <div class="candidate-job-body">
@@ -7271,9 +9359,10 @@ function renderCandidateJobList() {
                 <span>${escapeHtml(company)}</span>
               </div>
               <div class="candidate-job-card-actions">
+                ${availabilityBadge}
                 <span class="candidate-job-match">${match.total}% match</span>
                 <label class="candidate-job-check" aria-label="Selecionar vaga">
-                  <input type="checkbox" tabindex="-1" data-select-job="${job.id}" ${candidateSelectedJobs.has(job.id) ? "checked" : ""} ${candidateApplication ? "disabled" : ""} />
+                  <input type="checkbox" tabindex="-1" data-select-job="${job.id}" ${candidateSelectedJobs.has(job.id) ? "checked" : ""} ${canSelect ? "" : "disabled"} />
                 </label>
               </div>
             </div>
@@ -7282,7 +9371,11 @@ function renderCandidateJobList() {
             <div class="candidate-job-card-foot">
               <span class="candidate-job-date">Publicada em: ${formatShortDate(job.publishedAt)}</span>
               <span class="candidate-job-application-status ${candidateApplication ? "is-applied" : "is-available"}">
-                ${candidateApplication ? `Candidatura enviada · ${escapeHtml(candidateApplication.stage)}` : "Você ainda não se candidatou"}
+                ${
+                  candidateApplication
+                    ? `Candidatura enviada · ${escapeHtml(candidateApplication.stage)}`
+                    : availability.message || "Você ainda não se candidatou"
+                }
               </span>
             </div>
           </div>
@@ -7294,11 +9387,23 @@ function renderCandidateJobList() {
 }
 
 function renderCandidateJobDetail() {
-  const job = jobs.find((item) => item.id === selectedPublicJobId) || publicJobs()[0];
-  if (!job) return;
+  const job = jobs.find((item) => item.id === selectedPublicJobId);
+  if (!job || !jobIsVisibleInPortal(job)) {
+    selectedPublicJobId = null;
+    setCandidatePortalView("jobs");
+    showToast("Vaga indisponível", "Esta vaga não está mais disponível.");
+    return;
+  }
   selectedPublicJobId = job.id;
   const company = companies[0]?.name || "Player Contabilidade";
   const already = candidatePortalUser.applications.some((app) => app.jobId === job.id);
+  const availability = candidateJobAvailability(job, already);
+  const availabilityBadge =
+    availability.tone === "paused" || availability.tone === "filled"
+      ? `<span class="candidate-job-availability is-${availability.tone}">${
+          availability.tone === "paused" ? "Pausada" : "Vagas preenchidas"
+        }</span>`
+      : "";
   const match = computeMatch(job, getCandidateMatchProfile());
   const matchHint =
     (candidatePortalUser.skills || []).length === 0
@@ -7311,6 +9416,7 @@ function renderCandidateJobDetail() {
         <div>
           <small>${escapeHtml(company)}</small>
           <h1>${escapeHtml(job.title)}</h1>
+          ${availabilityBadge}
           ${candidateMetaGrid(job, true)}
         </div>
       </div>
@@ -7327,9 +9433,10 @@ function renderCandidateJobDetail() {
           ${match.missing.length ? `<p class="candidate-match-missing">Requisitos em falta: ${escapeHtml(match.missing.join(", "))}</p>` : ""}
         </article>
         ${candidateJobDatePanel(job)}
-        <button class="candidate-apply-btn${already ? " is-applied" : ""}" type="button" id="candidateApplyBtn" ${already ? "disabled" : ""}>
-          ${already ? "Já candidatado" : "Candidatar-se"}
+        <button class="candidate-apply-btn${already ? " is-applied" : ""}" type="button" id="candidateApplyBtn" ${availability.disabled ? "disabled" : ""}>
+          ${availability.label}
         </button>
+        ${availability.message ? `<p class="candidate-job-unavailable-copy">${escapeHtml(availability.message)}</p>` : ""}
       </aside>
       <article class="candidate-panel candidate-panel-content">
         <div class="candidate-detail-sections">
@@ -7941,6 +10048,12 @@ function openCandidateApplyView() {
     showToast("Candidatura", "Você já se candidatou a esta vaga.");
     return;
   }
+  if (!jobAcceptsApplications(job)) {
+    const availability = candidateJobAvailability(job, false);
+    showToast("Candidatura indisponível", availability.message);
+    renderCandidateJobDetail();
+    return;
+  }
   candidateApplyJobIds = [job.id];
   if (candidatePortalUser.resumeFileName && !candidateApplyResume.name) {
     candidateApplyResume = { name: candidatePortalUser.resumeFileName, size: 0 };
@@ -7960,6 +10073,25 @@ function openCandidateBulkApplyView() {
 }
 
 function submitCandidateApplication() {
+  const requestedJobs = candidateApplyJobIds
+    .map((jobId) => jobs.find((job) => job.id === jobId))
+    .filter(Boolean);
+  const unavailableJobs = requestedJobs.filter(
+    (job) => !jobAcceptsApplications(job),
+  );
+  if (unavailableJobs.length) {
+    candidateApplyJobIds = requestedJobs
+      .filter(jobAcceptsApplications)
+      .map((job) => job.id);
+    showToast(
+      "Vaga indisponível",
+      unavailableJobs.length === 1
+        ? `${unavailableJobs[0].title} não aceita mais candidaturas.`
+        : `${unavailableJobs.length} vagas não aceitam mais candidaturas.`,
+    );
+    setCandidatePortalView(candidateApplyJobIds.length ? "apply" : "jobs");
+    return;
+  }
   const applyJobs = getCandidateApplyJobs();
   if (!applyJobs.length) return;
   const consent = document.querySelector("#candidateApplyConsent");
@@ -8010,8 +10142,10 @@ function submitCandidateApplication() {
         activities: [["LL", candidatePortalUser.name, "Enviou a candidatura", "Agora"]],
       });
     }
+    syncJobMetrics(job);
   });
   renderPipeline();
+  renderJobs();
   renderDashboard();
   candidateSelectedJobs.clear();
   setCandidatePortalView("apps");
