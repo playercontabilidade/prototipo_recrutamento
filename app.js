@@ -1498,8 +1498,8 @@ const ID_ALIASES = {
   datePickerGrid: "datePickerGrid",
   timeSlotGrid: "timeSlotGrid",
   interviewCandidateLabel: "interviewCandidateLabel",
-  interviewType: "interviewType",
-  interviewDuration: "interviewDuration",
+  interviewModality: "interviewModality",
+  interviewStage: "interviewStage",
   interviewLink: "interviewLink",
   interviewLocation: "interviewLocation",
   interviewNotes: "interviewNotes",
@@ -1887,6 +1887,10 @@ const selectedPipelineCandidateIds = new Set();
 let selectedActionCandidate = null;
 let interviewDate = "";
 let interviewTime = "";
+let interviewTimeEnd = "";
+let interviewFormMode = "create";
+let editingInterviewId = null;
+let pendingInterviewForceConflict = false;
 let datePickerCursor = new Date(2026, 7, 1);
 const TODAY_KEY = "2026-08-27";
 let selectedFunnelStage = "Proposta";
@@ -4831,7 +4835,7 @@ function formatBRDate(key) {
 }
 
 function closeOverlayDialogs() {
-  [datePickerDialog, timePickerDialog, interviewDialog, contactDialog, offerFormDialog, offerDialog, dismissDialog, lgpdDialog, bookingDialog, document.querySelector("#blockDialog"), document.querySelector("#moveStageDialog"), document.querySelector("#pipelineActionDialog"), document.querySelector("#pipelineFiltersDialog")].forEach(
+  [datePickerDialog, timePickerDialog, interviewDialog, contactDialog, offerFormDialog, offerDialog, dismissDialog, lgpdDialog, bookingDialog, document.querySelector("#blockDialog"), document.querySelector("#moveStageDialog"), document.querySelector("#pipelineActionDialog"), document.querySelector("#pipelineFiltersDialog"), document.querySelector("#interviewConflictDialog"), document.querySelector("#interviewCancelDialog"), document.querySelector("#candidateRescheduleDialog")].forEach(
     (dialog) => {
       if (dialog?.open) dialog.close();
     },
@@ -5145,6 +5149,209 @@ function syncInterviewPickerLabels() {
     ? formatBRDate(interviewDate)
     : "Escolher data";
   document.querySelector("#interviewTimeLabel").textContent = interviewTime || "Escolher horário";
+  const endInput = document.querySelector("#interviewTimeEndInput");
+  if (endInput && interviewTimeEnd) endInput.value = interviewTimeEnd;
+}
+
+function interviewInterviewerOptions() {
+  return [
+    ...new Set([
+      ...managers.map((item) => item.name),
+      ...settingsManagers.map((item) => item.name),
+      "Mariana Costa",
+    ]),
+  ];
+}
+
+function fillInterviewSheetOptions(selected = interviewSheets[0]) {
+  const select = document.querySelector("#interviewSheet");
+  if (!select) return;
+  select.innerHTML = interviewSheets
+    .map(
+      (sheet) =>
+        `<option value="${escapeHtml(sheet)}"${sheet === selected ? " selected" : ""}>${escapeHtml(sheet)}</option>`,
+    )
+    .join("");
+}
+
+function fillInterviewStageOptions(selected = "") {
+  const select = document.querySelector("#interviewStage");
+  if (!select) return;
+  const value = selected || "Entrevista RH";
+  select.innerHTML = pipelineStages
+    .map(
+      (stage) =>
+        `<option value="${escapeHtml(stage)}"${stage === value ? " selected" : ""}>${escapeHtml(stage)}</option>`,
+    )
+    .join("");
+}
+
+function fillInterviewInterviewers(selected = ["Larissa Dias"]) {
+  const list = document.querySelector("#interviewInterviewersList");
+  if (!list) return;
+  const chosen = new Set(selected);
+  list.innerHTML = interviewInterviewerOptions()
+    .map(
+      (name) => `
+        <label class="interview-interviewer-option">
+          <input type="checkbox" name="interviewInterviewer" value="${escapeHtml(name)}"${chosen.has(name) ? " checked" : ""} />
+          <span>${escapeHtml(name)}</span>
+        </label>
+      `,
+    )
+    .join("");
+}
+
+function syncInterviewModalityFields() {
+  const modality = document.querySelector("#interviewModality")?.value || "Videochamada";
+  const locationWrap = document.querySelector("#interviewLocationWrap");
+  const linkWrap = document.querySelector("#interviewLinkWrap");
+  if (locationWrap) locationWrap.hidden = modality !== "Presencial";
+  if (linkWrap) linkWrap.hidden = modality === "Presencial";
+}
+
+function defaultInterviewTimeEnd(startTime) {
+  if (!startTime) return "";
+  const [hours, minutes] = startTime.split(":").map(Number);
+  const total = hours * 60 + minutes + 60;
+  const endHours = Math.floor(total / 60) % 24;
+  const endMinutes = total % 60;
+  return `${String(endHours).padStart(2, "0")}:${String(endMinutes).padStart(2, "0")}`;
+}
+
+function readInterviewFormDraft() {
+  const candidate =
+    candidates.find((item) => item.id === selectedCandidateId) || selectedActionCandidate;
+  const endValue =
+    document.querySelector("#interviewTimeEndInput")?.value || interviewTimeEnd || "";
+  interviewTimeEnd = endValue;
+  const interviewers = [
+    ...document.querySelectorAll("[name='interviewInterviewer']:checked"),
+  ].map((input) => input.value);
+  return {
+    candidateId: candidate?.id,
+    name: candidate?.name,
+    vacancy:
+      document.querySelector("#interviewVacancy")?.value || candidate?.vacancy || "",
+    stage: document.querySelector("#interviewStage")?.value || candidate?.stage || "",
+    modality: document.querySelector("#interviewModality")?.value || "Videochamada",
+    at: interviewDate && interviewTime ? `${interviewDate}T${interviewTime}:00` : "",
+    endAt: interviewDate && endValue ? `${interviewDate}T${endValue}:00` : "",
+    interviewers,
+    location: document.querySelector("#interviewLocation")?.value.trim() || "",
+    link: document.querySelector("#interviewLink")?.value.trim() || "",
+    sheet: document.querySelector("#interviewSheet")?.value || interviewSheets[0],
+    notes: document.querySelector("#interviewNotes")?.value.trim() || "",
+    candidateInstructions:
+      document.querySelector("#interviewCandidateInstructions")?.value.trim() || "",
+    sendInvite: Boolean(document.querySelector("#interviewSendInvite")?.checked),
+  };
+}
+
+function openInterviewConflictDialog(conflicts) {
+  const list = document.querySelector("#interviewConflictList");
+  if (list) {
+    list.innerHTML = conflicts
+      .map(
+        (item) => `
+          <li>
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${escapeHtml(item.modality || item.stage || "")} · ${formatInterviewWhen(item.at)}–${(item.endAt || "").slice(11, 16)}</span>
+            <span>${escapeHtml((item.interviewers || []).join(", "))}</span>
+          </li>
+        `,
+      )
+      .join("");
+  }
+  document.querySelector("#interviewConflictDialog")?.showModal();
+}
+
+function refreshInterviewSurfaces(item) {
+  renderAgenda();
+  renderPipeline();
+  if (item && selectedInterviewDetailId === item.id) renderInterviewDetail();
+  const candidate = candidates.find(
+    (entry) => entry.id === (item?.candidateId || selectedCandidateId),
+  );
+  if (candidateDialog?.open && candidate) renderCandidateDetails(candidate);
+  if (typeof renderCandidateInterviews === "function") renderCandidateInterviews();
+}
+
+function openInterviewScheduler(candidate) {
+  interviewFormMode = "create";
+  editingInterviewId = null;
+  pendingInterviewForceConflict = false;
+  selectedActionCandidate = candidate;
+  selectedCandidateId = candidate.id;
+  interviewDate = "";
+  interviewTime = "";
+  interviewTimeEnd = "";
+  document.querySelector("#interviewDialogTitle").textContent = "Agendar entrevista";
+  document.querySelector("#interviewSubmitBtn").textContent = "Agendar";
+  document.querySelector("#interviewCandidateLabel").textContent =
+    `${candidate.name} · ${candidate.vacancy}`;
+  document.querySelector("#interviewVacancy").value = candidate.vacancy || "";
+  fillInterviewStageOptions(candidate.stage || "Entrevista RH");
+  document.querySelector("#interviewModality").value = "Videochamada";
+  fillInterviewInterviewers([candidate.owner || candidate.manager || "Larissa Dias"]);
+  fillInterviewSheetOptions(interviewSheets[0]);
+  document.querySelector("#interviewLink").value = "";
+  document.querySelector("#interviewLocation").value = "";
+  document.querySelector("#interviewNotes").value = "";
+  document.querySelector("#interviewCandidateInstructions").value = "";
+  document.querySelector("#interviewTimeEndInput").value = "";
+  document.querySelector("#interviewSendInvite").checked = true;
+  const allowBooking = document.querySelector("#interviewAllowBooking");
+  if (allowBooking) allowBooking.checked = false;
+  const bookingRow = document.querySelector("#bookingLinkRow");
+  if (bookingRow) bookingRow.hidden = true;
+  const bookingLink = document.querySelector("#interviewBookingLink");
+  if (bookingLink) bookingLink.value = `https://portalrh.local/agendar/${candidate.id}`;
+  syncInterviewModalityFields();
+  syncInterviewPickerLabels();
+  interviewDialog.showModal();
+}
+
+function openInterviewEditor(item, mode = "edit") {
+  const candidate =
+    candidates.find((entry) => entry.id === item.candidateId) ||
+    ({
+      id: item.candidateId,
+      name: item.name,
+      vacancy: item.vacancy,
+      stage: item.stage,
+      email: "",
+    });
+  interviewFormMode = mode;
+  editingInterviewId = item.id;
+  pendingInterviewForceConflict = false;
+  selectedActionCandidate = candidate;
+  selectedCandidateId = candidate.id;
+  interviewDate = dayKey(item.at);
+  interviewTime = String(item.at).slice(11, 16);
+  interviewTimeEnd = String(item.endAt || "").slice(11, 16) || defaultInterviewTimeEnd(interviewTime);
+  document.querySelector("#interviewDialogTitle").textContent =
+    mode === "reschedule" ? "Reagendar entrevista" : "Editar entrevista";
+  document.querySelector("#interviewSubmitBtn").textContent =
+    mode === "reschedule" ? "Reagendar" : "Salvar";
+  document.querySelector("#interviewCandidateLabel").textContent =
+    `${item.name} · ${item.vacancy}`;
+  document.querySelector("#interviewVacancy").value = item.vacancy || "";
+  fillInterviewStageOptions(item.stage || candidate.stage || "Entrevista RH");
+  document.querySelector("#interviewModality").value = item.modality || "Videochamada";
+  fillInterviewInterviewers(item.interviewers || ["Larissa Dias"]);
+  fillInterviewSheetOptions(item.sheet || interviewSheets[0]);
+  document.querySelector("#interviewLink").value = item.link || "";
+  document.querySelector("#interviewLocation").value = item.location || "";
+  document.querySelector("#interviewNotes").value = item.notes || "";
+  document.querySelector("#interviewCandidateInstructions").value =
+    item.candidateInstructions || "";
+  document.querySelector("#interviewTimeEndInput").value = interviewTimeEnd;
+  document.querySelector("#interviewSendInvite").checked =
+    mode === "reschedule" ? true : Boolean(item.inviteSent);
+  syncInterviewModalityFields();
+  syncInterviewPickerLabels();
+  interviewDialog.showModal();
 }
 
 function renderDatePicker() {
@@ -5182,30 +5389,6 @@ function renderTimeSlots() {
   document.querySelector("#timeSlotGrid").innerHTML = slots.join("");
 }
 
-function openInterviewScheduler(candidate) {
-  selectedActionCandidate = candidate;
-  selectedCandidateId = candidate.id;
-  interviewDate = "";
-  interviewTime = "";
-  selectedBookingSlot = "";
-  document.querySelector("#interviewCandidateLabel").textContent =
-    `${candidate.name} · ${candidate.vacancy}`;
-  document.querySelector("#interviewType").value = "Entrevista RH";
-  document.querySelector("#interviewDuration").value = "60";
-  document.querySelector("#interviewLink").value = "";
-  document.querySelector("#interviewLocation").value = "";
-  document.querySelector("#interviewNotes").value = "";
-  document.querySelector("#interviewSendInvite").checked = true;
-  const allowBooking = document.querySelector("#interviewAllowBooking");
-  if (allowBooking) allowBooking.checked = false;
-  const bookingRow = document.querySelector("#bookingLinkRow");
-  if (bookingRow) bookingRow.hidden = true;
-  const bookingLink = document.querySelector("#interviewBookingLink");
-  if (bookingLink) bookingLink.value = `https://portalrh.local/agendar/${candidate.id}`;
-  syncInterviewPickerLabels();
-  interviewDialog.showModal();
-}
-
 function syncBookingAvailability() {
   const enabled = document.querySelector("#interviewAllowBooking")?.checked;
   const row = document.querySelector("#bookingLinkRow");
@@ -5214,7 +5397,7 @@ function syncBookingAvailability() {
 
 function renderBookingSlots() {
   const slots = ["09:00", "10:30", "14:00", "15:30", "16:00"];
-  const duration = document.querySelector("#interviewDuration")?.value || "60";
+  const duration = "60";
   document.querySelector("#bookingSlotGrid").innerHTML = slots
     .map((slot) => {
       const selected = slot === selectedBookingSlot ? " is-selected" : "";
@@ -5697,69 +5880,193 @@ function openContactDialog(candidate) {
 
 function submitInterview(event) {
   event.preventDefault();
-  const candidate = candidates.find((item) => item.id === selectedCandidateId) || selectedActionCandidate;
-  if (!candidate) return;
+  const candidate =
+    candidates.find((item) => item.id === selectedCandidateId) || selectedActionCandidate;
+  if (!candidate && interviewFormMode === "create") return;
 
-  const type = document.querySelector("#interviewType").value;
-  const duration = document.querySelector("#interviewDuration").value;
-  const link = document.querySelector("#interviewLink").value.trim();
-  const location = document.querySelector("#interviewLocation").value.trim();
-  const notes = document.querySelector("#interviewNotes").value.trim();
-  const sendInvite = document.querySelector("#interviewSendInvite").checked;
-
-  if (!interviewDate || !interviewTime) {
-    showToast("Agenda incompleta", "Escolha a data e o horário da entrevista.");
+  const draft = readInterviewFormDraft();
+  if (!draft.at || !draft.endAt) {
+    showToast("Agenda incompleta", "Escolha a data e os horários de início e fim.");
     return;
   }
-  if (!link && !location) {
-    showToast("Agenda incompleta", "Informe o link da reunião ou o local presencial.");
+  if (new Date(draft.at) >= new Date(draft.endAt)) {
+    showToast("Agenda inválida", "O horário final deve ser depois do início.");
+    return;
+  }
+  if (!draft.interviewers.length) {
+    showToast("Agenda incompleta", "Selecione ao menos um entrevistador.");
+    return;
+  }
+  if (draft.modality === "Presencial" && !draft.location) {
+    showToast("Agenda incompleta", "Informe o local da entrevista presencial.");
+    return;
+  }
+  if (draft.modality === "Videochamada" && !draft.link) {
+    showToast("Agenda incompleta", "Informe o link da videochamada.");
     return;
   }
 
-  const at = `${interviewDate}T${interviewTime}:00`;
+  if (!pendingInterviewForceConflict) {
+    const conflicts = findInterviewConflicts(draft, { ignoreId: editingInterviewId });
+    if (conflicts.length) {
+      openInterviewConflictDialog(conflicts);
+      return;
+    }
+  }
+
+  const durationMinutes = Math.max(
+    15,
+    Math.round((new Date(draft.endAt) - new Date(draft.at)) / 60000),
+  );
+  const statusFromInvite = draft.sendInvite ? "Aguardando confirmação" : "Agendada";
+  const existing =
+    editingInterviewId != null
+      ? interviews.find((item) => item.id === editingInterviewId)
+      : null;
+
+  if (interviewFormMode === "edit" && existing) {
+    const intervalChanged = existing.at !== draft.at || existing.endAt !== draft.endAt;
+    Object.assign(existing, {
+      name: draft.name || existing.name,
+      vacancy: draft.vacancy || existing.vacancy,
+      stage: draft.stage,
+      modality: draft.modality,
+      at: draft.at,
+      endAt: draft.endAt,
+      interviewers: draft.interviewers,
+      location: draft.location,
+      link: draft.link,
+      meet: meetFromLink(draft.link),
+      sheet: draft.sheet,
+      notes: draft.notes,
+      candidateInstructions: draft.candidateInstructions,
+      duration: durationMinutes,
+      inviteSent: draft.sendInvite || existing.inviteSent,
+      type: draft.stage,
+      owner: draft.interviewers[0] || existing.owner,
+    });
+    if (intervalChanged && interviewFormMode === "edit") {
+      /* edit sem exigir novo status */
+    }
+    if (candidate) {
+      candidate.history.unshift([
+        "Entrevista editada",
+        `${draft.modality} · ${formatInterviewWhen(draft.at)} · agora`,
+      ]);
+    }
+    pendingInterviewForceConflict = false;
+    document.querySelector("#interviewConflictDialog")?.close();
+    closeOverlayDialogs();
+    refreshInterviewSurfaces(existing);
+    showToast("Entrevista atualizada", `${existing.name} · ${formatInterviewWhen(existing.at)}.`);
+    return;
+  }
+
+  if (interviewFormMode === "reschedule" && existing) {
+    Object.assign(existing, {
+      stage: draft.stage,
+      modality: draft.modality,
+      at: draft.at,
+      endAt: draft.endAt,
+      interviewers: draft.interviewers,
+      location: draft.location,
+      link: draft.link,
+      meet: meetFromLink(draft.link),
+      sheet: draft.sheet,
+      notes: draft.notes,
+      candidateInstructions: draft.candidateInstructions,
+      duration: durationMinutes,
+      status: statusFromInvite,
+      inviteSent: draft.sendInvite,
+      waiting: draft.sendInvite,
+      rescheduleRequest: null,
+      type: draft.stage,
+      owner: draft.interviewers[0] || existing.owner,
+    });
+    if (candidate) {
+      candidate.history.unshift([
+        "Entrevista reagendada",
+        `${formatInterviewWhen(draft.at)} · agora`,
+      ]);
+      candidate.activities.unshift([
+        "LD",
+        "Larissa Dias",
+        `Reagendou entrevista para ${formatInterviewWhen(draft.at)}`,
+        "Agora",
+      ]);
+    }
+    pendingInterviewForceConflict = false;
+    document.querySelector("#interviewConflictDialog")?.close();
+    closeOverlayDialogs();
+    refreshInterviewSurfaces(existing);
+    showToast(
+      "Entrevista reagendada",
+      draft.sendInvite
+        ? `Convite enviado para ${candidate?.email || existing.name}.`
+        : `${formatInterviewWhen(existing.at)}.`,
+    );
+    return;
+  }
+
   const nextId = Math.max(...interviews.map((item) => item.id), 600) + 1;
-  interviews.push({
+  const created = normalizeInterviewRecord({
     id: nextId,
-    name: candidate.name,
-    vacancy: candidate.vacancy,
-    at,
-    type,
-    status: "Agendada",
-    waiting: false,
-    meet: meetFromLink(link),
-    location,
-    notes,
-    duration: Number(duration) || 60,
-    candidateId: candidate.id,
+    name: draft.name || candidate.name,
+    vacancy: draft.vacancy || candidate.vacancy,
+    candidateId: draft.candidateId || candidate.id,
+    stage: draft.stage,
+    modality: draft.modality,
+    at: draft.at,
+    endAt: draft.endAt,
+    interviewers: draft.interviewers,
+    location: draft.location,
+    link: draft.link,
+    meet: meetFromLink(draft.link),
+    sheet: draft.sheet,
+    notes: draft.notes,
+    candidateInstructions: draft.candidateInstructions,
+    status: statusFromInvite,
+    waiting: draft.sendInvite,
+    inviteSent: draft.sendInvite,
+    reminderSent: false,
+    rescheduleRequest: null,
+    cancelReason: "",
+    startedAt: "",
+    duration: durationMinutes,
+    type: draft.stage,
+    owner: draft.interviewers[0] || "Larissa Dias",
   });
+  interviews.push(created);
 
-  if (candidate.stage === "Triagem") {
+  if (candidate?.stage === "Triagem") {
     updateCandidateStage(candidate, "Entrevista RH");
   }
 
-  candidate.history.unshift([
-    type,
-    `${formatInterviewWhen(at)}${location ? ` · ${location}` : ""}`,
-  ]);
-  candidate.activities.unshift([
-    "LD",
-    "Larissa Dias",
-    `Agendou ${type.toLowerCase()} para ${formatInterviewWhen(at)}`,
-    "Agora",
-  ]);
+  if (candidate) {
+    candidate.history.unshift([
+      draft.stage || "Entrevista",
+      `${formatInterviewWhen(draft.at)}${draft.location ? ` · ${draft.location}` : ""}`,
+    ]);
+    candidate.activities.unshift([
+      "LD",
+      "Larissa Dias",
+      `Agendou entrevista (${draft.modality}) para ${formatInterviewWhen(draft.at)}`,
+      "Agora",
+    ]);
+  }
 
+  pendingInterviewForceConflict = false;
+  document.querySelector("#interviewConflictDialog")?.close();
   closeOverlayDialogs();
-  renderAgenda();
-  renderPipeline();
-  if (candidateDialog.open && selectedCandidateId === candidate.id) {
-    renderCandidateDetails(candidate);
+  refreshInterviewSurfaces(created);
+  if (candidateDialog.open && candidate) {
     setCandidateDossierTab("interviews");
   }
   showToast(
     "Entrevista agendada",
-    sendInvite
+    draft.sendInvite
       ? `Convite enviado para ${candidate.email}.`
-      : `${type} marcada para ${formatInterviewWhen(at)}.`,
+      : `${draft.modality} marcada para ${formatInterviewWhen(draft.at)}.`,
   );
 }
 
@@ -7679,8 +7986,30 @@ document.querySelector("#timeSlotGrid").addEventListener("click", (event) => {
   const slot = event.target.closest("[data-pick-time]");
   if (!slot) return;
   interviewTime = slot.dataset.pickTime;
+  if (!interviewTimeEnd || interviewTimeEnd <= interviewTime) {
+    interviewTimeEnd = defaultInterviewTimeEnd(interviewTime);
+  }
   syncInterviewPickerLabels();
   timePickerDialog.close();
+});
+
+on("#interviewModality", "change", syncInterviewModalityFields);
+on("#interviewTimeEndInput", "change", (event) => {
+  interviewTimeEnd = event.target.value || "";
+});
+on("#closeInterviewConflict", "click", () =>
+  document.querySelector("#interviewConflictDialog")?.close(),
+);
+on("#cancelInterviewConflict", "click", () =>
+  document.querySelector("#interviewConflictDialog")?.close(),
+);
+on("#forceInterviewSave", "click", () => {
+  pendingInterviewForceConflict = true;
+  document.querySelector("#interviewConflictDialog")?.close();
+  submitInterview(new Event("submit", { cancelable: true }));
+});
+on("#interviewConflictDialog", "click", (event) => {
+  if (event.target.id === "interviewConflictDialog") event.currentTarget.close();
 });
 
 document.querySelector("#closeContactDialog").addEventListener("click", () => {
