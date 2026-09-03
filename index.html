@@ -1554,6 +1554,7 @@
             <p id="detailInterviewVacancy">Vaga</p>
           </div>
           <div class="interview-detail-header-side">
+            <span class="interview-overdue-badge" id="detailInterviewOverdue" hidden>Atrasada</span>
             <span class="interview-detail-status" id="detailInterviewStatus">Agendada</span>
             <button class="icon-button" type="button" id="closeInterviewDetail" aria-label="Fechar">×</button>
           </div>
@@ -1561,10 +1562,19 @@
         <section class="interview-detail-section interview-detail-info">
           <h3 class="interview-detail-section-title">Informações</h3>
           <dl class="interview-detail-data">
-            <div><dt><svg class="ui-icon"><use href="#i-users" /></svg><span class="sr-only">Tipo</span></dt><dd id="detailInterviewType">Entrevista RH</dd></div>
-            <div><dt><svg class="ui-icon"><use href="#i-clock" /></svg><span class="sr-only">Data e hora</span></dt><dd id="detailInterviewWhen">Data</dd></div>
-            <div><dt><svg class="ui-icon"><use href="#i-home" /></svg><span class="sr-only">Local</span></dt><dd id="detailInterviewLocation">Player Contabilidade</dd></div>
+            <div><dt><span class="sr-only">Modalidade</span></dt><dd id="detailInterviewModality">Videochamada</dd></div>
+            <div><dt><span class="sr-only">Etapa</span></dt><dd id="detailInterviewStage">Entrevista RH</dd></div>
+            <div><dt><span class="sr-only">Data e hora</span></dt><dd id="detailInterviewWhen">Data</dd></div>
+            <div><dt><span class="sr-only">Entrevistadores</span></dt><dd id="detailInterviewInterviewers">—</dd></div>
+            <div><dt><span class="sr-only">Local / link</span></dt><dd id="detailInterviewLocation">—</dd></div>
+            <div><dt><span class="sr-only">Ficha</span></dt><dd id="detailInterviewSheet">—</dd></div>
           </dl>
+          <p class="interview-detail-notes" id="detailInterviewNotes" hidden></p>
+          <p class="interview-detail-notes" id="detailInterviewInstructions" hidden></p>
+          <div class="interview-reschedule-request" id="detailInterviewReschedule" hidden>
+            <strong>Reagendamento solicitado</strong>
+            <p id="detailInterviewRescheduleCopy"></p>
+          </div>
           <div class="interview-test-link" id="interviewTestLink" hidden>
             <div><span>Link do teste técnico</span><strong id="interviewTestUrl"></strong></div>
             <button type="button" id="copyInterviewTestLink">Copiar</button>
@@ -1572,16 +1582,41 @@
         </section>
         <footer class="interview-detail-footer">
           <div class="interview-detail-actions">
-            <button class="is-primary" type="button" data-interview-detail-action="reminder"><svg class="ui-icon"><use href="#i-bell" /></svg><span>Enviar lembrete por e-mail</span></button>
+            <button class="is-primary" type="button" data-interview-detail-action="confirm"><span>Confirmar manualmente</span></button>
             <div class="interview-action-secondary">
-              <button type="button" data-interview-detail-action="invite"><svg class="ui-icon"><use href="#i-mail" /></svg><span>Reenviar convite</span></button>
-              <button type="button" data-interview-detail-action="test"><svg class="ui-icon"><use href="#i-clipboard" /></svg><span>Gerar link do teste</span></button>
-              <button type="button" data-interview-detail-action="complete"><svg class="ui-icon"><use href="#i-check-circle" /></svg><span>Marcar como concluída</span></button>
+              <button type="button" data-interview-detail-action="edit"><span>Editar</span></button>
+              <button type="button" data-interview-detail-action="reschedule"><span>Reagendar</span></button>
+              <button type="button" data-interview-detail-action="copy-link"><span>Copiar link</span></button>
+              <button type="button" data-interview-detail-action="invite"><span>Enviar convite</span></button>
+              <button type="button" data-interview-detail-action="reminder"><span>Enviar lembrete</span></button>
+              <button type="button" data-interview-detail-action="start"><span>Iniciar entrevista</span></button>
+              <button type="button" data-interview-detail-action="complete"><span>Finalizar entrevista</span></button>
+              <button type="button" data-interview-detail-action="no-show"><span>Não comparecimento</span></button>
             </div>
             <button class="is-danger" type="button" data-interview-detail-action="cancel">Cancelar entrevista</button>
           </div>
         </footer>
       </div>
+    </dialog>
+
+    <dialog class="stack-dialog" id="interviewCancelDialog">
+      <form id="interviewCancelForm">
+        <header class="stack-dialog-header">
+          <div>
+            <h2>Cancelar entrevista</h2>
+            <p id="interviewCancelLabel">Candidato</p>
+          </div>
+          <button class="icon-button" type="button" id="closeInterviewCancel" aria-label="Fechar">×</button>
+        </header>
+        <label class="form-field">
+          <span>Motivo</span>
+          <textarea id="interviewCancelReason" rows="3" required placeholder="Informe o motivo do cancelamento"></textarea>
+        </label>
+        <footer class="schedule-footer">
+          <button type="button" class="secondary-button" id="dismissInterviewCancel">Voltar</button>
+          <button type="submit" class="primary-button is-danger">Confirmar cancelamento</button>
+        </footer>
+      </form>
     </dialog>
 
     <dialog class="stack-dialog interview-dialog" id="interviewDialog">

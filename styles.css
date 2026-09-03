@@ -6874,6 +6874,44 @@ body {
   font-weight: 800;
 }
 
+.interview-detail-notes {
+  margin: 12px 0 0;
+  color: var(--ink-700);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.interview-reschedule-request {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, #ca8a04 35%, var(--border));
+  border-radius: 12px;
+  background: #fffbeb;
+}
+
+.interview-reschedule-request strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.interview-reschedule-request p {
+  margin: 0;
+  color: var(--ink-700);
+  font-size: 12px;
+}
+
+.interview-detail-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.interview-action-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .calendar-heading {
   display: flex;
   align-items: center;

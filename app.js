@@ -3304,28 +3304,139 @@ function renderAgenda() {
 function renderInterviewDetail() {
   const item = interviews.find((entry) => entry.id === selectedInterviewDetailId);
   if (!item) return;
+  const endLabel = item.endAt ? String(item.endAt).slice(11, 16) : "";
   document.querySelector("#detailInterviewName").textContent = item.name;
   document.querySelector("#detailInterviewVacancy").textContent = item.vacancy;
-  document.querySelector("#detailInterviewType").textContent = item.type;
-  document.querySelector("#detailInterviewWhen").textContent = formatInterviewWhen(item.at);
-  document.querySelector("#detailInterviewLocation").textContent = item.location || (item.meet ? `${item.meet} · entrevista on-line` : "Player Contabilidade");
+  document.querySelector("#detailInterviewModality").textContent = item.modality || "—";
+  document.querySelector("#detailInterviewStage").textContent = item.stage || item.type || "—";
+  document.querySelector("#detailInterviewWhen").textContent = endLabel
+    ? `${formatInterviewWhen(item.at)} – ${endLabel}`
+    : formatInterviewWhen(item.at);
+  document.querySelector("#detailInterviewInterviewers").textContent =
+    (item.interviewers || []).join(", ") || item.owner || "—";
+  document.querySelector("#detailInterviewLocation").textContent =
+    item.modality === "Presencial"
+      ? item.location || "Local a definir"
+      : item.link || (item.meet ? `${item.meet} · on-line` : "Link a definir");
+  document.querySelector("#detailInterviewSheet").textContent = item.sheet || "—";
+  const notes = document.querySelector("#detailInterviewNotes");
+  notes.hidden = !item.notes;
+  notes.textContent = item.notes ? `Obs. RH: ${item.notes}` : "";
+  const instructions = document.querySelector("#detailInterviewInstructions");
+  instructions.hidden = !item.candidateInstructions;
+  instructions.textContent = item.candidateInstructions
+    ? `Instruções: ${item.candidateInstructions}`
+    : "";
+  const rescheduleBox = document.querySelector("#detailInterviewReschedule");
+  const rescheduleCopy = document.querySelector("#detailInterviewRescheduleCopy");
+  if (item.rescheduleRequest) {
+    rescheduleBox.hidden = false;
+    rescheduleCopy.textContent = `${item.rescheduleRequest.reason}${
+      item.rescheduleRequest.message ? ` — ${item.rescheduleRequest.message}` : ""
+    }`;
+  } else {
+    rescheduleBox.hidden = true;
+    rescheduleCopy.textContent = "";
+  }
   const status = document.querySelector("#detailInterviewStatus");
   status.textContent = item.status;
   status.className = `interview-detail-status is-${normalize(item.status).replace(/\s+/g, "-")}`;
+  const overdue = document.querySelector("#detailInterviewOverdue");
+  if (overdue) overdue.hidden = !interviewIsOverdue(item);
   const linkBox = document.querySelector("#interviewTestLink");
-  linkBox.hidden = !item.testLink;
-  document.querySelector("#interviewTestUrl").textContent = item.testLink || "";
-  const reminder = document.querySelector('[data-interview-detail-action="reminder"]');
-  reminder.querySelector("span").textContent = item.reminderSent ? "Lembrete enviado" : "Enviar lembrete por e-mail";
-  reminder.disabled = item.status === "Cancelada";
-  document.querySelector('[data-interview-detail-action="invite"]').disabled = item.status === "Cancelada";
-  document.querySelector('[data-interview-detail-action="test"]').disabled = item.status === "Cancelada";
-  const complete = document.querySelector('[data-interview-detail-action="complete"]');
-  complete.disabled = item.status === "Concluída" || item.status === "Cancelada";
-  complete.querySelector("span").textContent = item.status === "Concluída" ? "Entrevista concluída" : "Marcar como concluída";
+  if (linkBox) {
+    linkBox.hidden = !item.testLink;
+    document.querySelector("#interviewTestUrl").textContent = item.testLink || "";
+  }
+  const terminal = !interviewIsActive(item);
+  const setDisabled = (action, disabled) => {
+    const button = document.querySelector(`[data-interview-detail-action="${action}"]`);
+    if (button) button.disabled = disabled;
+  };
+  setDisabled("edit", terminal);
+  setDisabled("reschedule", terminal);
+  setDisabled("cancel", terminal);
+  setDisabled("confirm", !["Agendada", "Aguardando confirmação"].includes(item.status));
+  setDisabled("copy-link", false);
+  setDisabled("invite", terminal);
+  setDisabled("reminder", terminal);
+  setDisabled("start", terminal || Boolean(item.startedAt));
+  setDisabled("complete", terminal);
+  setDisabled("no-show", terminal);
+  const reminder = document.querySelector('[data-interview-detail-action="reminder"] span');
+  if (reminder) reminder.textContent = item.reminderSent ? "Lembrete enviado" : "Enviar lembrete";
+  const invite = document.querySelector('[data-interview-detail-action="invite"] span');
+  if (invite) invite.textContent = item.inviteSent ? "Reenviar convite" : "Enviar convite";
+  const start = document.querySelector('[data-interview-detail-action="start"] span');
+  if (start) start.textContent = item.startedAt ? "Entrevista iniciada" : "Iniciar entrevista";
+  const complete = document.querySelector('[data-interview-detail-action="complete"] span');
+  if (complete) {
+    complete.textContent =
+      item.status === "Realizada" ? "Entrevista realizada" : "Finalizar entrevista";
+  }
   const cancel = document.querySelector('[data-interview-detail-action="cancel"]');
-  cancel.disabled = item.status !== "Agendada";
-  cancel.textContent = item.status === "Cancelada" ? "Entrevista cancelada" : "Cancelar entrevista";
+  if (cancel) {
+    cancel.textContent = item.status === "Cancelada" ? "Entrevista cancelada" : "Cancelar entrevista";
+  }
+}
+
+function openInterviewCancelDialog(item) {
+  document.querySelector("#interviewCancelLabel").textContent =
+    `${item.name} · ${formatInterviewWhen(item.at)}`;
+  document.querySelector("#interviewCancelReason").value = "";
+  document.querySelector("#interviewCancelDialog")?.showModal();
+}
+
+function runInterviewDetailAction(action) {
+  const item = interviews.find((entry) => entry.id === selectedInterviewDetailId);
+  if (!item) return;
+  if (action === "edit") {
+    openInterviewEditor(item, "edit");
+    return;
+  }
+  if (action === "reschedule") {
+    openInterviewEditor(item, "reschedule");
+    return;
+  }
+  if (action === "cancel") {
+    openInterviewCancelDialog(item);
+    return;
+  }
+  if (action === "confirm") {
+    item.status = "Confirmada";
+    interviewActivity(item, "Confirmou a entrevista manualmente");
+  } else if (action === "copy-link") {
+    const url =
+      item.link || `${location.origin}${location.pathname}#entrevista-${item.id}`;
+    navigator.clipboard?.writeText(url).catch(() => {});
+    showToast("Link copiado", url);
+    return;
+  } else if (action === "invite") {
+    item.inviteSent = true;
+    if (item.status === "Agendada") item.status = "Aguardando confirmação";
+    interviewActivity(item, "Enviou convite da entrevista");
+    showToast("Convite", "Convite demonstrativo enviado.");
+  } else if (action === "reminder") {
+    item.reminderSent = true;
+    interviewActivity(item, "Enviou lembrete da entrevista");
+    showToast("Lembrete", "Lembrete demonstrativo enviado.");
+  } else if (action === "no-show") {
+    item.status = "Não compareceu";
+    interviewActivity(item, "Registrou não comparecimento");
+  } else if (action === "start") {
+    item.startedAt = `${TODAY_KEY}T${new Date().toTimeString().slice(0, 8)}`;
+    interviewActivity(item, "Iniciou a entrevista");
+  } else if (action === "complete") {
+    item.status = "Realizada";
+    interviewActivity(item, "Finalizou a entrevista");
+  } else if (action === "test") {
+    item.testLink = `https://portalrh.local/teste/${item.id}`;
+    interviewActivity(item, "Gerou link de teste técnico");
+    showToast("Link do teste", item.testLink);
+  } else {
+    return;
+  }
+  refreshInterviewSurfaces(item);
 }
 
 function openInterviewDetail(item) {
@@ -7078,36 +7189,29 @@ interviewDetailDialog.addEventListener("click", (event) => {
 
 document.querySelector(".interview-detail-actions").addEventListener("click", (event) => {
   const button = event.target.closest("[data-interview-detail-action]");
-  const item = interviews.find((entry) => entry.id === selectedInterviewDetailId);
-  if (!button || !item || button.disabled) return;
-  const action = button.dataset.interviewDetailAction;
-  if (action === "reminder") {
-    item.reminderSent = true;
-    item.waiting = false;
-    interviewActivity(item, "Enviou lembrete da entrevista por e-mail");
-    showToast("Lembrete enviado", `O lembrete foi enviado para ${item.name}.`);
-  } else if (action === "invite") {
-    item.inviteResent = (item.inviteResent || 0) + 1;
-    interviewActivity(item, "Reenviou o convite da entrevista");
-    showToast("Convite reenviado", `Novo convite enviado para ${item.name}.`);
-  } else if (action === "test") {
-    item.testLink ||= `portalrh.local/teste/${item.id}-${normalize(item.name).split(" ")[0]}`;
-    interviewActivity(item, "Gerou o link do teste técnico");
-    showToast("Link gerado", "O teste técnico está pronto para ser compartilhado.");
-  } else if (action === "complete") {
-    item.status = "Concluída";
-    item.waiting = false;
-    interviewActivity(item, "Marcou a entrevista como concluída");
-    showToast("Entrevista concluída", `${item.name} agora aguarda avaliação.`);
-  } else if (action === "cancel") {
-    item.status = "Cancelada";
-    item.waiting = false;
-    interviewActivity(item, "Cancelou a entrevista");
-    showToast("Entrevista cancelada", `O compromisso com ${item.name} foi cancelado.`);
-  }
-  renderAgenda();
-  renderInterviewDetail();
+  if (!button || button.disabled) return;
+  runInterviewDetailAction(button.dataset.interviewDetailAction);
 });
+
+on("#interviewCancelForm", "submit", (event) => {
+  event.preventDefault();
+  const item = interviews.find((entry) => entry.id === selectedInterviewDetailId);
+  const reason = document.querySelector("#interviewCancelReason")?.value.trim();
+  if (!item || !reason) return;
+  item.status = "Cancelada";
+  item.cancelReason = reason;
+  item.waiting = false;
+  interviewActivity(item, `Cancelou a entrevista: ${reason}`);
+  document.querySelector("#interviewCancelDialog")?.close();
+  refreshInterviewSurfaces(item);
+  showToast("Entrevista cancelada", reason);
+});
+on("#closeInterviewCancel", "click", () =>
+  document.querySelector("#interviewCancelDialog")?.close(),
+);
+on("#dismissInterviewCancel", "click", () =>
+  document.querySelector("#interviewCancelDialog")?.close(),
+);
 
 document.querySelector("#copyInterviewTestLink").addEventListener("click", async () => {
   const item = interviews.find((entry) => entry.id === selectedInterviewDetailId);
