@@ -3098,6 +3098,10 @@ function formatInterviewGroupLabel(key) {
 function interviewTemplate(item) {
   const selected = item.id === selectedInterviewId ? " selected" : "";
   const meetLabel = item.meet === "Teams" ? "Entrar no Teams" : item.meet === "Meet" ? "Entrar no Meet" : "";
+  const endLabel = item.endAt ? String(item.endAt).slice(11, 16) : "";
+  const overdueBadge = interviewIsOverdue(item)
+    ? `<span class="interview-overdue-badge">Atrasada</span>`
+    : "";
   return `
     <article class="interview-card${selected}" data-interview-id="${item.id}" tabindex="0">
       <span class="interview-icon" aria-hidden="true">
@@ -3107,13 +3111,15 @@ function interviewTemplate(item) {
         </svg>
       </span>
       <div class="interview-copy">
-        <h3>${item.name}</h3>
-        <p>${item.vacancy}</p>
-        <p class="interview-when">${formatInterviewWhen(item.at)} · ${item.type}</p>
-        ${item.waiting && item.status === "Agendada" ? `<p class="interview-wait">Aguardando atualização</p>` : ""}
+        <h3>${escapeHtml(item.name)}</h3>
+        <p>${escapeHtml(item.vacancy)}</p>
+        <p class="interview-when">${formatInterviewWhen(item.at)}${endLabel ? `–${endLabel}` : ""} · ${escapeHtml(item.modality || item.stage || item.type || "")}</p>
+        ${item.status === "Aguardando confirmação" ? `<p class="interview-wait">Aguardando confirmação</p>` : ""}
+        ${item.status === "Reagendamento solicitado" ? `<p class="interview-wait">Reagendamento solicitado</p>` : ""}
       </div>
       <div class="interview-side">
-        <span class="interview-badge is-${normalize(item.status).replace(/\s+/g, "-")}">${item.status}</span>
+        ${overdueBadge}
+        <span class="interview-badge is-${normalize(item.status).replace(/\s+/g, "-")}">${escapeHtml(item.status)}</span>
         ${
           meetLabel
             ? `<button class="interview-join" type="button" data-interview-action="join">${meetLabel}</button>`
@@ -4771,13 +4777,8 @@ function renderCandidateDetails(candidate) {
       (item.name === candidate.name && item.vacancy === candidate.vacancy),
   );
   const interviewGroups = {
-    Próximas: candidateInterviews.filter((item) =>
-      ["Agendada", "Confirmada", "Aguardando"].includes(item.status || "Agendada"),
-    ),
-    Realizadas: candidateInterviews.filter((item) =>
-      ["Realizada", "Concluída"].includes(item.status),
-    ),
-    Canceladas: candidateInterviews.filter((item) => item.status === "Cancelada"),
+    Próximas: candidateInterviews.filter((item) => interviewIsActive(item)),
+    Encerradas: candidateInterviews.filter((item) => !interviewIsActive(item)),
   };
   document.querySelector("#candidateInterviewsList").innerHTML = candidateInterviews.length
     ? Object.entries(interviewGroups)
@@ -4792,8 +4793,8 @@ function renderCandidateDetails(candidate) {
                         (item) => `
                           <button type="button" class="candidate-dossier-list-item is-button" data-open-interview="${item.id}">
                             <div>
-                              <strong>${escapeHtml(item.type || "Entrevista")}</strong>
-                              <span>${formatInterviewWhen(item.at)}</span>
+                              <strong>${escapeHtml(item.modality || item.stage || "Entrevista")}</strong>
+                              <span>${formatInterviewWhen(item.at)}${interviewIsOverdue(item) ? " · Atrasada" : ""}</span>
                             </div>
                             <span class="role-tag">${escapeHtml(item.status || "Agendada")}</span>
                           </button>
