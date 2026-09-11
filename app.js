@@ -19519,6 +19519,34 @@ function saveGestorRequestDraft(options = {}) {
   return item;
 }
 
+function submitGestorHiringRequest(item, action = "send") {
+  if (!item || !["send", "resend"].includes(action)) return false;
+  const fromStatus = item.status;
+  const isResend = action === "resend";
+  const step = isResend
+    ? syncHiringApprovalStep(item, item.approvalStepIndex)
+    : startHiringApprovalChain(item);
+
+  if (isResend) {
+    item.status = "Aguardando aprovação";
+    item.cancelAllowed = true;
+  } else {
+    item.sentAt = TODAY_KEY;
+  }
+
+  pushHiringRequestHistory(item, {
+    action: isResend ? "Reenviada após ajuste" : "Enviada para aprovação",
+    fromStatus,
+    toStatus: item.status,
+    comment: isResend ? item.managerReply || "" : `Encaminhada para ${step?.label || "RH"}.`,
+  });
+  showToast(
+    isResend ? "Reenviada" : "Solicitação enviada",
+    `${isResend ? "Retornou" : "Encaminhada"} para ${step?.label || "RH"} (${step?.defaultName || item.assignee}).`,
+  );
+  return true;
+}
+
 function renderGestorHiringRequestList() {
   const list = document.querySelector("#gestorHomePanelList");
   const inboxBar = document.querySelector("#gestorRequestInboxBar");
@@ -21894,11 +21922,19 @@ kanban.addEventListener("drop", (event) => {
 });
 
 document.querySelector("#closeCandidateDialog").addEventListener("click", () => {
+  closeCandidateMoreActions();
   candidateDialog.close();
 });
 
 candidateDialog.addEventListener("click", (event) => {
-  if (event.target === candidateDialog) candidateDialog.close();
+  if (event.target === candidateDialog) {
+    closeCandidateMoreActions();
+    candidateDialog.close();
+  }
+});
+
+candidateDialog.addEventListener("close", () => {
+  closeCandidateMoreActions();
 });
 
 document.querySelector("#closeInterviewDialog").addEventListener("click", () => {
@@ -22126,12 +22162,67 @@ document.querySelectorAll("[data-candidate-action]").forEach((button) => {
   });
 });
 
+function resetCandidateMoreMenuPlacement(menu) {
+  if (!menu) return;
+  menu.style.position = "";
+  menu.style.top = "";
+  menu.style.right = "";
+  menu.style.left = "";
+  menu.style.bottom = "";
+  menu.style.zIndex = "";
+  menu.style.maxHeight = "";
+  menu.style.overflow = "";
+  menu.style.overflowY = "";
+  const home = menu._candidateMoreHome;
+  if (home && menu.parentElement !== home) {
+    home.appendChild(menu);
+  }
+}
+
+function placeCandidateMoreMenu(menu, trigger) {
+  if (!menu || !trigger) return;
+  if (!menu._candidateMoreHome) {
+    menu._candidateMoreHome = menu.parentElement;
+  }
+  // Sai do <dialog>: overflow/max-height do modal cortava o menu no meio do item.
+  if (menu.parentElement !== document.body) {
+    document.body.appendChild(menu);
+  }
+  const rect = trigger.getBoundingClientRect();
+  const gap = 6;
+  const viewportPad = 12;
+  menu.style.position = "fixed";
+  menu.style.zIndex = "2147483000";
+  menu.style.left = "auto";
+  menu.style.right = `${Math.max(viewportPad, window.innerWidth - rect.right)}px`;
+  menu.style.bottom = "auto";
+  menu.style.maxHeight = "none";
+  menu.style.overflow = "visible";
+  menu.style.top = `${rect.bottom + gap}px`;
+
+  const menuHeight = menu.getBoundingClientRect().height;
+  const spaceBelow = window.innerHeight - rect.bottom - viewportPad;
+  const spaceAbove = rect.top - viewportPad;
+  if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+    menu.style.top = "auto";
+    menu.style.bottom = `${window.innerHeight - rect.top + gap}px`;
+    if (menuHeight > spaceAbove) {
+      menu.style.maxHeight = `${spaceAbove}px`;
+      menu.style.overflowY = "auto";
+    }
+  } else if (menuHeight > spaceBelow) {
+    menu.style.maxHeight = `${Math.max(160, spaceBelow)}px`;
+    menu.style.overflowY = "auto";
+  }
+}
+
 function closeCandidateMoreActions() {
   const menu = document.querySelector("#candidateMoreActionsMenu");
   const trigger = document.querySelector("#candidateMoreActionsBtn");
   if (!menu || !trigger) return;
   menu.hidden = true;
   trigger.setAttribute("aria-expanded", "false");
+  resetCandidateMoreMenuPlacement(menu);
 }
 
 function toggleCandidateMoreActions() {
@@ -22139,8 +22230,13 @@ function toggleCandidateMoreActions() {
   const trigger = document.querySelector("#candidateMoreActionsBtn");
   if (!menu || !trigger) return;
   const opening = menu.hidden;
-  menu.hidden = !opening;
-  trigger.setAttribute("aria-expanded", String(opening));
+  if (!opening) {
+    closeCandidateMoreActions();
+    return;
+  }
+  menu.hidden = false;
+  trigger.setAttribute("aria-expanded", "true");
+  placeCandidateMoreMenu(menu, trigger);
 }
 
 function setCandidateActivityCollapsed(collapsed) {
@@ -22336,10 +22432,18 @@ on("#candidateMoreActionsBtn", "click", (event) => {
 });
 
 document.addEventListener("click", (event) => {
-  if (!event.target.closest(".candidate-more-wrap")) {
+  const inTriggerWrap = event.target.closest(".candidate-more-wrap");
+  const inFloatingMenu = event.target.closest("#candidateMoreActionsMenu");
+  if (!inTriggerWrap && !inFloatingMenu) {
     closeCandidateMoreActions();
     closeGestorAnalysisMoreMenu();
   }
+});
+
+window.addEventListener("resize", () => {
+  const menu = document.querySelector("#candidateMoreActionsMenu");
+  const trigger = document.querySelector("#candidateMoreActionsBtn");
+  if (menu && trigger && !menu.hidden) placeCandidateMoreMenu(menu, trigger);
 });
 
 document.querySelector("#toggleActivities").addEventListener("click", () => {
@@ -23682,16 +23786,7 @@ on("#gestorRequestForm", "submit", (event) => {
   if (!item) return;
   const saved = saveGestorRequestDraft();
   if (!saved) return;
-  if (action === "resend") {
-    saved.status = "Em análise";
-    pushHiringRequestHistory(saved, "Reenviada após ajuste");
-    showToast("Reenviada", "Solicitação voltou para análise do RH.");
-  } else {
-    saved.status = "Enviada";
-    saved.sentAt = TODAY_KEY;
-    pushHiringRequestHistory(saved, "Enviada ao RH");
-    showToast("Solicitação enviada", "O RH receberá para análise.");
-  }
+  if (!submitGestorHiringRequest(saved, action)) return;
   openGestorRequestForm(saved, { readOnly: true });
 });
 
@@ -23808,25 +23903,7 @@ on("#gestorPage", "click", (event) => {
     if (action === "send" || action === "resend") {
       const saved = saveGestorRequestDraft();
       if (!saved) return;
-      if (action === "resend") {
-        saved.status = "Em análise";
-        pushHiringRequestHistory(saved, {
-          action: "Reenviada após ajuste",
-          fromStatus: "Ajuste solicitado",
-          toStatus: "Em análise",
-          comment: saved.managerReply || "",
-        });
-        showToast("Reenviada", "Solicitação voltou para análise do RH.");
-      } else {
-        saved.status = "Enviada";
-        saved.sentAt = TODAY_KEY;
-        pushHiringRequestHistory(saved, {
-          action: "Enviada ao RH",
-          fromStatus: "Rascunho",
-          toStatus: "Enviada",
-        });
-        showToast("Solicitação enviada", "O RH receberá para análise.");
-      }
+      if (!submitGestorHiringRequest(saved, action)) return;
       openGestorRequestForm(saved, { readOnly: true });
       return;
     }

@@ -2746,11 +2746,11 @@ h1 {
 }
 
 .candidate-dialog {
-  width: min(1040px, calc(100% - 30px));
+  width: min(1200px, calc(100% - 24px));
   max-width: none;
-  max-height: min(90vh, 820px);
+  max-height: min(92vh, 880px);
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-radius: 22px;
   background: var(--surface);
@@ -2764,8 +2764,9 @@ h1 {
 
 .candidate-modal {
   display: flex;
-  max-height: min(90vh, 820px);
+  max-height: min(92vh, 880px);
   flex-direction: column;
+  overflow: visible;
 }
 
 .candidate-modal-header {
@@ -2826,6 +2827,8 @@ h1 {
 }
 
 .candidate-actions {
+  position: relative;
+  z-index: 40;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2833,14 +2836,21 @@ h1 {
   gap: 7px;
   padding: 0 24px 15px;
   border-bottom: 1px solid var(--border);
+  overflow: visible;
 }
 
 .candidate-action-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 7px;
   min-width: 0;
+  width: 100%;
+}
+
+.candidate-action-row > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .candidate-actions::-webkit-scrollbar,
@@ -2880,6 +2890,8 @@ h1 {
 
 .candidate-more-wrap {
   position: relative;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .candidate-more-trigger {
@@ -2896,18 +2908,26 @@ h1 {
 
 .candidate-more-menu {
   position: absolute;
-  z-index: 30;
+  z-index: 80;
   top: calc(100% + 6px);
   right: 0;
   display: grid;
-  min-width: 240px;
-  max-height: min(60vh, 420px);
-  overflow: auto;
+  min-width: 260px;
+  max-height: none;
+  overflow: visible;
   padding: 8px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface);
   box-shadow: 0 16px 36px rgb(28 36 48 / 14%);
+}
+
+/* Menu teletransportado para body (fora do dialog) — não herda clip do modal */
+body > #candidateMoreActionsMenu.candidate-more-menu {
+  position: fixed;
+  z-index: 2147483000;
+  max-height: none;
+  overflow: visible;
 }
 
 .candidate-more-menu[hidden] {
@@ -4241,6 +4261,14 @@ body {
   .candidate-actions {
     padding-right: 16px;
     padding-left: 16px;
+  }
+
+  .candidate-action-row {
+    flex-wrap: wrap;
+  }
+
+  .candidate-more-wrap {
+    margin-left: 0;
   }
 
   .candidate-profile {
