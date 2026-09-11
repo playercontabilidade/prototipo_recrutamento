@@ -1,0 +1,47 @@
+---
+description: Antes de novas demandas, auditar o que já existe e evitar duplicar fluxos/UI/nav
+alwaysApply: true
+---
+
+# Anti-redundância em novas demandas
+
+Antes de especificar, planejar ou implementar **qualquer feature nova**, faça uma conferência do que já existe. Não comece pelo código.
+
+## 1. Orientar no sistema (obrigatório)
+
+- Usar `graphify query` / `explain` / `path` antes de Grep/Read amplos
+- Mapear telas, rotas (`data-page` / hash), painéis, dialogs e fontes de dados relacionadas
+- Checar specs/plans em `docs/superpowers/` se houver overlap
+
+## 2. Checklist de sobreposição
+
+Responder explicitamente (mesmo que breve) antes de propor desenho:
+
+| Pergunta | Se sim… |
+|---|---|
+| Já existe tela/fluxo com o mesmo job-to-be-done? | **Estender ou unificar**, não criar paralelo |
+| O item novo cabe num hub/página existente (ex.: Instrumentos, Indicadores, Portal gestor)? | Entrar lá; evitar novo item de sidebar |
+| Informação já aparece no header/resumo/outra aba? | Não repetir; uma fonte, demais só leem |
+| RH e Gestor teriam o mesmo fluxo? | Respeitar modos de papel; um parecer/fluxo por papel |
+| Há KPI, score, timeline ou histórico duplicado? | Consolidar numa entidade (candidato/vaga) |
+
+## 3. Preferência de solução (ordem)
+
+1. Reusar / deep-link / aba em hub existente  
+2. Unificar fluxos redundantes (como parecer gestor único)  
+3. Só então criar tela/nav nova — e justificar por que 1–2 não bastam
+
+## 4. Entrega ao usuário
+
+Em propostas e ao concluir pacotes, informar:
+
+- **O que já existia** vs **o que muda**
+- **Fluxo antes** × **fluxo agora**
+- O que foi **evitado** (duplicata cortada ou não criada)
+
+## Exemplos deste projeto
+
+- ❌ Novo “Análises” na sidebar quando o Portal do gestor / Indicadores já cobre  
+- ❌ Segundo modal de parecer além do painel do gestor  
+- ❌ Resumo da vaga repetindo cargo/status/SLA do header  
+- ✅ Hub Instrumentos + Indicadores; modo RH × Gestor; dossiê em grupos
