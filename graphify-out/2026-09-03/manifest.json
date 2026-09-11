@@ -1,0 +1,134 @@
+{
+  "app.js": {
+    "mtime": 1788486687.4981053,
+    "seen": 1788486845.3127866,
+    "ast_hash": "03c79993989537ab476b77194f2a7679",
+    "semantic_hash": ""
+  },
+  "docs/design-system/01-fundamentos.md": {
+    "mtime": 1787927124.7698529,
+    "seen": 1788474246.782318,
+    "ast_hash": "7e2e0c182b6b4d5d25e1e3c34bb285bd",
+    "semantic_hash": ""
+  },
+  "docs/design-system/02-botoes.md": {
+    "mtime": 1787927124.7605214,
+    "seen": 1788474246.782318,
+    "ast_hash": "1ff0393ebc234f992536e2dc19efdb24",
+    "semantic_hash": ""
+  },
+  "docs/design-system/03-campos-formularios.md": {
+    "mtime": 1787927124.7698529,
+    "seen": 1788474246.782318,
+    "ast_hash": "bb4713c3031a1c6191c04ca916d6d291",
+    "semantic_hash": ""
+  },
+  "docs/design-system/04-modais.md": {
+    "mtime": 1787927124.764739,
+    "seen": 1788474246.782318,
+    "ast_hash": "0d2501567629ea94bc9ceff5e4013ef0",
+    "semantic_hash": ""
+  },
+  "docs/design-system/05-layout-shell.md": {
+    "mtime": 1787927124.7620268,
+    "seen": 1788474246.782318,
+    "ast_hash": "47a3184f43e62f5fc4169a94a37198bd",
+    "semantic_hash": ""
+  },
+  "docs/design-system/06-componentes.md": {
+    "mtime": 1787927124.7698529,
+    "seen": 1788474246.782318,
+    "ast_hash": "e9522452f0f15c4a7c7bf01ccea7b8ab",
+    "semantic_hash": ""
+  },
+  "docs/design-system/07-portais.md": {
+    "mtime": 1787934700.8716962,
+    "seen": 1788474246.782318,
+    "ast_hash": "83caaafd3a0654ef88bdee7a01289fe4",
+    "semantic_hash": ""
+  },
+  "docs/design-system/08-checklist-nova-tela.md": {
+    "mtime": 1787927124.7698529,
+    "seen": 1788474246.782318,
+    "ast_hash": "a0133a19b6e67f79c8421ca24b5127c4",
+    "semantic_hash": ""
+  },
+  "docs/design-system/README.md": {
+    "mtime": 1787927124.7698529,
+    "seen": 1788474246.782318,
+    "ast_hash": "8ea667d62e1401ce845cebae2d49edeb",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-03-entrevistas-ciclo-vida.md": {
+    "mtime": 1788470160.7198443,
+    "seen": 1788474246.782318,
+    "ast_hash": "c44d483267ddd34d996fe8744aa677af",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-03-onda-1-vagas-status-portal.md": {
+    "mtime": 1788474615.6168892,
+    "seen": 1788477240.0075393,
+    "ast_hash": "2965a00607e49e4a029741dd78c14341",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-agenda-enxuta-design.md": {
+    "mtime": 1788474615.6758287,
+    "seen": 1788477240.0075393,
+    "ast_hash": "68b929d32a9b68ab5807497fb7068eef",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-entrevistas-ciclo-vida-design.md": {
+    "mtime": 1788470160.7178369,
+    "seen": 1788474246.782318,
+    "ast_hash": "63c11c5fabeeac9460f5080494f0a69e",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-onda-1-vagas-status-portal-design.md": {
+    "mtime": 1788474615.4485512,
+    "seen": 1788477240.0075393,
+    "ast_hash": "8221712b419cc48a8dfb30a8c03fa84d",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1788486496.9325504,
+    "seen": 1788486845.3127866,
+    "ast_hash": "c2c97e78dd9a7ca81a304d18124242ca",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-03-fichas-entrevista.md": {
+    "mtime": 1788476262.7227755,
+    "seen": 1788477240.0075393,
+    "ast_hash": "5f8229dcab9f329f69166bb6509e1ea3",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-fichas-entrevista-design.md": {
+    "mtime": 1788477279.9054534,
+    "seen": 1788480842.1697412,
+    "ast_hash": "e60ce20f739ecd78b95955aeae522d2b",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-03-conducao-entrevista.md": {
+    "mtime": 1788480557.1729238,
+    "seen": 1788480842.1697412,
+    "ast_hash": "1a3a5fbe1e36d4985ec204c9e960a5be",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-conducao-entrevista-design.md": {
+    "mtime": 1788480799.7499807,
+    "seen": 1788480842.1697412,
+    "ast_hash": "3ba8a9c3d3d896edbba5155a3ddd637d",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-03-testes-aplicados-candidato.md": {
+    "mtime": 1788484968.2333696,
+    "seen": 1788485617.163965,
+    "ast_hash": "26b856681e0ad1c19334412e9cbbd4de",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-03-testes-aplicados-candidato-design.md": {
+    "mtime": 1788484854.816959,
+    "seen": 1788485617.163965,
+    "ast_hash": "cf591db9f1cc35c4e82b1cf4e8192cf6",
+    "semantic_hash": ""
+  }
+}
