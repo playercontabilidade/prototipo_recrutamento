@@ -1,8 +1,8 @@
 {
   "app.js": {
-    "mtime": 1789145054.6151989,
-    "seen": 1789145095.320273,
-    "ast_hash": "37810411c88ba283f2a1ac0dccc4743f",
+    "mtime": 1789152229.6334124,
+    "seen": 1789152275.6446102,
+    "ast_hash": "ca006f2f5a48c64f4562e446803030fd",
     "semantic_hash": ""
   },
   "docs/design-system/01-fundamentos.md": {
@@ -60,243 +60,255 @@
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-entrevistas-ciclo-vida.md": {
-    "mtime": 1788470160.7198443,
-    "seen": 1788474246.782318,
+    "mtime": 1789148567.7295575,
+    "seen": 1789152275.6446102,
     "ast_hash": "c44d483267ddd34d996fe8744aa677af",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-onda-1-vagas-status-portal.md": {
-    "mtime": 1789144976.6452458,
-    "seen": 1789145095.320273,
-    "ast_hash": "2965a00607e49e4a029741dd78c14341",
+    "mtime": 1789148567.7311823,
+    "seen": 1789152275.6446102,
+    "ast_hash": "84ccfa7f8346b497029e6795df566357",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-agenda-enxuta-design.md": {
-    "mtime": 1789054041.2889411,
-    "seen": 1789055165.3626938,
+    "mtime": 1789148567.747521,
+    "seen": 1789152275.6446102,
     "ast_hash": "241acc8ce2a68badd26142f5be67a926",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-entrevistas-ciclo-vida-design.md": {
-    "mtime": 1788470160.7178369,
-    "seen": 1788474246.782318,
+    "mtime": 1789148567.7485204,
+    "seen": 1789152275.6446102,
     "ast_hash": "63c11c5fabeeac9460f5080494f0a69e",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-onda-1-vagas-status-portal-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789151740.9432354,
+    "seen": 1789152275.6446102,
     "ast_hash": "6367af3249320698ea656d4fd8398d21",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1789145064.5116105,
-    "seen": 1789145095.320273,
-    "ast_hash": "90d1a9354ce0b9ae505c31e37cea2ed8",
+    "mtime": 1789152247.4225316,
+    "seen": 1789152275.6446102,
+    "ast_hash": "182d8565331a31981afd04026b43c008",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-fichas-entrevista.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7300637,
+    "seen": 1789152275.6446102,
     "ast_hash": "5f8229dcab9f329f69166bb6509e1ea3",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-fichas-entrevista-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7498896,
+    "seen": 1789152275.6446102,
     "ast_hash": "e60ce20f739ecd78b95955aeae522d2b",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-conducao-entrevista.md": {
-    "mtime": 1789143804.3290687,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7282474,
+    "seen": 1789152275.6446102,
     "ast_hash": "1a3a5fbe1e36d4985ec204c9e960a5be",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-conducao-entrevista-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7485204,
+    "seen": 1789152275.6446102,
     "ast_hash": "3ba8a9c3d3d896edbba5155a3ddd637d",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-testes-aplicados-candidato.md": {
-    "mtime": 1789143804.3235385,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7322555,
+    "seen": 1789152275.6446102,
     "ast_hash": "26b856681e0ad1c19334412e9cbbd4de",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-testes-aplicados-candidato-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.752363,
+    "seen": 1789152275.6446102,
     "ast_hash": "cf591db9f1cc35c4e82b1cf4e8192cf6",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-04-fit-cultural.md": {
-    "mtime": 1789143804.3250463,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7339773,
+    "seen": 1789152275.6446102,
     "ast_hash": "463e55daa67836b08d7d5e5e2287c4a5",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-04-fit-cultural-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.752363,
+    "seen": 1789152275.6446102,
     "ast_hash": "6efb31cbcadc2a9da15b683c5654278e",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-04-scorecard.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7362397,
+    "seen": 1789152275.6446102,
     "ast_hash": "b1122babb8d2e025e9bab555edbc5ad0",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-04-scorecard-design.md": {
-    "mtime": 1789143804.3260581,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7546484,
+    "seen": 1789152275.6446102,
     "ast_hash": "969f2543aefee4d5fbf2d6a2635165cd",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-04-timeline-candidatura.md": {
-    "mtime": 1789143804.3847394,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.737587,
+    "seen": 1789152275.6446102,
     "ast_hash": "7d1347a925f05631a2d4c148b248f03b",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-04-timeline-candidatura-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7560346,
+    "seen": 1789152275.6446102,
     "ast_hash": "5918c9abbfc5737e06fd1b1445473e88",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-04-pendencias.md": {
-    "mtime": 1789143804.3250463,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7352312,
+    "seen": 1789152275.6446102,
     "ast_hash": "aff90e72736423d1769bee11e0c9d470",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-04-pendencias-design.md": {
-    "mtime": 1789143804.393748,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7538235,
+    "seen": 1789152275.6446102,
     "ast_hash": "210d3ab51b2f88247b4575f5dda87905",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-04-proposta-contratacao.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7362397,
+    "seen": 1789152275.6446102,
     "ast_hash": "886173b0cd346073a98e01717e38cca6",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-04-proposta-contratacao-design.md": {
-    "mtime": 1789143804.3817406,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7546484,
+    "seen": 1789152275.6446102,
     "ast_hash": "52d81e4050bbf2d38789c4afdd22e898",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-07-acompanhamento-vaga-gestor.md": {
-    "mtime": 1788819907.9577723,
-    "seen": 1788820300.6466777,
+    "mtime": 1789148567.738866,
+    "seen": 1789152275.6446102,
     "ast_hash": "aabf12f4a926cee4e9a0ead840f185a3",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-07-acompanhamento-vaga-gestor-design.md": {
-    "mtime": 1788819753.7478428,
-    "seen": 1788820300.6466777,
+    "mtime": 1789148567.7560346,
+    "seen": 1789152275.6446102,
     "ast_hash": "f4d989d5ffa882b0ed2fbebda7886bd2",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-07-portal-candidato-onda-b.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.740126,
+    "seen": 1789152275.6446102,
     "ast_hash": "6d57ae4d25fb06159d5d6bbf83d99475",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-07-portal-candidato-onda-c.md": {
-    "mtime": 1789143804.3290687,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.740126,
+    "seen": 1789152275.6446102,
     "ast_hash": "5babbe93d6dad3e6814ba346ce4b3557",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-07-pre-admissao.md": {
-    "mtime": 1789143804.3755572,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7415388,
+    "seen": 1789152275.6446102,
     "ast_hash": "4c0ce037df98f958e4fa26f21ed881df",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-07-portal-candidato-onda-b-design.md": {
-    "mtime": 1789143804.3755572,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7574031,
+    "seen": 1789152275.6446102,
     "ast_hash": "73c621e4dce8d820bd32257dfc47cb44",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-07-portal-candidato-onda-c-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7584121,
+    "seen": 1789152275.6446102,
     "ast_hash": "36b1a80a6fc5b8f6d6f89240393fd324",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-07-pre-admissao-design.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7594125,
+    "seen": 1789152275.6446102,
     "ast_hash": "e39d563b93d21cb8794d3e1c30865481",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-09-dashboard-estrategico.md": {
-    "mtime": 1789143804.3827403,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7426186,
+    "seen": 1789152275.6446102,
     "ast_hash": "345dcd5de479c5a378eb06a500a0a60a",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-09-dashboard-estrategico-design.md": {
-    "mtime": 1789143804.3290687,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7594125,
+    "seen": 1789152275.6446102,
     "ast_hash": "709d518bfb5e02be4b175572d773bb0e",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-analise-candidato-gestor.md": {
-    "mtime": 1789143804.3755572,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7426186,
+    "seen": 1789152275.6446102,
     "ast_hash": "62b132f0af8141d9eee7c82cf995a40f",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-analise-candidato-gestor-design.md": {
-    "mtime": 1789143804.3755572,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7604122,
+    "seen": 1789152275.6446102,
     "ast_hash": "b76a54d7308b81ab4057c8d120bdfbf9",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-central-pendencias-gestor.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7440515,
+    "seen": 1789152275.6446102,
     "ast_hash": "9b9f408d5e545c2678506ce437a555d0",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-central-pendencias-gestor-design.md": {
-    "mtime": 1789143804.3270662,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7614155,
+    "seen": 1789152275.6446102,
     "ast_hash": "b662f769f180d866ee91731bd65a0d4b",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-solicitacao-entrevista-gestor.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7465134,
+    "seen": 1789152275.6446102,
     "ast_hash": "31f54c1130469eb206e006d5bef35287",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-solicitacao-entrevista-gestor-design.md": {
-    "mtime": 1789143804.393748,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7627907,
+    "seen": 1789152275.6446102,
     "ast_hash": "832129369f1446cf4773f12fe6d70e4a",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-entrevistas-gestor.md": {
-    "mtime": 1789143804.341365,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7453487,
+    "seen": 1789152275.6446102,
     "ast_hash": "6fef731f4fec2f31bff3a6f2507eb2c9",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-entrevistas-gestor-design.md": {
-    "mtime": 1789143804.3827403,
-    "seen": 1789144007.9273942,
+    "mtime": 1789148567.7627907,
+    "seen": 1789152275.6446102,
     "ast_hash": "67517d8010158965e18ad1e3ce340071",
+    "semantic_hash": ""
+  },
+  "docs/Documentacao_Portal_RH.md": {
+    "mtime": 1789151740.9473987,
+    "seen": 1789152275.6446102,
+    "ast_hash": "ddca8f35f80e375d1d6ab537f133778e",
+    "semantic_hash": ""
+  },
+  "docs/Documentacao_Portal_RH.pdf": {
+    "mtime": 1789149669.9439218,
+    "seen": 1789152275.6446102,
+    "ast_hash": "5c6b0058ca13501bdd632bfac72abc1d",
     "semantic_hash": ""
   }
 }

@@ -14763,8 +14763,12 @@ function syncInterviewModalityFields() {
   const modality = document.querySelector("#interviewModality")?.value || "Videochamada";
   const locationWrap = document.querySelector("#interviewLocationWrap");
   const linkWrap = document.querySelector("#interviewLinkWrap");
+  const locationInput = document.querySelector("#interviewLocation");
+  const linkInput = document.querySelector("#interviewLink");
   if (locationWrap) locationWrap.hidden = modality !== "Presencial";
   if (linkWrap) linkWrap.hidden = modality === "Presencial";
+  if (locationInput) locationInput.required = modality === "Presencial";
+  if (linkInput) linkInput.required = modality === "Videochamada";
 }
 
 function defaultInterviewTimeEnd(startTime) {
