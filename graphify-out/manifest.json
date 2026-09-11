@@ -1,8 +1,8 @@
 {
   "app.js": {
-    "mtime": 1789153090.465325,
-    "seen": 1789153179.5724418,
-    "ast_hash": "2050d518f5ba3469f28c75a3f2b30528",
+    "mtime": 1789153909.7610426,
+    "seen": 1789154147.6393166,
+    "ast_hash": "5c82b10d0e0fe3992c0a3971c4652405",
     "semantic_hash": ""
   },
   "docs/design-system/01-fundamentos.md": {
@@ -90,9 +90,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1789153115.1172159,
-    "seen": 1789153179.5724418,
-    "ast_hash": "87c2a70023015423719b31a329d6b9b3",
+    "mtime": 1789153933.3280156,
+    "seen": 1789154147.6393166,
+    "ast_hash": "e205c0fb6f107b6aa36c83c0f91b7749",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-fichas-entrevista.md": {

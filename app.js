@@ -5064,6 +5064,7 @@ const PENDING_TYPES = [
   "sla",
   "vaga_aprovacao",
   "proposta_aprovacao",
+  "parecer_gestor",
   "retorno",
   "banco_revisao",
 ];
@@ -5083,6 +5084,7 @@ function pendingTypeLabel(type) {
       sla: "SLA estourado",
       vaga_aprovacao: "Aprovação de vaga",
       proposta_aprovacao: "Aprovação de proposta",
+      parecer_gestor: "Parecer do gestor",
       retorno: "Aguardando retorno",
       banco_revisao: "Revisão no banco",
     }[type] || type
@@ -5104,6 +5106,7 @@ function pendingActionLabel(action) {
       reprovar: "Reprovar",
       enviar_retorno: "Enviar retorno",
       reagendar: "Reagendar",
+      marcar_ciente: "Marcar como ciente",
       resolver: "Resolver",
     }[action] || action
   );
@@ -5380,6 +5383,25 @@ function buildPendencies() {
       secondaryActions: ["abrir_candidatura"],
     });
   });
+
+  managerAnalyses
+    .filter((analysis) => analysis.status === "completed" && !analysis.rhReviewed)
+    .forEach((analysis) => {
+      const candidate =
+        candidates.find((item) => normalize(item.name) === normalize(analysis.candidate)) || null;
+      if (!candidate) return;
+      push({
+        id: `derived-parecer-gestor-${analysis.id}`,
+        type: "parecer_gestor",
+        title: `Parecer do gestor — ${candidate.name}`,
+        description: `${analysis.opinion || "Decisão registrada"} · ${candidate.vacancy}`,
+        assignee: candidate.owner || CURRENT_RH_USER,
+        dueAt: analysis.updatedAt || `${TODAY_KEY}T18:00:00`,
+        subject: { kind: "managerAnalysis", id: analysis.id },
+        primaryAction: "abrir_candidatura",
+        secondaryActions: ["marcar_ciente"],
+      });
+    });
 
   jobs.forEach((job) => {
     if (job.status !== "Aguardando aprovação") return;
@@ -5745,6 +5767,9 @@ function resolvePendingSubject(item) {
     return { kind, entity: interviewRequests.find((r) => String(r.id) === String(id)) || null };
   }
   if (kind === "score") return { kind, entity: getScoreEvaluationById(id) };
+  if (kind === "managerAnalysis") {
+    return { kind, entity: managerAnalyses.find((analysis) => analysis.id === Number(id)) };
+  }
   if (kind === "job") return { kind, entity: jobs.find((j) => j.id === Number(id)) };
   if (kind === "talent") return { kind, entity: talents.find((t) => t.id === Number(id)) };
   return null;
@@ -5757,6 +5782,11 @@ function resolvePendingCandidate(item, resolved = resolvePendingSubject(item)) {
   }
   if (resolved?.kind === "score") {
     return candidates.find((c) => c.id === Number(resolved.entity?.candidateId)) || null;
+  }
+  if (resolved?.kind === "managerAnalysis") {
+    return candidates.find(
+      (candidate) => normalize(candidate.name) === normalize(resolved.entity?.candidate),
+    ) || null;
   }
   if (item?.subject?.kind === "candidate") {
     return candidates.find((c) => c.id === Number(item.subject.id)) || null;
@@ -5935,6 +5965,17 @@ function runPendenciaAction(action, item) {
         return;
       }
       openInterviewEditor(interview, "reschedule");
+      break;
+    }
+    case "marcar_ciente": {
+      if (resolved?.kind !== "managerAnalysis") {
+        showToast("Parecer não encontrado", "");
+        return;
+      }
+      resolved.entity.rhReviewed = true;
+      renderPendenciasPage();
+      syncPendenciasNavCount();
+      showToast("Parecer revisado", resolved.entity.candidate || "");
       break;
     }
     case "aprovar": {
@@ -20412,7 +20453,7 @@ function findAnalysisForCandidate(candidate, onlyPending = false) {
   );
 }
 
-function syncAnalysisOpinionFromParecer(candidate, noteText) {
+function syncAnalysisOpinionFromParecer(candidate, noteText, { complete = false } = {}) {
   const analysis =
     (gestorViewState.analysisId != null
       ? managerAnalyses.find((item) => item.id === Number(gestorViewState.analysisId))
@@ -20420,7 +20461,8 @@ function syncAnalysisOpinionFromParecer(candidate, noteText) {
   if (!analysis) return null;
   analysis.opinion = noteText;
   analysis.updatedAt = `${TODAY_KEY}T12:00:00`;
-  analysis.status = analysis.status || "pending";
+  analysis.status = complete ? "completed" : analysis.status || "pending";
+  if (complete) analysis.rhReviewed = false;
   return analysis;
 }
 
@@ -20701,7 +20743,9 @@ function commitGestorCandidateDecision(data) {
     },
   });
 
-  syncAnalysisOpinionFromParecer(candidate, entry.text || labels[action]);
+  syncAnalysisOpinionFromParecer(candidate, entry.text || labels[action], {
+    complete: ["avancar", "reprovar", "banco"].includes(action),
+  });
 
   if (action === "avaliacao_adicional") {
     candidate.gestorExtraEvaluation = {
