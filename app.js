@@ -24578,24 +24578,23 @@ function renderCandidateInterviews() {
 }
 
 function getCandidateFitItems() {
-  const candidate = findCandidateByEmail(candidatePortalUser.email);
-  if (!candidate) return [];
   refreshFitAssignmentStatuses();
-  return fitAssignmentsForCandidate(candidate).map((assignment) => ({
+  return getPortalPipelineCandidates().flatMap((candidate) =>
+    fitAssignmentsForCandidate(candidate).map((assignment) => ({
     fitAssignmentId: assignment.id,
     title: assignment.vacancy,
     model: getFitModelById(assignment.modelId),
     status: assignment.status,
     dueAt: assignment.dueAt,
     adherencePct: assignment.adherencePct,
-  }));
+    })),
+  );
 }
 
 function getCandidateTestItems() {
-  const candidate = findCandidateByEmail(candidatePortalUser.email);
-  if (candidate) {
-    refreshAssignmentStatuses();
-    return assignmentsForCandidate(candidate).map((assignment) => ({
+  refreshAssignmentStatuses();
+  const assigned = getPortalPipelineCandidates().flatMap((candidate) =>
+    assignmentsForCandidate(candidate).map((assignment) => ({
       assignmentId: assignment.id,
       jobId: assignment.candidateId,
       title: assignment.vacancy,
@@ -24603,8 +24602,9 @@ function getCandidateTestItems() {
       status: assignment.status,
       dueAt: assignment.dueAt,
       stage: "Teste técnico",
-    }));
-  }
+    })),
+  );
+  if (assigned.length) return assigned;
   return candidatePortalUser.applications
     .filter((app) => /teste/i.test(app.stage))
     .map((app) => ({
@@ -24634,8 +24634,48 @@ function getCandidateHomeMatchAverage(apps) {
   return scores.length ? Math.round(scores.reduce((total, score) => total + score, 0) / scores.length) : 0;
 }
 
-function getPortalPipelineCandidate() {
-  return findCandidateByEmail(candidatePortalUser.email);
+function getPortalPipelineCandidates() {
+  const portalEmail = normalize(candidatePortalUser.email);
+  return candidates.filter((candidate) => normalize(candidate.email) === portalEmail);
+}
+
+function getPortalPipelineCandidate(jobId = null) {
+  const linked = getPortalPipelineCandidates();
+  if (jobId != null) {
+    const job = jobs.find((item) => Number(item.id) === Number(jobId));
+    const exact = linked.find(
+      (candidate) =>
+        Number(candidate.jobId) === Number(jobId) ||
+        (job && normalize(candidate.vacancy) === normalize(job.title)),
+    );
+    if (exact) return exact;
+  }
+  if (selectedPortalOfferId) {
+    const selected = linked.find(
+      (candidate) => String(candidate.proposal?.id || candidate.id) === String(selectedPortalOfferId),
+    );
+    if (selected) return selected;
+  }
+  if (selectedPortalPreAdId) {
+    const pre = preAdmissions.find((item) => String(item.id) === String(selectedPortalPreAdId));
+    const selected = linked.find((candidate) => candidate.id === pre?.candidateId);
+    if (selected) return selected;
+  }
+  return (
+    linked.find((candidate) =>
+      ["enviada", "visualizada", "vista"].includes(candidate.proposal?.status),
+    ) ||
+    linked.find((candidate) => candidate.proposal) ||
+    linked.find((candidate) =>
+      preAdmissions.some(
+        (item) =>
+          item.candidateId === candidate.id &&
+          (item.status === "em_andamento" || item.status === "pronta"),
+      ),
+    ) ||
+    linked[0] ||
+    null
+  );
 }
 
 function getPortalActiveProposal() {
@@ -24654,15 +24694,13 @@ function candidatePortalHasActiveOffer() {
 }
 
 function getPortalPreAdmission() {
-  const candidate = getPortalPipelineCandidate();
-  if (!candidate) return null;
-  return (
-    preAdmissions.find(
-      (item) =>
-        item.candidateId === candidate.id &&
-        (item.status === "em_andamento" || item.status === "pronta"),
-    ) || null
-  );
+  const linkedIds = new Set(getPortalPipelineCandidates().map((candidate) => candidate.id));
+  return preAdmissions.find(
+    (item) =>
+      linkedIds.has(item.candidateId) &&
+      (item.status === "em_andamento" || item.status === "pronta") &&
+      (!selectedPortalPreAdId || String(item.id) === String(selectedPortalPreAdId)),
+  ) || null;
 }
 
 function candidatePortalHasActivePreAdmission() {
@@ -24673,17 +24711,15 @@ let selectedPortalOfferId = null;
 let selectedPortalPreAdId = null;
 
 function getPortalOfferListItems() {
-  const candidate = getPortalPipelineCandidate();
-  if (!candidate) return [];
-  ensureCandidateProposal(candidate);
-  const offer = candidate.proposal;
-  if (!offer) return [];
-  refreshProposalExpiry(offer);
-  if (!["enviada", "visualizada", "aceita", "recusada", "expirada", "vista"].includes(offer.status)) {
-    return [];
-  }
-  return [
-    {
+  return getPortalPipelineCandidates().flatMap((candidate) => {
+    ensureCandidateProposal(candidate);
+    const offer = candidate.proposal;
+    if (!offer) return [];
+    refreshProposalExpiry(offer);
+    if (!["enviada", "visualizada", "aceita", "recusada", "expirada", "vista"].includes(offer.status)) {
+      return [];
+    }
+    return [{
       id: String(offer.id || candidate.id),
       candidateId: candidate.id,
       vacancy: offer.role || candidate.vacancy || "Proposta",
@@ -24692,17 +24728,16 @@ function getPortalOfferListItems() {
       validUntil: offer.validUntil,
       salary: offer.salary || offer.amount,
       workModel: offer.workModel,
-    },
-  ];
+    }];
+  });
 }
 
 function getPortalPreAdmissionListItems() {
-  const candidate = getPortalPipelineCandidate();
-  if (!candidate) return [];
+  const linkedIds = new Set(getPortalPipelineCandidates().map((candidate) => candidate.id));
   return preAdmissions
     .filter(
       (item) =>
-        item.candidateId === candidate.id &&
+        linkedIds.has(item.candidateId) &&
         (item.status === "em_andamento" || item.status === "pronta"),
     )
     .map((item) => {
@@ -24711,8 +24746,11 @@ function getPortalPreAdmissionListItems() {
       ).length;
       return {
         id: String(item.id),
-        candidateId: candidate.id,
-        vacancy: item.role || candidate.vacancy || "Pré-admissão",
+        candidateId: item.candidateId,
+        vacancy:
+          item.role ||
+          candidates.find((candidate) => candidate.id === item.candidateId)?.vacancy ||
+          "Pré-admissão",
         company: item.company || companies[0]?.name || "",
         status: item.status,
         plannedDate: item.plannedDate,
@@ -24890,7 +24928,7 @@ function refreshCandidatePortalAfterOfferChange() {
 
 function markPortalOfferViewed() {
   const candidate = getPortalPipelineCandidate();
-  const offer = getPortalActiveProposal();
+  const offer = candidate?.proposal;
   if (!candidate || !offer || offer.status !== "enviada") return;
   offer.status = "visualizada";
   offer.viewedAt = offer.viewedAt || stampOfferNow();
@@ -24974,7 +25012,7 @@ function renderCandidateOffer() {
     return;
   }
   markPortalOfferViewed();
-  const refreshed = getPortalActiveProposal() || current;
+  const refreshed = current;
   const canDecide = refreshed.status === "enviada" || refreshed.status === "visualizada";
   const vacancyTitle = refreshed.role || candidate.vacancy || selected.vacancy;
   body.innerHTML = `
@@ -25350,9 +25388,14 @@ function renderCandidateAppDetail() {
   const hint = getCandidateAppNextHint(app);
   const tips = candidateAppNextSteps(app);
   const canWithdraw = isCandidateAppActive(app.stage) && !/retir/i.test(app.stage);
-  const portalCandidate = getPortalPipelineCandidate();
-  const offer = getPortalActiveProposal();
-  const pre = getPortalPreAdmission();
+  const portalCandidate = getPortalPipelineCandidate(app.jobId);
+  const offer = portalCandidate?.proposal || null;
+  const pre =
+    preAdmissions.find(
+      (item) =>
+        item.candidateId === portalCandidate?.id &&
+        (item.status === "em_andamento" || item.status === "pronta"),
+    ) || null;
   const linkedOffer =
     offer &&
     (Number(portalCandidate?.jobId) === Number(app.jobId) ||
@@ -27417,7 +27460,12 @@ on("#candidateOfferBody", "click", (event) => {
   }
   const actionBtn = event.target.closest("[data-portal-offer-action]");
   if (!actionBtn) return;
-  const candidate = getPortalPipelineCandidate();
+  const selected = getPortalOfferListItems().find(
+    (item) => item.id === String(selectedPortalOfferId),
+  );
+  const candidate =
+    candidates.find((item) => item.id === selected?.candidateId) ||
+    getPortalPipelineCandidate();
   if (!candidate) return;
   const action = actionBtn.dataset.portalOfferAction;
   if (action === "document") {
