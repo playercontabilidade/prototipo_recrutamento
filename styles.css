@@ -224,9 +224,9 @@ h3 {
   display: grid;
   flex: 1;
   align-content: start;
-  gap: 14px;
+  gap: 2px;
   min-height: 0;
-  margin-top: 14px;
+  margin-top: 10px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -5033,7 +5033,7 @@ body::after {
 }
 
 .main-nav {
-  gap: 12px;
+  gap: 2px;
   margin-top: 4px;
   flex: 1;
   min-height: 0;
@@ -5991,16 +5991,7 @@ body {
 }
 
 .main-nav {
-  gap: 12px;
-}
-
-.nav-group {
-  gap: 3px;
-}
-
-.nav-item {
-  min-height: 39px;
-  border-radius: 10px;
+  gap: 2px;
 }
 
 .sidebar-footer {
@@ -14340,7 +14331,11 @@ body {
 }
 
 .candidate-sidebar .main-nav {
-  gap: 18px;
+  gap: 4px;
+}
+
+.candidate-sidebar .main-nav > .nav-item[data-candidate-nav="home"] {
+  margin-bottom: 6px;
 }
 
 .candidate-sidebar .nav-group {
@@ -19024,8 +19019,108 @@ body.is-candidate-portal {
   margin-bottom: 26px;
 }
 
-.pendencias-hub-tabs.talent-tabs {
-  margin-bottom: 16px;
+/* Workspace contínuo — 3º nível = chips (não barra segmentada) */
+.workspace-filter-chips,
+.pendencias-hub-tabs.talent-tabs,
+.gestor-entrevistas-hub .pendencias-hub-tabs,
+.gestor-pendencias-hub .pendencias-hub-tabs,
+#gestorPendenciasBuckets,
+#gestorEntrevistasBuckets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.workspace-filter-chips button,
+.pendencias-hub-tabs.talent-tabs button,
+.gestor-entrevistas-hub .pendencias-hub-tabs button,
+.gestor-pendencias-hub .pendencias-hub-tabs button,
+#gestorPendenciasBuckets button,
+#gestorEntrevistasBuckets button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 12px;
+  color: var(--ink-700);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.workspace-filter-chips button:hover,
+.pendencias-hub-tabs.talent-tabs button:hover,
+.gestor-entrevistas-hub .pendencias-hub-tabs button:hover,
+.gestor-pendencias-hub .pendencias-hub-tabs button:hover,
+#gestorPendenciasBuckets button:hover,
+#gestorEntrevistasBuckets button:hover {
+  color: var(--ink-950);
+  border-color: var(--navy-200, var(--border));
+  background: var(--navy-50, rgb(245 246 247 / 70%));
+}
+
+.workspace-filter-chips button[aria-selected="true"],
+.workspace-filter-chips button.is-active,
+.pendencias-hub-tabs.talent-tabs button[aria-selected="true"],
+.pendencias-hub-tabs.talent-tabs button.is-active,
+.gestor-entrevistas-hub .pendencias-hub-tabs button[aria-selected="true"],
+.gestor-pendencias-hub .pendencias-hub-tabs button[aria-selected="true"],
+#gestorPendenciasBuckets button[aria-selected="true"],
+#gestorEntrevistasBuckets button[aria-selected="true"] {
+  color: var(--brand-700);
+  border-color: color-mix(in srgb, var(--brand-500) 45%, var(--border));
+  background: var(--brand-50, #eef8f0);
+}
+
+.workspace-filter-chips .talent-tab-count,
+.workspace-filter-chips .workspace-chip-count,
+.pendencias-hub-tabs .talent-tab-count {
+  min-width: 1.4em;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--surface-muted, var(--surface-soft));
+  color: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.workspace-filter-chips button[aria-selected="true"] .talent-tab-count,
+.workspace-filter-chips button[aria-selected="true"] .workspace-chip-count,
+.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count {
+  background: color-mix(in srgb, var(--brand-500) 18%, transparent);
+  color: var(--brand-800, var(--brand-700));
+}
+
+.workspace-filter-chips button[aria-selected="true"] .talent-tab-icon,
+.workspace-filter-chips button[aria-selected="true"] .ui-icon,
+.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-icon,
+.pendencias-hub-tabs button[aria-selected="true"] .ui-icon {
+  color: var(--brand-700);
+}
+
+.pendencias-hub-tabs.talent-tabs,
+.gestor-entrevistas-hub .pendencias-hub-tabs,
+.gestor-pendencias-hub .pendencias-hub-tabs,
+#gestorPendenciasBuckets,
+#gestorEntrevistasBuckets {
+  margin: 0 0 16px;
 }
 
 .pendencias-page .pendencias-type-filters {
@@ -20931,23 +21026,7 @@ body[data-workspace-role="gestor"] [data-role="rh"] {
 #gestorEntrevistasBuckets,
 .gestor-pendencias-hub .pendencias-hub-tabs,
 #gestorPendenciasBuckets {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 100%;
   margin: 0 0 12px;
-  overflow: visible;
-}
-
-.gestor-entrevistas-hub .pendencias-hub-tabs button,
-#gestorEntrevistasBuckets button,
-.gestor-pendencias-hub .pendencias-hub-tabs button,
-#gestorPendenciasBuckets button {
-  flex: 0 0 auto;
-  min-width: 0;
-  white-space: nowrap;
 }
 
 .gestor-pendencias-hub .pendencias-type-bar {
@@ -21102,13 +21181,28 @@ body[data-workspace-role="gestor"] [data-role="rh"] {
   color: var(--navy-700);
 }
 
+.main-nav > .nav-item[data-page="dashboard"],
+.main-nav > .nav-item[data-gestor-nav="inicio"] {
+  margin-bottom: 2px;
+}
+
 .hub-chrome {
-  padding: 0 20px;
   margin: 0 0 8px;
 }
 
 .hub-chrome-tabs {
   margin-bottom: 0;
+}
+
+.hub-chrome-tabs.talent-tabs {
+  margin-bottom: 0;
+  border-bottom-color: var(--border);
+}
+
+.hub-chrome-tabs.talent-tabs button {
+  flex: 0 1 auto;
+  min-height: 44px;
+  padding: 10px 14px;
 }
 
 .hub-chrome[hidden] {
@@ -21275,4 +21369,10 @@ body[data-workspace-role="gestor"] [data-role="rh"] {
   background: #fff !important;
   backdrop-filter: none !important;
   box-shadow: none !important;
+}
+
+/* Sidebar nav compacta */
+.sidebar .main-nav {
+  gap: 2px !important;
+  align-content: start !important;
 }
