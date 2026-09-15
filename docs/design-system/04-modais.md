@@ -91,10 +91,28 @@ dialog.close();
 
 - Fechar overlays ao trocar de página: `closeOverlayDialogs()`
 - Portal candidato: `closeCandidateFiltersDialog()` ao sair
+- Proxies de saída: `[data-close-proxy="#idDoBotaoX"]` dispara o click do × original (preserva listeners)
+
+## Cancelar ≠ Fechar
+
+| Rótulo | Quando |
+|--------|--------|
+| **Cancelar** | Abandonar formulário / edição sem salvar |
+| **Fechar** | Sair de modal só de leitura / detalhe |
+| **×** | Escondido quando o footer já tem Cancelar ou Fechar |
+
+## Três padrões de abas
+
+| Padrão | Uso | Classes de referência |
+|--------|-----|------------------------|
+| **Soft** | Poucas opções / drill / painéis de detalhe | `.analytics-drill-tabs`, `.assignment-type-tab` |
+| **Solid** | Segmented curto (2–4) | `.interview-view-switcher` |
+| **Underline** | Hubs densos | `.talent-tabs`, `.candidate-dossier-groups` |
 
 ## O que evitar
 
 - Duas barras de scroll no mesmo modal
-- Header sem botão fechar acessível
+- Header sem botão fechar acessível **e** sem saída no footer
 - Modal sem `::backdrop` escurecido
 - Criar novo tipo de dialog se uma família acima servir
+- Quarto visual de abas fora de soft / solid / underline

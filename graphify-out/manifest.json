@@ -1,14 +1,14 @@
 {
   "app.js": {
-    "mtime": 1789154882.546385,
-    "seen": 1789155123.1780393,
-    "ast_hash": "4e61652c16b0e0b4d4a1e5e1dd016201",
+    "mtime": 1789446131.6876917,
+    "seen": 1789446159.7179213,
+    "ast_hash": "a70e3febf6efb5a602e74ea2244299c2",
     "semantic_hash": ""
   },
   "docs/design-system/01-fundamentos.md": {
-    "mtime": 1787927124.7698529,
-    "seen": 1788474246.782318,
-    "ast_hash": "7e2e0c182b6b4d5d25e1e3c34bb285bd",
+    "mtime": 1789440234.0273623,
+    "seen": 1789440283.051927,
+    "ast_hash": "3a99697ea8597942a12f4c567b30fa90",
     "semantic_hash": ""
   },
   "docs/design-system/02-botoes.md": {
@@ -24,15 +24,15 @@
     "semantic_hash": ""
   },
   "docs/design-system/04-modais.md": {
-    "mtime": 1787927124.764739,
-    "seen": 1788474246.782318,
-    "ast_hash": "0d2501567629ea94bc9ceff5e4013ef0",
+    "mtime": 1789442742.1172607,
+    "seen": 1789442767.013233,
+    "ast_hash": "b842317f4ca41c68bb4f3af472d46940",
     "semantic_hash": ""
   },
   "docs/design-system/05-layout-shell.md": {
-    "mtime": 1787927124.7620268,
-    "seen": 1788474246.782318,
-    "ast_hash": "47a3184f43e62f5fc4169a94a37198bd",
+    "mtime": 1789440267.2358625,
+    "seen": 1789440283.051927,
+    "ast_hash": "0faa75f31fc12a52c48ac60f00fb452d",
     "semantic_hash": ""
   },
   "docs/design-system/06-componentes.md": {
@@ -84,15 +84,15 @@
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-onda-1-vagas-status-portal-design.md": {
-    "mtime": 1789151740.9432354,
-    "seen": 1789152275.6446102,
+    "mtime": 1789439228.2049448,
+    "seen": 1789440283.051927,
     "ast_hash": "6367af3249320698ea656d4fd8398d21",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1789154921.6734035,
-    "seen": 1789155123.1780393,
-    "ast_hash": "351d9fc3d9044b2b73aecb3bb1782d72",
+    "mtime": 1789446112.786953,
+    "seen": 1789446159.7179213,
+    "ast_hash": "201a4b250298fc84f168dead4ad83ab6",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-fichas-entrevista.md": {
@@ -309,6 +309,60 @@
     "mtime": 1789149669.9439218,
     "seen": 1789152275.6446102,
     "ast_hash": "5c6b0058ca13501bdd632bfac72abc1d",
+    "semantic_hash": ""
+  },
+  "_gf_done.txt": {
+    "mtime": 1789354445.7662477,
+    "seen": 1789355428.8807085,
+    "ast_hash": "fca23bb22f8c1421d6040f2ef0df3eb0",
+    "semantic_hash": ""
+  },
+  "_gf_explain.txt": {
+    "mtime": 1789354445.7383356,
+    "seen": 1789355428.8807085,
+    "ast_hash": "959297ad0365104a5c5b1ea5037bc70b",
+    "semantic_hash": ""
+  },
+  "_gf_q3.txt": {
+    "mtime": 1789354529.3113916,
+    "seen": 1789355428.8807085,
+    "ast_hash": "4ad4543e20bc63bf901c1da8ed40ca60",
+    "semantic_hash": ""
+  },
+  "_gf_query.txt": {
+    "mtime": 1789354445.3009596,
+    "seen": 1789355428.8807085,
+    "ast_hash": "fea0df32e9a64b111d413bb8d8503892",
+    "semantic_hash": ""
+  },
+  "_gf_query2.txt": {
+    "mtime": 1789354455.8243375,
+    "seen": 1789355428.8807085,
+    "ast_hash": "69a498eb111a13d9a8c26323ea1ab607",
+    "semantic_hash": ""
+  },
+  "_gf_stub.txt": {
+    "mtime": 1789354455.3063424,
+    "seen": 1789355428.8807085,
+    "ast_hash": "363817141dc6e56f47c419a3b262e90d",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-14-design-guide-processo-agil-rh.md": {
+    "mtime": 1789442742.1162605,
+    "seen": 1789442767.013233,
+    "ast_hash": "783f6e6d7c7ba5b72203c347536303fd",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-15-reorganizacao-navegacao-hubs.md": {
+    "mtime": 1789445560.7469642,
+    "seen": 1789446159.7179213,
+    "ast_hash": "c53af39459992a34b59008bbee5f20f6",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-15-reorganizacao-navegacao-hubs-design.md": {
+    "mtime": 1789444952.114465,
+    "seen": 1789446159.7179213,
+    "ast_hash": "13f299eaa0b310a2538a8e49c840506b",
     "semantic_hash": ""
   }
 }

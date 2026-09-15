@@ -2197,7 +2197,7 @@ tests.forEach(normalizeTestRecord);
 
 let nextAssignmentId = 1;
 let selectedAssignmentDetailId = null;
-let testsHubTab = "catalog";
+let testsHubTab = "applied";
 let appliedTestsTypeFilter = "technical";
 let appliedTestsStatusFilter = "all";
 let appliedTestsQuery = "";
@@ -5001,20 +5001,22 @@ let expandedCardId = null;
 let expandedCardPanel = "";
 
 const pageNames = {
-  dashboard: "Dashboard",
+  dashboard: "Início",
   painel: "Relatórios",
   relatorios: "Relatórios",
-  pipeline: "Acompanhamento de candidatos",
-  pendencias: "Pendências",
-  jobs: "Vagas",
+  recrutamento: "Recrutamento",
+  pipeline: "Recrutamento",
+  pendencias: "Recrutamento",
+  jobs: "Recrutamento",
   newJob: "Nova vaga",
-  talentos: "Talentos",
-  resultados: "Resultados",
-  entrevistas: "Entrevistas",
-  selecao: "Instrumentos de seleção",
-  tecnicos: "Testes",
-  "fit-cultural": "Fit Cultural",
-  fichas: "Fichas de entrevista",
+  talentos: "Recrutamento",
+  resultados: "Seleção",
+  entrevistas: "Seleção",
+  selecao: "Seleção",
+  contratacao: "Contratação",
+  tecnicos: "Seleção",
+  "fit-cultural": "Seleção",
+  fichas: "Seleção",
   designSystem: "Design System",
   analisesGestores: "Pendências",
   indicadores: "Relatórios",
@@ -5027,6 +5029,7 @@ const pageByHash = {
   painel: "painel",
   relatorios: "painel",
   indicadores: "painel",
+  recrutamento: "recrutamento",
   pipeline: "pipeline",
   pendencias: "pendencias",
   vagas: "jobs",
@@ -5034,6 +5037,7 @@ const pageByHash = {
   resultados: "resultados",
   entrevistas: "entrevistas",
   selecao: "selecao",
+  contratacao: "contratacao",
   tecnicos: "tecnicos",
   "fit-cultural": "fit-cultural",
   "testes-aplicados": "tecnicos",
@@ -5051,21 +5055,92 @@ const hashByPage = {
   dashboard: "dashboard",
   painel: "relatorios",
   relatorios: "relatorios",
-  pipeline: "pipeline",
-  pendencias: "pendencias",
-  jobs: "vagas",
-  talentos: "talentos",
-  resultados: "resultados",
-  entrevistas: "entrevistas",
-  selecao: "selecao",
-  tecnicos: "tecnicos",
-  "fit-cultural": "fit-cultural",
-  fichas: "fichas",
+  recrutamento: "recrutamento/pipeline",
+  pipeline: "recrutamento/pipeline",
+  pendencias: "recrutamento/pendencias",
+  jobs: "recrutamento/vagas",
+  talentos: "recrutamento/talentos",
+  resultados: "selecao/resultados",
+  entrevistas: "selecao/entrevistas",
+  selecao: "selecao/instrumentos",
+  contratacao: "contratacao",
+  tecnicos: "selecao/instrumentos",
+  "fit-cultural": "selecao/instrumentos",
+  fichas: "selecao/instrumentos",
   designSystem: "design-system",
   analisesGestores: "analises-gestores",
   gestor: "gestor",
   settings: "configuracoes",
 };
+
+let recrutamentoTab = "pipeline";
+let selecaoTab = "instrumentos";
+let contratacaoFiltro = "pre-admissao";
+
+function parseAppHash(hash = window.location.hash) {
+  const raw = String(hash || "").replace(/^#/, "").trim();
+  const [path, query = ""] = raw.split("?");
+  const parts = path.split("/").filter(Boolean);
+  const hub = parts[0] || "";
+  const tab = parts[1] || "";
+  const params = Object.fromEntries(new URLSearchParams(query));
+  return { hub, tab, filtro: params.filtro || "", raw };
+}
+
+function hubHash(hub, tab, filtro) {
+  let h = tab ? `${hub}/${tab}` : hub;
+  if (filtro) h += `?filtro=${encodeURIComponent(filtro)}`;
+  return h;
+}
+
+/** Resolve legacy + hub hashes into { page, options } for goToPage/showPage */
+function resolveAppHash(hash = window.location.hash) {
+  const { hub, tab, filtro, raw } = parseAppHash(hash);
+  if (!hub) return { page: "dashboard", options: {} };
+
+  if (hub === "recrutamento") {
+    const map = { pipeline: "pipeline", pendencias: "pendencias", vagas: "jobs", talentos: "talentos" };
+    const page = map[tab] || "pipeline";
+    return { page, options: { recrutamentoTab: tab || "pipeline" } };
+  }
+  if (hub === "selecao") {
+    if (tab === "entrevistas") return { page: "entrevistas", options: { selecaoTab: "entrevistas" } };
+    if (tab === "resultados") return { page: "resultados", options: { selecaoTab: "resultados" } };
+    return { page: "selecao", options: { selecaoTab: "instrumentos" } };
+  }
+  if (hub === "contratacao") {
+    return { page: "contratacao", options: { contratacaoFiltro: filtro || "pre-admissao" } };
+  }
+
+  // Legacy single-segment hashes
+  if (hub === "pipeline") return { page: "pipeline", options: {} };
+  if (hub === "pendencias") return { page: "pendencias", options: {} };
+  if (hub === "vagas") return { page: "jobs", options: {} };
+  if (hub === "talentos") return { page: "talentos", options: {} };
+  if (hub === "entrevistas") return { page: "entrevistas", options: {} };
+  if (hub === "selecao") return { page: "selecao", options: { selecaoTab: "instrumentos" } };
+  if (hub === "resultados") {
+    if (filtro === "pre-admissao" || tab === "preadmissao") {
+      return { page: "contratacao", options: { contratacaoFiltro: "pre-admissao" } };
+    }
+    if (filtro === "encerrados" || tab === "encerrados") {
+      return { page: "contratacao", options: { contratacaoFiltro: "encerrados" } };
+    }
+    return { page: "resultados", options: {} };
+  }
+  if (hub === "relatorios" || hub === "painel" || hub === "indicadores") {
+    return { page: "dashboard", options: {} };
+  }
+
+  const legacy = pageByHash[raw] || pageByHash[hub];
+  if (legacy) {
+    if (legacy === "gestor") {
+      return { page: "gestor", options: { gestorHomeFilter: gestorHomeFilterFromHash(raw || hub) } };
+    }
+    return { page: legacy, options: {} };
+  }
+  return { page: "dashboard", options: {} };
+}
 
 function gestorHomeFilterFromHash(hash) {
   const key = String(hash || "").replace(/^#/, "");
@@ -5086,22 +5161,27 @@ function gestorHashFromState() {
 }
 
 function gestorNavKeyFromState() {
-  if (gestorViewState.mode === "job") return "vagas";
-  if (gestorViewState.homeFilter === "analises") return "pendencias";
   if (gestorViewState.homeFilter === "entrevistas") return "entrevistas";
-  if (gestorViewState.homeFilter === "vagas" || gestorViewState.homeFilter === "abertas") {
-    return "vagas";
+  if (gestorViewState.mode === "job") return "recrutamento";
+  if (
+    gestorViewState.homeFilter === "analises" ||
+    gestorViewState.homeFilter === "vagas" ||
+    gestorViewState.homeFilter === "abertas" ||
+    gestorViewState.homeFilter === "candidatos"
+  ) {
+    return "recrutamento";
   }
   return "inicio";
 }
 
 function gestorNavKeyFromDataset(nav) {
-  if (nav === "pendencias") return "analises";
+  if (nav === "pendencias" || nav === "recrutamento") return "analises";
   if (nav === "entrevistas") return "entrevistas";
   if (nav === "vagas") {
     gestorViewState.vagasHubTab = "vagas";
     return "vagas";
   }
+  if (nav === "inicio") return "overview";
   return "overview";
 }
 
@@ -5133,14 +5213,22 @@ function syncGestorSidebarChrome() {
 
 /** Sidebar highlight parent when deep pages are open */
 const navHighlightByPage = {
-  painel: "relatorios",
-  relatorios: "relatorios",
-  indicadores: "relatorios",
+  painel: "dashboard",
+  relatorios: "dashboard",
+  indicadores: "dashboard",
   analisesGestores: "gestor",
+  pipeline: "recrutamento",
+  pendencias: "recrutamento",
+  jobs: "recrutamento",
+  newJob: "recrutamento",
+  talentos: "recrutamento",
   tecnicos: "selecao",
   "fit-cultural": "selecao",
   fichas: "selecao",
+  entrevistas: "selecao",
+  resultados: "selecao",
   selecao: "selecao",
+  contratacao: "contratacao",
 };
 
 const funnelStageLinks = {
@@ -5150,8 +5238,8 @@ const funnelStageLinks = {
   Entrevista: { page: "entrevistas" },
   "Teste técnico": { page: "tecnicos" },
   Proposta: { page: "pipeline" },
-  Contratado: { page: "resultados", resultTab: "contratados" },
-  Dispensado: { page: "resultados", resultTab: "dispensados" },
+  Contratado: { page: "contratacao", contratacaoFiltro: "contratados" },
+  Dispensado: { page: "contratacao", contratacaoFiltro: "dispensados" },
 };
 
 const normalize = (value) =>
@@ -8142,7 +8230,11 @@ function syncResultadosWelcomeCopy() {
 }
 
 function syncResultadosHubTab() {
+  const contratacaoMode = currentAppPage === "contratacao";
   document.querySelectorAll("[data-resultados-hub-tab]").forEach((button) => {
+    const tab = button.dataset.resultadosHubTab;
+    const isHireTab = tab === "preadmissao" || tab === "encerrados";
+    button.hidden = contratacaoMode ? !isHireTab : isHireTab;
     button.setAttribute(
       "aria-selected",
       button.dataset.resultadosHubTab === resultadosHubTab ? "true" : "false",
@@ -8164,6 +8256,8 @@ function syncResultadosHubTab() {
       resultadosHubTab === "scorecards" ? "Novo scorecard" : "Comparar selecionados";
     primary.dataset.resultadosHubAction = resultadosHubTab;
   }
+  const welcome = document.querySelector("#resultadosPage .dashboard-welcome h1");
+  if (welcome) welcome.textContent = contratacaoMode ? "Contratação" : "Resultados";
   syncResultadosWelcomeCopy();
   renderResultadosPage();
 }
@@ -10214,13 +10308,13 @@ function requestCloseInterviewConduct() {
     (draft.positives || []).length > 0 ||
     (draft.attentionPoints || []).length > 0;
   if (hasContent && !draft.finalizedAt) {
-    document.querySelector("#conductExitDialog")?.showModal();
+    safeShowModal(document.querySelector("#conductExitDialog"));
     return;
   }
   closeInterviewConduct({ force: true });
 }
 
-function closeInterviewConduct({ force = false } = {}) {
+function closeInterviewConduct({ force = false, skipDetail = false } = {}) {
   if (!force) {
     requestCloseInterviewConduct();
     return;
@@ -10238,7 +10332,7 @@ function closeInterviewConduct({ force = false } = {}) {
   conductingInterviewId = null;
   conductViewMode = "workspace";
   conductDirty = false;
-  if (item) openInterviewDetail(item);
+  if (item && !skipDetail) openInterviewDetail(item);
 }
 
 function defaultConductNextStage(item) {
@@ -12452,8 +12546,81 @@ function openApplyTestForCandidate(candidate) {
 
 function renderDashboard() {
   document.querySelector("#dashboardCandidatesCount").textContent = candidates.length;
-  document.querySelector("#dashboardJobsCount").textContent =
-    jobs.filter((job) => job.status === "Aberta").length + 10;
+  document.querySelector("#dashboardJobsCount").textContent = jobs.filter(
+    (job) => job.status === "Aberta",
+  ).length;
+  const ivCount = Array.isArray(interviews)
+    ? interviews.filter((item) => item.status !== "Cancelada").length
+    : 0;
+  const ivEl = document.querySelector("#dashboardInterviewsCount");
+  if (ivEl) ivEl.textContent = String(ivCount);
+  const rejectCount = candidates.filter((c) =>
+    ["Dispensado", "Recusou Proposta", "Ocultado"].includes(c.stage),
+  ).length;
+  const rejectEl = document.querySelector("#dashboardRejectCount");
+  if (rejectEl) rejectEl.textContent = String(rejectCount || 6);
+
+  const todayPend = typeof buildPendencies === "function" ? buildPendencies() : [];
+  const todayItems = todayPend
+    .filter((item) => !item.dueAt || String(item.dueAt).startsWith(TODAY_KEY))
+    .slice(0, 6);
+  const todayIv = (interviews || [])
+    .filter((item) => String(item.at || "").startsWith(TODAY_KEY))
+    .slice(0, 4);
+  const todayTests = []
+    .concat(typeof appliedTests !== "undefined" && Array.isArray(appliedTests) ? appliedTests : [])
+    .concat(typeof fitAssignments !== "undefined" && Array.isArray(fitAssignments) ? fitAssignments : [])
+    .filter((a) => String(a.dueAt || a.sentAt || "").startsWith(TODAY_KEY))
+    .slice(0, 3);
+  const pendList = document.querySelector("#dashPendenciasHojeList");
+  const pendCount = document.querySelector("#dashPendenciasHojeCount");
+  if (pendCount) pendCount.textContent = String(todayItems.length + todayIv.length + todayTests.length);
+  if (pendList) {
+    const rows = [
+      ...todayItems.map(
+        (item) =>
+          `<button type="button" class="dash-pend-row" data-pendencia-id="${item.id}">
+            <strong>${escapeHtml(item.title || pendingTypeLabel(item.type))}</strong>
+            <span>${escapeHtml(item.subtitle || item.type || "")}</span>
+          </button>`,
+      ),
+      ...todayIv.map(
+        (item) =>
+          `<button type="button" class="dash-pend-row" data-open-interview="${item.id}">
+            <strong>Entrevista · ${escapeHtml(item.candidateName || "Candidato")}</strong>
+            <span>${escapeHtml(item.type || "")} · hoje</span>
+          </button>`,
+      ),
+      ...todayTests.map(
+        (item) =>
+          `<button type="button" class="dash-pend-row" data-go-page="talentos">
+            <strong>Teste · ${escapeHtml(item.title || "Avaliação")}</strong>
+            <span>Prazo/envio hoje</span>
+          </button>`,
+      ),
+    ];
+    pendList.innerHTML =
+      rows.join("") ||
+      `<p class="panel-note">Nenhuma pendência, entrevista ou teste para hoje.</p>`;
+  }
+
+  const inboxTalents = (typeof talents !== "undefined" && Array.isArray(talents) ? talents : [])
+    .filter((t) => !t.jobId && !t.vacancy)
+    .slice(0, 5);
+  const curList = document.querySelector("#dashCurriculosList");
+  if (curList) {
+    curList.innerHTML = inboxTalents.length
+      ? inboxTalents
+          .map(
+            (t) =>
+              `<button type="button" class="dash-pend-row" data-go-page="talentos" data-talent-id="${t.id}">
+                <strong>${escapeHtml(t.name || "Currículo")}</strong>
+                <span>${escapeHtml(t.role || t.area || "Sem vaga")}</span>
+              </button>`,
+          )
+          .join("")
+      : `<p class="panel-note">Nenhum currículo novo sem vaga no momento.</p>`;
+  }
 
   document.querySelector("#dashboardJobList").innerHTML = jobs
     .slice(0, 3)
@@ -13588,7 +13755,7 @@ function openMoveStageDialog(candidate, targetStage = "") {
   if (note) note.value = "";
   if (nextAction) nextAction.value = candidate.nextAction || "";
   if (nextDate) nextDate.value = candidate.nextActionAt || "";
-  document.querySelector("#moveStageDialog")?.showModal();
+  document.querySelector("#moveStageDialog") && safeShowModal(document.querySelector("#moveStageDialog"));
 }
 
 function confirmMoveStage(event) {
@@ -14511,9 +14678,48 @@ function formatBRDate(key) {
   return `${day}/${month}/${year}`;
 }
 
+function safeShowModal(dialog) {
+  if (!dialog || typeof dialog.showModal !== "function") return false;
+  if (dialog.open) return true;
+  try {
+    dialog.showModal();
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+function forceCloseAllDialogs({ reopenInterviewDetail = false } = {}) {
+  clearConductAutosaveTimer?.();
+  const wasConducting = conductingInterviewId;
+  conductingInterviewId = null;
+  conductViewMode = "workspace";
+  conductDirty = false;
+  document.querySelectorAll("dialog[open]").forEach((dialog) => {
+    try {
+      dialog.close();
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  document.querySelectorAll(".drop-target").forEach((el) => el.classList.remove("drop-target"));
+  document.querySelectorAll(".pipeline-card").forEach((card) => {
+    if (card.style.opacity) card.style.opacity = "";
+  });
+  closeCandidateMoreActions?.();
+  closeGestorAnalysisMoreMenu?.();
+  closeJobMoreActions?.();
+  closeInterviewMoreActions?.();
+  if (reopenInterviewDetail && wasConducting) {
+    const item = interviews.find((entry) => entry.id === wasConducting);
+    if (item) openInterviewDetail(item);
+  }
+}
+
 function closeOverlayDialogs() {
   if (document.querySelector("#interviewConductDialog")?.open) {
-    closeInterviewConduct({ force: true });
+    closeInterviewConduct({ force: true, skipDetail: true });
   }
   [
     datePickerDialog,
@@ -14531,6 +14737,7 @@ function closeOverlayDialogs() {
     document.querySelector("#pipelineActionDialog"),
     document.querySelector("#pipelineFiltersDialog"),
     document.querySelector("#analyticsFiltersDialog"),
+    document.querySelector("#analyticsDrillDrawer"),
     document.querySelector("#talentFiltersDialog"),
     document.querySelector("#talentEditDialog"),
     document.querySelector("#talentDrawer"),
@@ -14543,6 +14750,11 @@ function closeOverlayDialogs() {
     document.querySelector("#conductPendingDialog"),
     document.querySelector("#conductHistoryDialog"),
     document.querySelector("#interviewDetailDialog"),
+    document.querySelector("#jobDetailDialog"),
+    document.querySelector("#jobStatusDialog"),
+    document.querySelector("#gestorCandidatePanel"),
+    document.querySelector("#scoreEvaluationDialog"),
+    document.querySelector("#managerAnalysisDialog"),
   ].forEach((dialog) => {
     if (dialog?.open) dialog.close();
   });
@@ -17163,6 +17375,36 @@ function openNewJobPage() {
 }
 
 document.querySelector("#newJobButton").addEventListener("click", openNewJobPage);
+
+document.querySelector("#newJobCreateDept")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  const name = window.prompt("Nome do novo departamento");
+  if (!name?.trim()) return;
+  const clean = name.trim();
+  if (departments.some((d) => normalize(d.name) === normalize(clean))) {
+    showToast("Departamento", "Já existe com esse nome.");
+    return;
+  }
+  departments.push({ id: Date.now(), name: clean, description: "", active: true });
+  renderNewJobSelects();
+  const sel = document.querySelector("#newJobDepartment");
+  if (sel) sel.value = clean;
+  showToast("Departamento criado", clean);
+});
+
+document.querySelector("#newJobCreateRole")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  const name = window.prompt("Nome do novo cargo");
+  if (!name?.trim()) return;
+  const dept = document.querySelector("#newJobDepartment")?.value || departments[0]?.name || "";
+  const clean = name.trim();
+  const id = Date.now();
+  settingsRoles.push({ id, name: clean, department: dept, description: "", active: true });
+  renderNewJobSelects();
+  const sel = document.querySelector("#newJobRole");
+  if (sel) sel.value = String(id);
+  showToast("Cargo criado", clean);
+});
 document.querySelector("#newJobBack").addEventListener("click", () => {
   pendingHiringRequestId = null;
   goToPage("jobs");
@@ -18944,8 +19186,46 @@ document.querySelector("#conductPendingList")?.addEventListener("click", (event)
 });
 document.querySelector("#interviewConductDialog")?.addEventListener("cancel", (event) => {
   event.preventDefault();
+  if (document.querySelector("#conductExitDialog")?.open) {
+    closeInterviewConduct({ force: true, skipDetail: true });
+    return;
+  }
   requestCloseInterviewConduct();
 });
+
+document.addEventListener("click", (event) => {
+  const proxy = event.target.closest("[data-close-proxy]");
+  if (!proxy) return;
+  event.preventDefault();
+  const target = document.querySelector(proxy.dataset.closeProxy);
+  if (target) target.click();
+});
+
+let uiEscapeArmed = false;
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (event.key !== "Escape") return;
+    const openDialogs = document.querySelectorAll("dialog[open]");
+    if (!openDialogs.length) {
+      uiEscapeArmed = false;
+      return;
+    }
+    if (uiEscapeArmed) {
+      event.preventDefault();
+      event.stopPropagation();
+      forceCloseAllDialogs();
+      uiEscapeArmed = false;
+      showToast("Interface liberada", "Modais fechados. Se ainda travar, use F5.");
+      return;
+    }
+    uiEscapeArmed = true;
+    window.setTimeout(() => {
+      uiEscapeArmed = false;
+    }, 900);
+  },
+  true,
+);
 
 document.addEventListener("click", (event) => {
   if (event.target.closest(".interview-more-wrap")) return;
@@ -19499,10 +19779,41 @@ function showPage(page, options = {}) {
   }
   currentAppPage = page;
   analysisStandalone = false;
-  const inJobBoard = page === "jobs" && Boolean(jobBoardTitle);
+  if (options.recrutamentoTab) recrutamentoTab = options.recrutamentoTab;
+  if (options.selecaoTab) selecaoTab = options.selecaoTab;
+  if (options.contratacaoFiltro) contratacaoFiltro = options.contratacaoFiltro;
+  if (page === "pipeline") recrutamentoTab = "pipeline";
+  if (page === "pendencias") recrutamentoTab = "pendencias";
+  if (page === "jobs") recrutamentoTab = "vagas";
+  if (page === "talentos") recrutamentoTab = "talentos";
+  if (page === "entrevistas" && workspaceRole !== "gestor") selecaoTab = "entrevistas";
+  if (page === "selecao") selecaoTab = "instrumentos";
+  if (page === "resultados") selecaoTab = "resultados";
+  if (page === "tecnicos" || page === "fit-cultural" || page === "fichas") selecaoTab = "instrumentos";
+
   const appShell = document.querySelector(".app-shell");
   if (appShell) appShell.scrollTop = 0;
 
+  if (page === "recrutamento") {
+    const map = { pipeline: "pipeline", pendencias: "pendencias", vagas: "jobs", talentos: "talentos" };
+    page = map[recrutamentoTab] || "pipeline";
+    currentAppPage = page;
+  }
+  if (page === "contratacao") {
+    // Until dedicated shell lands, reuse Resultados panels for pré-admissão/encerrados
+    const filtro = contratacaoFiltro || "pre-admissao";
+    if (["contratados", "dispensados", "ocultados", "encerrados"].includes(filtro)) {
+      resultadosHubTab = "encerrados";
+      if (filtro !== "encerrados") selectResultTab(filtro);
+    } else {
+      resultadosHubTab = "preadmissao";
+    }
+    page = "resultados";
+    currentAppPage = "contratacao";
+    selecaoTab = "resultados";
+  }
+
+  const inJobBoard = page === "jobs" && Boolean(jobBoardTitle);
   dashboardPage.hidden = page !== "dashboard";
   painelPage.hidden = page !== "painel";
   relatoriosPage.hidden = page !== "relatorios";
@@ -19569,13 +19880,24 @@ function showPage(page, options = {}) {
   if (page === "dashboard") renderDashboard();
 
   const navPage =
-    inJobBoard || page === "newJob"
-      ? "jobs"
-      : navHighlightByPage[page] || page;
-  document.querySelector("#pageTitle").textContent = inJobBoard
-    ? "Candidatos da vaga"
-    : pageNames[page] || "Portal RH";
-  document.title = `Portal RH | ${inJobBoard ? "Candidatos da vaga" : pageNames[page] || "Portal RH"}`;
+    currentAppPage === "contratacao"
+      ? "contratacao"
+      : inJobBoard || page === "newJob"
+        ? "recrutamento"
+        : navHighlightByPage[page] || page;
+  document.querySelector("#pageTitle").textContent =
+    currentAppPage === "contratacao"
+      ? "Contratação"
+      : inJobBoard
+        ? "Candidatos da vaga"
+        : pageNames[currentAppPage === "contratacao" ? "contratacao" : page] || "Portal RH";
+  document.title = `Portal RH | ${
+    currentAppPage === "contratacao"
+      ? "Contratação"
+      : inJobBoard
+        ? "Candidatos da vaga"
+        : pageNames[page] || "Portal RH"
+  }`;
   const gestorNavKey =
     page === "gestor"
       ? gestorNavKeyFromState()
@@ -19592,19 +19914,49 @@ function showPage(page, options = {}) {
     item.classList.toggle("active", active);
     item.toggleAttribute("aria-current", active);
   });
+  syncRhHubChrome(currentAppPage === "contratacao" ? "contratacao" : page);
   const hash =
-    page === "gestor"
-      ? gestorHashFromState()
-      : page === "entrevistas" && workspaceRole === "gestor"
-        ? "gestor-entrevistas"
-        : inJobBoard || page === "newJob"
-          ? "vagas"
-          : hashByPage[page];
+    currentAppPage === "contratacao"
+      ? hubHash("contratacao", "", contratacaoFiltro === "pre-admissao" ? "" : contratacaoFiltro)
+      : page === "gestor"
+        ? gestorHashFromState()
+        : page === "entrevistas" && workspaceRole === "gestor"
+          ? "gestor-entrevistas"
+          : inJobBoard || page === "newJob"
+            ? hubHash("recrutamento", "vagas")
+            : hashByPage[page];
   if (hash) history.replaceState(null, "", `#${hash}`);
   if (page === "gestor" || (page === "entrevistas" && workspaceRole === "gestor")) {
     syncGestorSidebarChrome();
   }
   closeSidebar();
+}
+
+function syncRhHubChrome(page) {
+  const recr = document.querySelector("#hubChromeRecrutamento");
+  const sel = document.querySelector("#hubChromeSelecao");
+  const inRec =
+    workspaceRole === "rh" &&
+    ["pipeline", "pendencias", "jobs", "talentos", "newJob"].includes(page);
+  const inSel =
+    workspaceRole === "rh" &&
+    ["entrevistas", "selecao", "resultados", "tecnicos", "fit-cultural", "fichas"].includes(page);
+  if (recr) recr.hidden = !inRec;
+  if (sel) sel.hidden = !inSel;
+  if (inRec) {
+    document.querySelectorAll("#hubChromeRecrutamento [data-recrutamento-tab]").forEach((btn) => {
+      const on = btn.dataset.recrutamentoTab === recrutamentoTab;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+      btn.classList.toggle("is-active", on);
+    });
+  }
+  if (inSel) {
+    document.querySelectorAll("#hubChromeSelecao [data-selecao-tab]").forEach((btn) => {
+      const on = btn.dataset.selecaoTab === selecaoTab;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+      btn.classList.toggle("is-active", on);
+    });
+  }
 }
 
 function renderSelecaoHub() {
@@ -23124,6 +23476,20 @@ function goToPage(page, options = {}) {
   if (candidateDialog.open && page !== "pipeline" && !(page === "jobs" && options.jobBoard)) {
     candidateDialog.close();
   }
+  if (
+    page === "resultados" &&
+    (options.resultadosHubTab === "preadmissao" ||
+      options.resultadosHubTab === "encerrados" ||
+      ["contratados", "dispensados", "ocultados"].includes(options.resultTab))
+  ) {
+    page = "contratacao";
+    options = {
+      ...options,
+      contratacaoFiltro:
+        options.resultTab ||
+        (options.resultadosHubTab === "encerrados" ? "encerrados" : "pre-admissao"),
+    };
+  }
   if (page === "jobs" && options.jobBoard && options.jobTitle) {
     jobBoardTitle = options.jobTitle;
     jobBoardView = options.jobView || jobBoardView || "kanban";
@@ -23171,7 +23537,14 @@ function handleGoTarget(target) {
     return;
   }
   if (target.dataset.goPage) {
-    goToPage(target.dataset.goPage, {
+    const page = target.dataset.goPage;
+    if (page === "contratacao") {
+      goToPage("contratacao", {
+        contratacaoFiltro: target.dataset.contratacaoFiltro || "pre-admissao",
+      });
+      return;
+    }
+    goToPage(page, {
       resultTab: target.dataset.resultTab,
       talentTab: target.dataset.talentTab,
       interviewId: target.dataset.interviewId
@@ -23204,8 +23577,41 @@ document.querySelectorAll("[data-page]").forEach((link) => {
       goToPage("entrevistas");
       return;
     }
+    if (page === "recrutamento") {
+      goToPage("recrutamento", { recrutamentoTab: recrutamentoTab || "pipeline" });
+      return;
+    }
+    if (page === "selecao") {
+      const entry = link.dataset.selecaoEntry || "entrevistas";
+      if (entry === "entrevistas") goToPage("entrevistas", { selecaoTab: "entrevistas" });
+      else if (entry === "resultados") goToPage("resultados", { selecaoTab: "resultados" });
+      else goToPage("selecao", { selecaoTab: "instrumentos" });
+      return;
+    }
+    if (page === "contratacao") {
+      goToPage("contratacao", { contratacaoFiltro: contratacaoFiltro || "pre-admissao" });
+      return;
+    }
+    if (page === "painel") {
+      goToPage("dashboard");
+      return;
+    }
     goToPage(page);
   });
+});
+
+document.querySelector("#hubChromeRecrutamento")?.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-recrutamento-tab]")?.dataset.recrutamentoTab;
+  if (!tab) return;
+  goToPage("recrutamento", { recrutamentoTab: tab });
+});
+
+document.querySelector("#hubChromeSelecao")?.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-selecao-tab]")?.dataset.selecaoTab;
+  if (!tab) return;
+  if (tab === "entrevistas") goToPage("entrevistas", { selecaoTab: "entrevistas" });
+  else if (tab === "resultados") goToPage("resultados", { selecaoTab: "resultados" });
+  else goToPage("selecao", { selecaoTab: "instrumentos" });
 });
 
 document.querySelectorAll("[data-workspace-role]").forEach((button) => {
@@ -23395,6 +23801,8 @@ kanban.addEventListener("keydown", (event) => {
   openCandidate(Number(card.dataset.candidateId));
 });
 
+let pendingKanbanMove = null;
+
 kanban.addEventListener("dragstart", (event) => {
   if (event.target.closest("input, textarea, button, .card-panel")) {
     event.preventDefault();
@@ -23402,6 +23810,7 @@ kanban.addEventListener("dragstart", (event) => {
   }
   const card = event.target.closest(".pipeline-card");
   if (!card) return;
+  pendingKanbanMove = null;
   event.dataTransfer.setData("text/plain", card.dataset.candidateId);
   event.dataTransfer.effectAllowed = "move";
   card.style.opacity = "0.55";
@@ -23413,6 +23822,11 @@ kanban.addEventListener("dragend", (event) => {
   kanban
     .querySelectorAll(".drop-target")
     .forEach((column) => column.classList.remove("drop-target"));
+  const pending = pendingKanbanMove;
+  pendingKanbanMove = null;
+  if (pending) {
+    window.setTimeout(() => moveCandidate(pending.id, pending.stage), 0);
+  }
 });
 
 kanban.addEventListener("dragover", (event) => {
@@ -23436,7 +23850,10 @@ kanban.addEventListener("drop", (event) => {
   if (!column) return;
   event.preventDefault();
   column.classList.remove("drop-target");
-  moveCandidate(Number(event.dataTransfer.getData("text/plain")), column.dataset.stage);
+  const id = Number(event.dataTransfer.getData("text/plain"));
+  if (!id) return;
+  // Abrir modal durante o drop trava o drag do browser — adia para o dragend.
+  pendingKanbanMove = { id, stage: column.dataset.stage };
 });
 
 document.querySelector("#closeCandidateDialog").addEventListener("click", () => {
@@ -24917,8 +25334,7 @@ function openAnalyticsDrill({ title, valueLabel, items }) {
     });
   }
   renderAnalyticsDrillList();
-  if (typeof dialog.showModal === "function") dialog.showModal();
-  else dialog.setAttribute("open", "");
+  safeShowModal(dialog);
 }
 
 function renderAnalyticsDrillList() {
@@ -27610,6 +28026,7 @@ function updateCandidateSidebarUser() {
 }
 
 function setCandidatePortalView(view, options = {}) {
+  if (view === "processo") view = "interviews";
   if (candidatePortalView === "test-taking" && view !== "test-taking") {
     persistCandidateTakingProgress({ quiet: true });
   }
@@ -27709,6 +28126,7 @@ function setCandidatePortalView(view, options = {}) {
   }
   document.querySelectorAll("[data-candidate-nav]").forEach((btn) => {
     const key = btn.dataset.candidateNav;
+    const processKeys = new Set(["apps", "app-detail", "interviews", "tests", "test-taking", "offer", "pre-admission"]);
     const navKey =
       view === "detail" || view === "apply" || view === "apply-success"
         ? "jobs"
@@ -27717,7 +28135,10 @@ function setCandidatePortalView(view, options = {}) {
           : view === "test-taking"
             ? "tests"
             : view;
-    btn.classList.toggle("active", navKey === key);
+    let active = navKey === key;
+    if (key === "processo" && processKeys.has(view)) active = true;
+    if (processKeys.has(key) && key !== "processo") active = false;
+    btn.classList.toggle("active", active);
   });
   if (view === "jobs") {
     updateCandidateFilterButton();
@@ -29362,14 +29783,9 @@ if (isCandidatePortalHash()) {
 } else if (openFromShareHash(window.location.hash)) {
   // Deep link #vaga- / #candidato- / #entrevista-
 } else {
-  const initialHash = window.location.hash.replace("#", "");
-  const initialPage = pageByHash[initialHash];
-  if (initialPage && initialPage !== "dashboard") {
-    if (initialPage === "gestor") {
-      goToPage("gestor", { gestorHomeFilter: gestorHomeFilterFromHash(initialHash) });
-    } else {
-      goToPage(initialPage);
-    }
+  const resolved = resolveAppHash(window.location.hash);
+  if (resolved.page && resolved.page !== "dashboard") {
+    goToPage(resolved.page, resolved.options || {});
   } else if (workspaceRole === "gestor") {
     goToPage("gestor", { gestorHomeFilter: "overview" });
   }

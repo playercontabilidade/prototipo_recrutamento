@@ -2,6 +2,8 @@
 
 ## App shell (Portal RH)
 
+Contrato Processo Ágil: topbar fixa + sidebar fixa + conteúdo com scroll.
+
 ```html
 <div class="app-shell">
   <aside class="sidebar" id="sidebar">...</aside>
@@ -14,79 +16,28 @@
 ```
 
 - Grid: `sidebar-width` + `1fr`
+- Altura: `100dvh`; sem padding externo no `body`
 - Fundo conteúdo: `--surface-soft`
 
-## Sidebar (padrão único — RH e Candidato)
+## Sidebar
 
-### Estrutura obrigatória
+### Estrutura
 
 ```
-┌─────────────────────────┐
-│ BRAND (logo P + título) │
-├─────────────────────────┤
-│ nav-group-label         │
-│   nav-item (×N)         │
-│ nav-group-label         │
-│   nav-item (×N)         │
-├─────────────────────────┤
-│ sidebar-footer          │
-│   nav-item / link       │
-│   help-card             │
-└─────────────────────────┘
+Brand (logo + título)
+Kicker “Navegação” + “Áreas do sistema”
+Switch RH | Gestor
+nav-groups…
+footer pin: Configurações (+ help)
 ```
 
-### Brand
-
-```html
-<div class="brand">
-  <span class="brand-mark" aria-hidden="true">P</span>
-  <div>
-    <strong>Portal RH</strong>
-    <span>Gestão de talentos</span>
-  </div>
-</div>
-```
-
-| Portal | `strong` | `span` |
-|--------|----------|--------|
-| RH | Portal RH | Gestão de talentos |
-| Candidato | Player RH | Portal do candidato |
-
-### Nav item
-
-```html
-<a href="#vagas" class="nav-item active" data-page="jobs">
-  <span class="nav-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
-  Vagas
-  <span class="nav-count">12</span>
-</a>
-```
-
-- Ativo: `--brand-50` + barra verde `::before` à esquerda
-- Contador: `.nav-count` pill à direita (`margin-left: auto`)
-- Candidato usa `<button class="nav-item">` com mesma aparência
-
-### Footer
-
-- RH: Configurações + help-card
-- Candidato: Voltar ao RH + help-card (mesmo visual)
-
-**Nome do usuário NÃO fica na sidebar.**
+- Ativo: `--brand-50` + barra verde inset à esquerda
+- Hover: `--navy-50`
+- Usuário **não** fica na sidebar (vai na topbar)
 
 ## Topbar
 
-```html
-<header class="topbar">
-  <button class="icon-button menu-button" id="menuButton">☰</button>
-  <div class="topbar-title">
-    <span>Recrutamento e seleção</span>  <!-- uppercase via CSS -->
-    <strong id="pageTitle">Dashboard</strong>
-  </div>
-  <div class="topbar-actions">
-    <!-- notificações, perfil -->
-  </div>
-</header>
-```
+Sempre visível (~56px): título da página, busca (Ctrl K visual), vista candidato, notificações, perfil.
 
 ### Perfil (RH e Candidato)
 
@@ -107,7 +58,7 @@
 | `.dashboard-page` | Páginas internas RH (`hidden` quando inativa) |
 | `.dashboard-welcome` | Saudação + CTA no topo |
 | `.dashboard-grid` | Grid 12 colunas para widgets |
-| `.dashboard-panel` | Card de seção (border-radius 22px) |
+| `.dashboard-panel` | Card de seção |
 | `.pipeline-page` | Pipeline kanban |
 | `.candidate-view` | Views do portal candidato |
 
@@ -132,5 +83,5 @@
 | Área | Grid |
 |------|------|
 | Lista de vagas | 2 colunas ≥900px, 1 coluna mobile |
-| Perfil | Aside resumo + form (`.candidate-profile-page`) |
-| Detalhe vaga | Stack de `.candidate-panel` max ~720px |
+| Perfil | Aside resumo + form |
+| Detalhe vaga | Stack de painéis |
