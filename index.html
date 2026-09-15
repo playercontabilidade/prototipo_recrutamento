@@ -815,24 +815,30 @@
             </div>
           </header>
 
-          <nav class="page-menu talent-tabs fit-hub-tabs pendencias-hub-tabs" role="tablist" aria-label="Buckets de pendências">
-            <button type="button" role="tab" data-pendencias-bucket="mine" aria-selected="true">
-              Minhas
-              <span class="talent-tab-count" id="pendenciasMineCount">0</span>
-            </button>
-            <button type="button" role="tab" data-pendencias-bucket="team" aria-selected="false">
-              Equipe
-              <span class="talent-tab-count" id="pendenciasTeamCount">0</span>
-            </button>
-            <button type="button" role="tab" data-pendencias-bucket="overdue" aria-selected="false">
-              Vencidas
-              <span class="talent-tab-count" id="pendenciasOverdueCount">0</span>
-            </button>
-            <button type="button" role="tab" data-pendencias-bucket="dueSoon" aria-selected="false">
-              Próximas do vencimento
-              <span class="talent-tab-count" id="pendenciasDueSoonCount">0</span>
-            </button>
-          </nav>
+          <div class="pendencias-tools" aria-label="Filtros de pendências">
+            <nav
+              class="workspace-filter-chips"
+              role="tablist"
+              aria-label="Buckets de pendências"
+            >
+              <button type="button" role="tab" data-pendencias-bucket="mine" aria-selected="true">
+                Minhas
+                <span class="talent-tab-count" id="pendenciasMineCount">0</span>
+              </button>
+              <button type="button" role="tab" data-pendencias-bucket="team" aria-selected="false">
+                Equipe
+                <span class="talent-tab-count" id="pendenciasTeamCount">0</span>
+              </button>
+              <button type="button" role="tab" data-pendencias-bucket="overdue" aria-selected="false">
+                Vencidas
+                <span class="talent-tab-count" id="pendenciasOverdueCount">0</span>
+              </button>
+              <button type="button" role="tab" data-pendencias-bucket="dueSoon" aria-selected="false">
+                Próximas do vencimento
+                <span class="talent-tab-count" id="pendenciasDueSoonCount">0</span>
+              </button>
+            </nav>
+          </div>
 
           <div class="pendencias-type-bar" id="pendenciasTypeBar" hidden>
             <div class="pendencias-type-filters" id="pendenciasTypeFilters" role="toolbar" aria-label="Filtrar por tipo"></div>

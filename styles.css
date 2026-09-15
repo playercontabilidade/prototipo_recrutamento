@@ -19016,7 +19016,15 @@ body.is-candidate-portal {
 }
 
 .pendencias-page .dashboard-welcome {
-  margin-bottom: 26px;
+  margin-bottom: 16px;
+}
+
+.pendencias-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin: 0 0 12px;
 }
 
 /* Workspace contínuo — 3º nível = chips (não barra segmentada) */
