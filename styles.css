@@ -19081,9 +19081,13 @@ body.is-candidate-portal {
 .pendencias-hub-tabs.talent-tabs button[aria-selected="true"],
 .pendencias-hub-tabs.talent-tabs button.is-active,
 .gestor-entrevistas-hub .pendencias-hub-tabs button[aria-selected="true"],
+.gestor-entrevistas-hub .pendencias-hub-tabs button.is-active,
 .gestor-pendencias-hub .pendencias-hub-tabs button[aria-selected="true"],
+.gestor-pendencias-hub .pendencias-hub-tabs button.is-active,
 #gestorPendenciasBuckets button[aria-selected="true"],
-#gestorEntrevistasBuckets button[aria-selected="true"] {
+#gestorPendenciasBuckets button.is-active,
+#gestorEntrevistasBuckets button[aria-selected="true"],
+#gestorEntrevistasBuckets button.is-active {
   color: var(--brand-700);
   border-color: color-mix(in srgb, var(--brand-500) 45%, var(--border));
   background: var(--brand-50, #eef8f0);
@@ -19102,16 +19106,47 @@ body.is-candidate-portal {
 }
 
 .workspace-filter-chips button[aria-selected="true"] .talent-tab-count,
+.workspace-filter-chips button.is-active .talent-tab-count,
 .workspace-filter-chips button[aria-selected="true"] .workspace-chip-count,
-.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count {
+.workspace-filter-chips button.is-active .workspace-chip-count,
+.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count,
+.pendencias-hub-tabs button.is-active .talent-tab-count,
+.gestor-entrevistas-hub .pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count,
+.gestor-entrevistas-hub .pendencias-hub-tabs button.is-active .talent-tab-count,
+.gestor-pendencias-hub .pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count,
+.gestor-pendencias-hub .pendencias-hub-tabs button.is-active .talent-tab-count,
+#gestorPendenciasBuckets button[aria-selected="true"] .talent-tab-count,
+#gestorPendenciasBuckets button.is-active .talent-tab-count,
+#gestorEntrevistasBuckets button[aria-selected="true"] .talent-tab-count,
+#gestorEntrevistasBuckets button.is-active .talent-tab-count {
   background: color-mix(in srgb, var(--brand-500) 18%, transparent);
   color: var(--brand-800, var(--brand-700));
 }
 
 .workspace-filter-chips button[aria-selected="true"] .talent-tab-icon,
+.workspace-filter-chips button.is-active .talent-tab-icon,
 .workspace-filter-chips button[aria-selected="true"] .ui-icon,
+.workspace-filter-chips button.is-active .ui-icon,
 .pendencias-hub-tabs button[aria-selected="true"] .talent-tab-icon,
-.pendencias-hub-tabs button[aria-selected="true"] .ui-icon {
+.pendencias-hub-tabs button.is-active .talent-tab-icon,
+.pendencias-hub-tabs button[aria-selected="true"] .ui-icon,
+.pendencias-hub-tabs button.is-active .ui-icon,
+.gestor-entrevistas-hub .pendencias-hub-tabs button[aria-selected="true"] .talent-tab-icon,
+.gestor-entrevistas-hub .pendencias-hub-tabs button.is-active .talent-tab-icon,
+.gestor-entrevistas-hub .pendencias-hub-tabs button[aria-selected="true"] .ui-icon,
+.gestor-entrevistas-hub .pendencias-hub-tabs button.is-active .ui-icon,
+.gestor-pendencias-hub .pendencias-hub-tabs button[aria-selected="true"] .talent-tab-icon,
+.gestor-pendencias-hub .pendencias-hub-tabs button.is-active .talent-tab-icon,
+.gestor-pendencias-hub .pendencias-hub-tabs button[aria-selected="true"] .ui-icon,
+.gestor-pendencias-hub .pendencias-hub-tabs button.is-active .ui-icon,
+#gestorPendenciasBuckets button[aria-selected="true"] .talent-tab-icon,
+#gestorPendenciasBuckets button.is-active .talent-tab-icon,
+#gestorPendenciasBuckets button[aria-selected="true"] .ui-icon,
+#gestorPendenciasBuckets button.is-active .ui-icon,
+#gestorEntrevistasBuckets button[aria-selected="true"] .talent-tab-icon,
+#gestorEntrevistasBuckets button.is-active .talent-tab-icon,
+#gestorEntrevistasBuckets button[aria-selected="true"] .ui-icon,
+#gestorEntrevistasBuckets button.is-active .ui-icon {
   color: var(--brand-700);
 }
 
@@ -21188,6 +21223,7 @@ body[data-workspace-role="gestor"] [data-role="rh"] {
 
 .hub-chrome {
   margin: 0 0 8px;
+  padding: 0 20px;
 }
 
 .hub-chrome-tabs {
