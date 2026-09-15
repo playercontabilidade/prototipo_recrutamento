@@ -7013,6 +7013,26 @@ body {
   margin-bottom: 16px;
 }
 
+.talent-toolbar .workspace-filter-chips {
+  flex: 1 1 100%;
+}
+
+.talent-toolbar .workspace-filter-chips .talent-tab-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.talent-toolbar .workspace-filter-chips .talent-tab-icon .ui-icon {
+  width: 12px;
+  height: 12px;
+}
+
+@media (min-width: 900px) {
+  .talent-toolbar .workspace-filter-chips {
+    flex: 0 1 auto;
+  }
+}
+
 .talent-toolbar .talent-search {
   flex: 1 1 280px;
   min-width: 220px;
