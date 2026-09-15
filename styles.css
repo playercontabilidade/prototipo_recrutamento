@@ -5195,6 +5195,28 @@ body::after {
   padding: 34px;
 }
 
+.dashboard-page:not([hidden]) {
+  animation: workspace-pane-in 180ms ease-out;
+}
+
+@keyframes workspace-pane-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-page:not([hidden]) {
+    animation: none;
+  }
+}
+
 .dashboard-welcome {
   display: flex;
   align-items: center;
@@ -19035,8 +19057,27 @@ body.is-candidate-portal {
   margin-top: 8px;
 }
 
-.pendencias-page .dashboard-welcome {
-  margin-bottom: 16px;
+#pendenciasPage .dashboard-welcome,
+#talentosPage .dashboard-welcome {
+  margin-bottom: 14px;
+}
+
+.pendencias-page .pendencias-list,
+#talentosPage .talent-list {
+  gap: 10px;
+}
+
+.pendencias-page .pendencias-card,
+#talentosPage .talent-card:not(.talent-card-rich) {
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.pendencias-page .pendencias-card:hover,
+#talentosPage .talent-card:not(.talent-card-rich):hover {
+  box-shadow: none;
+  transform: none;
 }
 
 .pendencias-tools {
@@ -19048,8 +19089,7 @@ body.is-candidate-portal {
 }
 
 /* Workspace contínuo — 3º nível = chips (não barra segmentada) */
-.workspace-filter-chips,
-.pendencias-hub-tabs.talent-tabs {
+.workspace-filter-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -19063,8 +19103,7 @@ body.is-candidate-portal {
   background: transparent;
 }
 
-.workspace-filter-chips button,
-.pendencias-hub-tabs.talent-tabs button {
+.workspace-filter-chips button {
   display: inline-flex;
   flex: 0 0 auto;
   min-height: 30px;
@@ -19085,25 +19124,21 @@ body.is-candidate-portal {
   transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
-.workspace-filter-chips button:hover,
-.pendencias-hub-tabs.talent-tabs button:hover {
+.workspace-filter-chips button:hover {
   color: var(--ink-950);
   border-color: var(--navy-200, var(--border));
   background: var(--navy-50, rgb(245 246 247 / 70%));
 }
 
 .workspace-filter-chips button[aria-selected="true"],
-.workspace-filter-chips button.is-active,
-.pendencias-hub-tabs.talent-tabs button[aria-selected="true"],
-.pendencias-hub-tabs.talent-tabs button.is-active {
+.workspace-filter-chips button.is-active {
   color: var(--brand-700);
   border-color: color-mix(in srgb, var(--brand-500) 45%, var(--border));
   background: var(--brand-50, #eef8f0);
 }
 
 .workspace-filter-chips .talent-tab-count,
-.workspace-filter-chips .workspace-chip-count,
-.pendencias-hub-tabs .talent-tab-count {
+.workspace-filter-chips .workspace-chip-count {
   min-width: 1.4em;
   padding: 0 6px;
   border-radius: 999px;
@@ -19116,9 +19151,7 @@ body.is-candidate-portal {
 .workspace-filter-chips button[aria-selected="true"] .talent-tab-count,
 .workspace-filter-chips button.is-active .talent-tab-count,
 .workspace-filter-chips button[aria-selected="true"] .workspace-chip-count,
-.workspace-filter-chips button.is-active .workspace-chip-count,
-.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-count,
-.pendencias-hub-tabs button.is-active .talent-tab-count {
+.workspace-filter-chips button.is-active .workspace-chip-count {
   background: color-mix(in srgb, var(--brand-500) 18%, transparent);
   color: var(--brand-800, var(--brand-700));
 }
@@ -19126,16 +19159,8 @@ body.is-candidate-portal {
 .workspace-filter-chips button[aria-selected="true"] .talent-tab-icon,
 .workspace-filter-chips button.is-active .talent-tab-icon,
 .workspace-filter-chips button[aria-selected="true"] .ui-icon,
-.workspace-filter-chips button.is-active .ui-icon,
-.pendencias-hub-tabs button[aria-selected="true"] .talent-tab-icon,
-.pendencias-hub-tabs button.is-active .talent-tab-icon,
-.pendencias-hub-tabs button[aria-selected="true"] .ui-icon,
-.pendencias-hub-tabs button.is-active .ui-icon {
+.workspace-filter-chips button.is-active .ui-icon {
   color: var(--brand-700);
-}
-
-.pendencias-hub-tabs.talent-tabs {
-  margin: 0 0 16px;
 }
 
 .gestor-entrevistas-hub .workspace-filter-chips,
