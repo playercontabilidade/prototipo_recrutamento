@@ -5648,12 +5648,20 @@ function buildPendencies() {
         primaryAction: "abrir_proposta",
         secondaryActions: offerStatus === "aprovada" ? ["enviar_retorno"] : ["abrir_candidatura"],
       });
-    } else if (offerStatus === "enviada" || offerStatus === "visualizada" || offerStatus === "vista") {
+    } else if (
+      offerStatus === "enviada" ||
+      offerStatus === "visualizada" ||
+      offerStatus === "vista" ||
+      offerStatus === "contraproposta"
+    ) {
       const lastSend = candidate.proposal.sends?.[candidate.proposal.sends.length - 1];
       push({
         id: `derived-proposta-${candidate.id}`,
         type: "proposta_aprovacao",
-        title: `Proposta ${offerStatusLabel(offerStatus)} — ${candidate.name}`,
+        title:
+          offerStatus === "contraproposta"
+            ? `Contra-proposta — ${candidate.name}`
+            : `Proposta ${offerStatusLabel(offerStatus)} — ${candidate.name}`,
         description: `R$ ${proposalSalary(candidate.proposal) ?? "—"} · ${candidate.vacancy}`,
         assignee: owner,
         dueAt: lastSend?.at || candidate.proposal.sentAt || `${pendingAddDays(TODAY_KEY, 1)}T18:00:00`,
@@ -6559,6 +6567,7 @@ function offerStatusLabel(status) {
       enviada: "Enviada",
       visualizada: "Visualizada",
       vista: "Visualizada",
+      contraproposta: "Contra-proposta",
       aceita: "Aceita",
       recusada: "Recusada",
       expirada: "Expirada",
@@ -6573,6 +6582,7 @@ const OFFER_STATUSES = [
   "aprovada",
   "enviada",
   "visualizada",
+  "contraproposta",
   "aceita",
   "recusada",
   "expirada",
@@ -6611,6 +6621,7 @@ function createEmptyProposal(candidate, partial = {}) {
     sends: Array.isArray(partial.sends) ? partial.sends.slice() : [],
     refusalReason: partial.refusalReason || null,
     refusalNote: partial.refusalNote || null,
+    counterProposal: partial.counterProposal || null,
     approvedAt: partial.approvedAt || null,
     sentAt: partial.sentAt || null,
     viewedAt: partial.viewedAt || null,
@@ -6696,6 +6707,14 @@ function offerActionsForStatus(status) {
       { id: "reenviar", label: "Reenviar", primary: true },
       { id: "aceitar", label: "Registrar aceite" },
       { id: "recusar", label: "Registrar recusa" },
+      { id: "cancelar", label: "Cancelar" },
+    );
+  } else if (s === "contraproposta") {
+    actions.push(
+      { id: "aceitar_contraproposta", label: "Aceitar contra-proposta", primary: true },
+      { id: "contra_rh", label: "Fazer contra-proposta" },
+      { id: "recusar", label: "Recusar" },
+      { id: "visualizar", label: "Visualizar" },
       { id: "cancelar", label: "Cancelar" },
     );
   } else if (["aceita", "recusada", "expirada", "cancelada"].includes(s)) {
@@ -8591,7 +8610,6 @@ function openScoreEvaluationDetail(id) {
     })
     .join("");
   document.querySelector("#scoreEvalActions").innerHTML = `
-    <button type="button" class="primary-button" data-score-eval-action="save">Salvar</button>
     <div class="candidate-more-wrap interview-more-wrap">
       <button class="more-button" type="button" id="scoreEvalMoreBtn" aria-label="Mais ações" aria-expanded="false" aria-haspopup="menu" aria-controls="scoreEvalMoreMenu">⋮</button>
       <div class="candidate-more-menu" id="scoreEvalMoreMenu" role="menu" hidden>
@@ -8601,7 +8619,9 @@ function openScoreEvaluationDetail(id) {
         </div>
       </div>
     </div>
-    <button type="button" class="secondary-button" id="closeScoreEvalDialog" data-score-eval-action="close">Fechar</button>`;
+    <div class="interview-detail-toolbar-end">
+      <button type="button" class="primary-button" data-score-eval-action="save">Salvar</button>
+    </div>`;
   document.querySelector("#scoreEvaluationDialog")?.showModal();
 }
 
@@ -9169,6 +9189,7 @@ function normalizeInterviewRecord(item) {
   if (!item.stage) item.stage = item.type || "Entrevista RH";
   if (item.inviteSent == null) item.inviteSent = Boolean(item.waiting);
   if (item.reminderSent == null) item.reminderSent = false;
+  if (item.status === "Aguardando confirmação") ensureInterviewConfirmDeadline(item);
   normalizeInterviewSheetRef(item);
   if (item.notes == null) item.notes = "";
   if (item.candidateInstructions == null) item.candidateInstructions = "";
@@ -9766,14 +9787,10 @@ function renderInterviewDetail() {
   const noShowBtn = document.querySelector("#interviewDetailNoShowAction");
   const rebookBtn = document.querySelector("#interviewDetailRebookAction");
   if (rescheduleBtn) {
-    const show = overdueNow && interviewIsActive(item) && !item.rescheduleRequest;
-    rescheduleBtn.hidden = !show;
-    rescheduleBtn.disabled = !show;
+    rescheduleBtn.hidden = true;
   }
   if (noShowBtn) {
-    const show = overdueNow && interviewIsActive(item);
-    noShowBtn.hidden = !show;
-    noShowBtn.disabled = !show;
+    noShowBtn.hidden = true;
   }
   if (rebookBtn) {
     const show = noShow || declined;
@@ -10722,6 +10739,10 @@ function runInterviewDetailAction(action) {
     return;
   } else if (action === "invite") {
     item.inviteSent = true;
+    item.candidateInvitedAt = stampOfferNow();
+    const deadline = new Date(item.candidateInvitedAt);
+    deadline.setHours(deadline.getHours() + 24);
+    item.candidateConfirmUntil = toLocalDateTimeIso(deadline);
     if (item.status === "Agendada") item.status = "Aguardando confirmação";
     interviewActivity(item, "Enviou convite da entrevista");
     showToast("Convite", item.inviteSent ? "Convite demonstrativo enviado." : "Convite enviado.");
@@ -12164,7 +12185,7 @@ function openFitAssignmentDetail(id, panel = "answers") {
         </div>
       </div>`
     : "";
-  actions.innerHTML = `${primaryHtml}${moreHtml}`;
+  actions.innerHTML = `${moreHtml}<div class="interview-detail-toolbar-end">${primaryHtml}</div>`;
   document.querySelectorAll("[data-fit-panel]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.fitPanel === panel);
   });
@@ -12504,7 +12525,7 @@ function openCandidateTestDetail(id, panel = "answers") {
           </div>
         </div>`
       : "";
-    actions.innerHTML = `${primaryHtml}${moreHtml}`;
+    actions.innerHTML = `${moreHtml}<div class="interview-detail-toolbar-end">${primaryHtml}</div>`;
   }
   setAssignmentDetailPanel(panel);
   closeAssignmentMoreActions();
@@ -12980,7 +13001,7 @@ function syncCandidateDossierPrimaryAction(candidate) {
     iconUse.setAttribute("href", `#${primary.icon}`);
   }
   btn.hidden = false;
-  document.querySelectorAll(".candidate-action-row > button[data-candidate-action]").forEach((button) => {
+  document.querySelectorAll(".candidate-action-row button[data-candidate-action]").forEach((button) => {
     button.classList.toggle("is-primary-action", button === btn);
   });
   const contactBtn = document.querySelector("#candidateContactActionBtn");
@@ -14818,6 +14839,9 @@ function closeOverlayDialogs() {
     lgpdDialog,
     bookingDialog,
     document.querySelector("#offerRefuseDialog"),
+    document.querySelector("#portalCounterOfferDialog"),
+    document.querySelector("#portalAcceptOfferDialog"),
+    document.querySelector("#portalRefuseOfferDialog"),
     document.querySelector("#blockDialog"),
     document.querySelector("#moveStageDialog"),
     document.querySelector("#pipelineActionDialog"),
@@ -14863,7 +14887,7 @@ function formatOfferWhen(iso) {
   return `${day}/${month} às ${hours}:${minutes}`;
 }
 
-function offerDetailsMarkup(offer) {
+function offerDetailsMarkup(offer, { hideNotes = false } = {}) {
   const salary = proposalSalary(offer);
   const benefits = (offer.benefits || []).length ? offer.benefits.join(", ") : "—";
   return `<div class="offer-summary-grid">
@@ -14876,10 +14900,102 @@ function offerDetailsMarkup(offer) {
       <div><small>Admissão</small><strong>${offer.admissionDate ? formatBRDate(offer.admissionDate) : "—"}</strong></div>
       <div><small>Validade</small><strong>${offer.validUntil ? formatBRDate(offer.validUntil) : "—"}</strong></div>
       <div class="full"><small>Benefícios</small><strong>${escapeHtml(benefits)}</strong></div>
-      ${offer.notes ? `<div class="full"><small>Observações</small><strong>${escapeHtml(offer.notes)}</strong></div>` : ""}
+      ${!hideNotes && offer.notes ? `<div class="full"><small>Observações</small><strong>${escapeHtml(offer.notes)}</strong></div>` : ""}
+      ${offer.message ? `<div class="full"><small>Mensagem</small><strong>${escapeHtml(offer.message)}</strong></div>` : ""}
       ${offer.refusalReason ? `<div class="full"><small>Recusa</small><strong>${escapeHtml(offer.refusalReason)}${offer.refusalNote ? ` — ${escapeHtml(offer.refusalNote)}` : ""}</strong></div>` : ""}
     </div>`;
 }
+
+function counterProposalPanelMarkup(counter, { title = "Contra-proposta do candidato" } = {}) {
+  if (!counter) return "";
+  const salary = proposalSalary(counter);
+  return `<section class="offer-counter-panel">
+      <h3 class="offer-section-title">${escapeHtml(title)}</h3>
+      <div class="offer-summary-grid">
+        <div><small>Salário</small><strong>${salary != null ? formatOfferMoney(salary) : "—"}</strong></div>
+        <div><small>Modelo</small><strong>${escapeHtml(counter.workModel || "—")}</strong></div>
+        ${counter.message ? `<div class="full"><small>Mensagem</small><strong>${escapeHtml(counter.message)}</strong></div>` : ""}
+      </div>
+    </section>`;
+}
+
+function applyCounterFieldsToOffer(offer, counter) {
+  if (!offer || !counter) return offer;
+  const salary = counter.salary != null ? Number(counter.salary) : proposalSalary(offer);
+  Object.assign(offer, {
+    salary,
+    amount: salary,
+    workModel: counter.workModel || offer.workModel,
+  });
+  offer.counterProposal = null;
+  return offer;
+}
+
+function buildCounterProposalFromValues(values, { from = "candidato", message = "" } = {}) {
+  const salary = values.salary != null && values.salary !== "" ? Number(values.salary) : null;
+  return {
+    salary,
+    amount: salary,
+    workModel: values.workModel || "Presencial",
+    message: message || values.message || "",
+    from,
+    at: stampOfferNow(),
+  };
+}
+
+function openPortalCounterOfferDialog(candidate) {
+  ensureCandidateProposal(candidate);
+  const offer = candidate?.proposal;
+  const dialog = document.querySelector("#portalCounterOfferDialog");
+  if (!offer || !dialog) return;
+  const salary = proposalSalary(offer);
+  const meta = document.querySelector("#portalCounterOfferMeta");
+  if (meta) {
+    meta.textContent = `${candidate.name || "Candidato"} · ${offer.role || candidate.vacancy || "Proposta"}`;
+  }
+  document.querySelector("#portalCounterSalary").value = salary ?? "";
+  document.querySelector("#portalCounterWorkModel").value = offer.workModel || "Presencial";
+  document.querySelector("#portalCounterMessage").value = offer.counterProposal?.message || "";
+  dialog.showModal();
+}
+
+function readPortalCounterFormValues(form) {
+  if (!form) return null;
+  const data = new FormData(form);
+  return {
+    salary: Number(data.get("salary")),
+    workModel: String(data.get("workModel") || "Presencial"),
+    message: String(data.get("message") || "").trim(),
+  };
+}
+
+function openPortalAcceptOfferDialog(candidate) {
+  ensureCandidateProposal(candidate);
+  const offer = candidate?.proposal;
+  const dialog = document.querySelector("#portalAcceptOfferDialog");
+  const summary = document.querySelector("#portalAcceptOfferSummary");
+  if (!offer || !dialog) return;
+  const salary = proposalSalary(offer);
+  if (summary) {
+    summary.textContent = `${offer.role || candidate.vacancy || "Proposta"} · ${
+      salary != null ? formatOfferMoney(salary) : "—"
+    } · ${offer.workModel || "—"}`;
+  }
+  dialog.showModal();
+}
+
+function openPortalRefuseOfferDialog(candidate) {
+  ensureCandidateProposal(candidate);
+  const dialog = document.querySelector("#portalRefuseOfferDialog");
+  if (!candidate?.proposal || !dialog) return;
+  const reason = document.querySelector("#portalRefuseOfferReason");
+  const note = document.querySelector("#portalRefuseOfferNote");
+  if (reason) reason.value = "";
+  if (note) note.value = "";
+  dialog.showModal();
+}
+
+let offerFormMode = "edit";
 
 function renderOfferDialog(candidate) {
   ensureCandidateProposal(candidate);
@@ -14925,7 +15041,11 @@ function renderOfferDialog(candidate) {
 
   if (summary) {
     summary.hidden = false;
-    summary.innerHTML = offerDetailsMarkup(offer);
+    summary.innerHTML =
+      offerDetailsMarkup(offer) +
+      (offer.status === "contraproposta" && offer.counterProposal
+        ? counterProposalPanelMarkup(offer.counterProposal)
+        : "");
   }
 
   if (statusPill) {
@@ -14986,7 +15106,7 @@ function renderOfferDialog(candidate) {
   const canSimulate = ["enviada", "visualizada"].includes(offer.status);
   if (candidateActions) candidateActions.hidden = !canSimulate;
 
-  const showMessage = ["rascunho", "aprovada", "enviada", "visualizada"].includes(offer.status);
+  const showMessage = ["rascunho", "aprovada", "enviada", "visualizada", "contraproposta"].includes(offer.status);
   if (messageField) messageField.hidden = !showMessage;
   if (sendBlock) sendBlock.hidden = !showMessage;
 
@@ -15039,38 +15159,60 @@ function openOfferDialog(candidate, options = {}) {
   }
 }
 
-function openOfferForm(candidate) {
+function openOfferForm(candidate, options = {}) {
   ensureCandidateProposal(candidate);
   const offer = candidate.proposal || createEmptyProposal(candidate);
+  offerFormMode = options.mode || "edit";
+  const source =
+    offerFormMode === "rh_counter" && offer.counterProposal
+      ? { ...offer, ...offer.counterProposal, salary: proposalSalary(offer.counterProposal) ?? proposalSalary(offer) }
+      : offer;
   const title = document.querySelector("#offerFormTitle");
-  if (title) title.textContent = candidate.proposal ? "Editar proposta" : "Nova proposta";
+  if (title) {
+    title.textContent =
+      offerFormMode === "rh_counter"
+        ? "Contra-proposta do RH"
+        : candidate.proposal
+          ? "Editar proposta"
+          : "Nova proposta";
+  }
   const meta = document.querySelector("#offerFormMeta");
   if (meta) meta.textContent = `${candidate.name} · ${candidate.vacancy || "—"}`;
-  document.querySelector("#offerRole").value = offer.role || candidate.vacancy || "";
-  document.querySelector("#offerSalary").value = proposalSalary(offer) ?? "";
-  document.querySelector("#offerWorkSchedule").value = offer.workSchedule || "40h semanais";
-  document.querySelector("#offerWorkModel").value = offer.workModel || "Presencial";
-  document.querySelector("#offerLocation").value = offer.location || "";
-  document.querySelector("#offerAdmissionDate").value = offer.admissionDate || "";
-  document.querySelector("#offerValidUntil").value = offer.validUntil || "";
-  document.querySelector("#offerContract").value = offer.contract || "CLT";
-  document.querySelector("#offerNotes").value = offer.notes || "";
+  document.querySelector("#offerRole").value = source.role || candidate.vacancy || "";
+  document.querySelector("#offerSalary").value = proposalSalary(source) ?? "";
+  document.querySelector("#offerWorkSchedule").value = source.workSchedule || "40h semanais";
+  document.querySelector("#offerWorkModel").value = source.workModel || "Presencial";
+  document.querySelector("#offerLocation").value = source.location || "";
+  document.querySelector("#offerAdmissionDate").value = source.admissionDate || "";
+  document.querySelector("#offerValidUntil").value = source.validUntil || "";
+  document.querySelector("#offerContract").value = source.contract || "CLT";
+  document.querySelector("#offerNotes").value = source.notes || "";
   const host = document.querySelector("#offerBenefitsList");
   if (host) {
     const activeBenefits = benefitsCatalog.filter((item) => item.active !== false);
     host.innerHTML = activeBenefits
       .map((item) => {
-        const checked = (offer.benefits || []).includes(item.name) ? "checked" : "";
+        const checked = (source.benefits || []).includes(item.name) ? "checked" : "";
         return `<label class="offer-benefit-item"><input type="checkbox" name="offerBenefit" value="${escapeHtml(item.name)}" ${checked} /> <span>${escapeHtml(item.name)}</span></label>`;
       })
       .join("");
   }
   const status = offer.status || "rascunho";
-  const canSendDirect = !candidate.proposal || status === "rascunho" || status === "aprovada";
+  const canSendDirect =
+    offerFormMode === "rh_counter" ||
+    !candidate.proposal ||
+    status === "rascunho" ||
+    status === "aprovada";
   const sendBtn = document.querySelector("#offerFormSend");
   const draftBtn = document.querySelector("#offerFormSaveDraft");
-  if (sendBtn) sendBtn.hidden = !canSendDirect;
-  if (draftBtn) draftBtn.textContent = canSendDirect ? "Salvar rascunho" : "Salvar";
+  if (sendBtn) {
+    sendBtn.hidden = !canSendDirect;
+    sendBtn.textContent = offerFormMode === "rh_counter" ? "Enviar contra-proposta" : "Enviar ao candidato";
+  }
+  if (draftBtn) {
+    draftBtn.hidden = offerFormMode === "rh_counter";
+    draftBtn.textContent = canSendDirect ? "Salvar rascunho" : "Salvar";
+  }
   offerFormDialog.showModal();
 }
 
@@ -15308,6 +15450,7 @@ function runOfferAction(candidate, actionId) {
       if (!offer || ["aceita", "recusada", "expirada", "cancelada"].includes(offer.status)) return;
       offer.status = "cancelada";
       offer.cancelledAt = now;
+      offer.counterProposal = null;
       logProposal("Proposta cancelada", offer.role);
       touch();
       showToast("Proposta cancelada", "");
@@ -15325,10 +15468,32 @@ function runOfferAction(candidate, actionId) {
       if (!offer || !["enviada", "visualizada"].includes(offer.status)) return;
       offer.status = "aceita";
       offer.decidedAt = now;
+      offer.counterProposal = null;
       logProposal("Proposta aceita", offer.role);
       touch();
       showToast("Proposta aceita", "Aceite registrado. Contratação continua manual no dossiê.");
       refreshCandidatePortalAfterOfferChange();
+      break;
+    }
+    case "aceitar_contraproposta": {
+      const offer = candidate.proposal;
+      if (!offer || offer.status !== "contraproposta" || !offer.counterProposal) {
+        showToast("Sem contra-proposta", "Não há contra-proposta pendente para aceitar.");
+        return;
+      }
+      applyCounterFieldsToOffer(offer, offer.counterProposal);
+      offer.status = "aceita";
+      offer.decidedAt = now;
+      logProposal("Contra-proposta aceita", offer.role);
+      touch();
+      showToast("Contra-proposta aceita", "Os termos do candidato foram aceitos.");
+      refreshCandidatePortalAfterOfferChange();
+      break;
+    }
+    case "contra_rh": {
+      const offer = candidate.proposal;
+      if (!offer || offer.status !== "contraproposta") return;
+      openOfferForm(candidate, { mode: "rh_counter" });
       break;
     }
     case "recusar":
@@ -21234,13 +21399,6 @@ function renderGestorRequestActions(item, readOnly) {
     primary.push(`<button type="button" class="primary-button" data-request-form-action="approve">Aprovar</button>`);
     primary.push(`<button type="button" class="secondary-button" data-request-form-action="close">Fechar</button>`);
   } else {
-    if (
-      ["Enviada", "Em análise", "Aguardando aprovação"].includes(item.status) &&
-      item.cancelAllowed &&
-      normalize(item.requester || "") === normalize(currentManagerName)
-    ) {
-      secondary.push(`<button type="button" class="secondary-button" data-request-form-action="cancel">Cancelar</button>`);
-    }
     if (item.status === "Rascunho") {
       primary.push(`<button type="button" class="secondary-button" data-request-form-action="edit">Editar</button>`);
     }
@@ -21254,6 +21412,15 @@ function renderGestorRequestActions(item, readOnly) {
     }
     if (item.status === "Vaga criada" && item.linkedJobId) {
       primary.push(`<button type="button" class="primary-button" data-request-form-action="open-job">Abrir vaga</button>`);
+    }
+    if (
+      ["Enviada", "Em análise", "Aguardando aprovação"].includes(item.status) &&
+      item.cancelAllowed &&
+      normalize(item.requester || "") === normalize(currentManagerName)
+    ) {
+      primary.push(
+        `<button type="button" class="secondary-button" data-request-form-action="cancel">Cancelar solicitação</button>`,
+      );
     }
     primary.push(`<button type="button" class="secondary-button" data-request-form-action="close">Fechar</button>`);
   }
@@ -24268,10 +24435,19 @@ document.querySelector("#offerActionsMore")?.addEventListener("click", (event) =
   runOfferAction(candidate, button.dataset.offerAction);
 });
 
-document.querySelector("#closeOfferForm")?.addEventListener("click", () => offerFormDialog.close());
-document.querySelector("#cancelOfferForm")?.addEventListener("click", () => offerFormDialog.close());
+document.querySelector("#closeOfferForm")?.addEventListener("click", () => {
+  offerFormMode = "edit";
+  offerFormDialog.close();
+});
+document.querySelector("#cancelOfferForm")?.addEventListener("click", () => {
+  offerFormMode = "edit";
+  offerFormDialog.close();
+});
 offerFormDialog?.addEventListener("click", (event) => {
-  if (event.target === offerFormDialog) offerFormDialog.close();
+  if (event.target === offerFormDialog) {
+    offerFormMode = "edit";
+    offerFormDialog.close();
+  }
 });
 
 document.querySelector("#offerForm")?.addEventListener("submit", (event) => {
@@ -24284,7 +24460,51 @@ document.querySelector("#offerForm")?.addEventListener("submit", (event) => {
     return;
   }
   const intent = event.submitter?.dataset?.offerIntent || "draft";
+  if (offerFormMode === "rh_counter") {
+    if (intent !== "send") return;
+    ensureCandidateProposal(candidate);
+    const offer = candidate.proposal;
+    if (!offer || offer.status !== "contraproposta") {
+      offerFormMode = "edit";
+      offerFormDialog.close();
+      return;
+    }
+    archiveProposalVersion(candidate);
+    applyOfferFormValues(candidate, values, { keepStatus: false });
+    const next = candidate.proposal;
+    next.status = "enviada";
+    next.sentAt = stampOfferNow();
+    next.counterProposal = null;
+    if (!Array.isArray(next.sends)) next.sends = [];
+    next.sends.unshift({
+      salary: proposalSalary(next),
+      amount: proposalSalary(next),
+      workModel: next.workModel,
+      contract: next.contract,
+      message: "Contra-proposta do RH",
+      pdf: next.pendingPdf || "",
+      at: stampOfferNow(),
+    });
+    pushTimelineEvent(candidate, {
+      type: "proposta",
+      title: "Contra-proposta do RH enviada",
+      description: next.role || "",
+      actor: "Larissa Dias",
+    });
+    if (!Array.isArray(candidate.history)) candidate.history = [];
+    candidate.history.unshift(["Contra-proposta do RH", `Larissa Dias · agora`]);
+    offerFormMode = "edit";
+    offerFormDialog.close();
+    if (!offerDialog?.open) openOfferDialog(candidate);
+    else renderOfferDialog(candidate);
+    renderPipeline();
+    if (typeof syncPendenciasNavCount === "function") syncPendenciasNavCount();
+    refreshCandidatePortalAfterOfferChange();
+    showToast("Contra-proposta enviada", "O candidato poderá responder aos novos termos.");
+    return;
+  }
   applyOfferFormValues(candidate, values);
+  offerFormMode = "edit";
   offerFormDialog.close();
   if (intent === "send") {
     if (!offerDialog?.open) openOfferDialog(candidate);
@@ -24323,6 +24543,7 @@ document.querySelector("#offerRefuseForm")?.addEventListener("submit", (event) =
   candidate.proposal.refusalNote = note;
   candidate.proposal.decidedAt = now;
   candidate.proposal.updatedAt = now;
+  candidate.proposal.counterProposal = null;
   pushTimelineEvent(candidate, {
     type: "rejeicao",
     title: "Proposta recusada",
@@ -24367,7 +24588,37 @@ function resetCandidateMoreMenuPlacement(menu) {
   }
 }
 
-function placeCandidateMoreMenu(menu, trigger) {
+function resolveMoreMenuPlacement(trigger, options = {}) {
+  const rect = trigger.getBoundingClientRect();
+  const host =
+    trigger.closest("dialog, .stack-dialog, .interview-detail-sheet, .assignment-detail-sheet") ||
+    document.documentElement;
+  const hostRect =
+    typeof host.getBoundingClientRect === "function"
+      ? host.getBoundingClientRect()
+      : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+  const hostMidX = hostRect.left + hostRect.width / 2;
+  const hostMidY = hostRect.top + hostRect.height / 2;
+  const triggerMidX = rect.left + rect.width / 2;
+  const triggerMidY = rect.top + rect.height / 2;
+
+  let horizontal =
+    options.align === "start" || options.align === "end"
+      ? options.align
+      : triggerMidX < hostMidX
+        ? "start"
+        : "end";
+  let vertical =
+    options.vertical === "up" || options.vertical === "down"
+      ? options.vertical
+      : triggerMidY < hostMidY
+        ? "down"
+        : "up";
+
+  return { horizontal, vertical };
+}
+
+function placeCandidateMoreMenu(menu, trigger, options = {}) {
   if (!menu || !trigger) return;
   if (!menu._candidateMoreHome) {
     menu._candidateMoreHome = menu.parentElement;
@@ -24381,23 +24632,63 @@ function placeCandidateMoreMenu(menu, trigger) {
   const rect = trigger.getBoundingClientRect();
   const gap = 6;
   const viewportPad = 12;
+  const placement = resolveMoreMenuPlacement(trigger, options);
+  let alignStart = placement.horizontal === "start";
+  let openUp = placement.vertical === "up";
+
   menu.style.position = "fixed";
   menu.style.zIndex = "80";
-  menu.style.left = "auto";
-  menu.style.right = `${Math.max(viewportPad, window.innerWidth - rect.right)}px`;
-  menu.style.bottom = "auto";
   menu.style.maxHeight = "none";
   menu.style.overflow = "visible";
-  menu.style.top = `${rect.bottom + gap}px`;
+  menu.style.overflowY = "";
 
-  const menuHeight = menu.getBoundingClientRect().height;
+  if (alignStart) {
+    menu.style.right = "auto";
+    menu.style.left = `${Math.max(viewportPad, rect.left)}px`;
+  } else {
+    menu.style.left = "auto";
+    menu.style.right = `${Math.max(viewportPad, window.innerWidth - rect.right)}px`;
+  }
+
+  if (openUp) {
+    menu.style.top = "auto";
+    menu.style.bottom = `${Math.max(viewportPad, window.innerHeight - rect.top + gap)}px`;
+  } else {
+    menu.style.bottom = "auto";
+    menu.style.top = `${rect.bottom + gap}px`;
+  }
+
+  let menuRect = menu.getBoundingClientRect();
+  if (alignStart && menuRect.right > window.innerWidth - viewportPad) {
+    menu.style.left = "auto";
+    menu.style.right = `${viewportPad}px`;
+    alignStart = false;
+  } else if (!alignStart && menuRect.left < viewportPad) {
+    menu.style.right = "auto";
+    menu.style.left = `${viewportPad}px`;
+    alignStart = true;
+  }
+
+  menuRect = menu.getBoundingClientRect();
   const spaceBelow = window.innerHeight - rect.bottom - viewportPad;
   const spaceAbove = rect.top - viewportPad;
-  if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+  const menuHeight = menuRect.height;
+
+  if (openUp) {
+    if (menuHeight > spaceAbove && spaceBelow > spaceAbove) {
+      openUp = false;
+      menu.style.bottom = "auto";
+      menu.style.top = `${rect.bottom + gap}px`;
+    } else if (menuHeight > spaceAbove) {
+      menu.style.maxHeight = `${Math.max(160, spaceAbove)}px`;
+      menu.style.overflowY = "auto";
+    }
+  } else if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+    openUp = true;
     menu.style.top = "auto";
     menu.style.bottom = `${window.innerHeight - rect.top + gap}px`;
     if (menuHeight > spaceAbove) {
-      menu.style.maxHeight = `${spaceAbove}px`;
+      menu.style.maxHeight = `${Math.max(160, spaceAbove)}px`;
       menu.style.overflowY = "auto";
     }
   } else if (menuHeight > spaceBelow) {
@@ -26613,12 +26904,13 @@ on("#managerList", "click", (event) => {
 });
 
 function closeTopbarPopovers(except = "") {
-  ["notificationPopover", "profilePopover", "candidateProfilePopover"].forEach((id) => {
+  ["notificationPopover", "profilePopover", "candidateNotificationPopover", "candidateProfilePopover"].forEach((id) => {
     const popover = document.querySelector(`#${id}`); if (!popover || id === except) return;
     popover.hidden = true;
   });
   document.querySelector("#sidebarAccount .notification-button")?.setAttribute("aria-expanded", String(except === "notificationPopover"));
   document.querySelector("#sidebarAccount .profile-button")?.setAttribute("aria-expanded", String(except === "profilePopover"));
+  document.querySelector("#candidateNotificationBtn")?.setAttribute("aria-expanded", String(except === "candidateNotificationPopover"));
   document.querySelector("#candidateProfileBtn")?.setAttribute("aria-expanded", String(except === "candidateProfilePopover"));
 }
 on("#sidebarAccount .notification-button", "click", () => {
@@ -26808,6 +27100,7 @@ function renderCandidateInterviews() {
 function renderCandidateSelecaoInterviewRow(item) {
   const overdue = interviewIsOverdue(item);
   const canConfirm = item.status === "Aguardando confirmação";
+  if (canConfirm) ensureInterviewConfirmDeadline(item);
   const canReschedule = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
   const canRefuse = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
   const link = item.meetingLink || item.link || "";
@@ -26815,6 +27108,10 @@ function renderCandidateSelecaoInterviewRow(item) {
   const meta = [item.modality || "Entrevista", item.status, overdue ? "Atrasada" : ""]
     .filter(Boolean)
     .join(" · ");
+  const confirmHint =
+    canConfirm && item.candidateConfirmUntil
+      ? `<span class="candidate-selecao-note">Confirme até ${escapeHtml(formatCandidateInterviewDate(item.candidateConfirmUntil))} (prazo de 24h).</span>`
+      : "";
   return `
     <article class="candidate-selecao-item">
       <div class="candidate-selecao-item-main">
@@ -26822,6 +27119,7 @@ function renderCandidateSelecaoInterviewRow(item) {
         <strong>${escapeHtml(when)}</strong>
         <span>${escapeHtml(meta)}</span>
         ${item.candidateInstructions ? `<span class="candidate-selecao-note">${escapeHtml(item.candidateInstructions)}</span>` : ""}
+        ${confirmHint}
       </div>
       <div class="candidate-selecao-item-actions">
         ${canConfirm ? `<button class="primary-button" type="button" data-candidate-interview-confirm="${item.id}">Confirmar</button>` : ""}
@@ -26844,17 +27142,33 @@ function renderCandidateSelecaoFitRow(item) {
   ]
     .filter(Boolean)
     .join(" · ");
+  const pillars = (item.pillarScores || [])
+    .filter((pillar) => pillar?.name && pillar.score != null)
+    .map((pillar) => `${pillar.name}: ${pillar.score}%`)
+    .join(" · ");
+  const feedbackBits = [
+    item.adherencePct != null ? `Aderência ${item.adherencePct}%` : "",
+    pillars,
+    (item.strengths || []).length ? `Pontos fortes: ${(item.strengths || []).slice(0, 2).join(", ")}` : "",
+  ].filter(Boolean);
   return `
     <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
       <div class="candidate-selecao-item-main">
         <span class="candidate-selecao-kind">Fit Cultural</span>
         <strong>${escapeHtml(item.model?.name || "Fit Cultural")}</strong>
-        <span>${escapeHtml(meta)}${item.adherencePct != null ? ` · ${item.adherencePct}%` : ""}</span>
+        <span>${escapeHtml(meta)}</span>
+        ${
+          isDone && feedbackBits.length
+            ? `<span class="candidate-selecao-note">${escapeHtml(feedbackBits.join(" · "))}</span>`
+            : ""
+        }
       </div>
       <div class="candidate-selecao-item-actions">
         ${
           isDone
-            ? ""
+            ? item.adherencePct != null
+              ? `<span class="candidate-stage-pill">${item.adherencePct}%</span>`
+              : ""
             : `<button class="primary-button" type="button" data-candidate-fit-id="${item.fitAssignmentId}">${inProgress ? "Continuar" : "Iniciar"}</button>`
         }
       </div>
@@ -26874,17 +27188,32 @@ function renderCandidateSelecaoTestRow(item) {
   ]
     .filter(Boolean)
     .join(" · ");
+  const writtenCount = (item.writtenScores || []).length;
+  const feedbackBits = [
+    item.score != null ? `Nota ${item.score}%` : "",
+    item.result || "",
+    writtenCount
+      ? `${writtenCount} questão${writtenCount === 1 ? "" : "ões"} discursiva${writtenCount === 1 ? "" : "s"} avaliada${writtenCount === 1 ? "" : "s"}`
+      : "",
+  ].filter(Boolean);
   return `
     <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
       <div class="candidate-selecao-item-main">
         <span class="candidate-selecao-kind">Teste</span>
         <strong>${escapeHtml(item.test?.title || "Teste técnico")}</strong>
         <span>${escapeHtml(meta)}</span>
+        ${
+          isDone && feedbackBits.length
+            ? `<span class="candidate-selecao-note">${escapeHtml(feedbackBits.join(" · "))}</span>`
+            : ""
+        }
       </div>
       <div class="candidate-selecao-item-actions">
         ${
           isDone
-            ? ""
+            ? item.score != null
+              ? `<span class="candidate-stage-pill">${item.score}%</span>`
+              : ""
             : `<button class="primary-button" type="button" data-candidate-test-id="${testId}" data-candidate-test-job="${assignmentId}" data-candidate-assignment-id="${item.assignmentId || ""}">${inProgress ? "Continuar" : "Iniciar"}</button>`
         }
       </div>
@@ -26980,6 +27309,9 @@ function getCandidateFitItems() {
     status: assignment.status,
     dueAt: assignment.dueAt,
     adherencePct: assignment.adherencePct,
+    pillarScores: Array.isArray(assignment.pillarScores) ? assignment.pillarScores : [],
+    strengths: Array.isArray(assignment.strengths) ? assignment.strengths : [],
+    gaps: Array.isArray(assignment.gaps) ? assignment.gaps : [],
     })),
   );
 }
@@ -26995,6 +27327,9 @@ function getCandidateTestItems() {
       status: assignment.status,
       dueAt: assignment.dueAt,
       stage: "Teste técnico",
+      score: assignment.score,
+      result: assignment.result || "",
+      writtenScores: Array.isArray(assignment.writtenScores) ? assignment.writtenScores : [],
     })),
   );
   if (assigned.length) return assigned;
@@ -27005,6 +27340,9 @@ function getCandidateTestItems() {
       test: tests.find((test) => test.id === 2),
       status: candidateCompletedTestKeys.has(`${2}:${app.jobId}`) ? "Concluído" : "Pendente",
       dueAt: "2026-09-02",
+      score: candidateCompletedTestKeys.has(`${2}:${app.jobId}`) ? 72 : null,
+      result: "",
+      writtenScores: [],
     }));
 }
 
@@ -27083,7 +27421,7 @@ function getPortalActiveProposal() {
 
 function candidatePortalHasActiveOffer() {
   const status = getPortalActiveProposal()?.status;
-  return status === "enviada" || status === "visualizada";
+  return status === "enviada" || status === "visualizada" || status === "contraproposta";
 }
 
 function getPortalPreAdmission() {
@@ -27109,7 +27447,17 @@ function getPortalOfferListItems() {
     const offer = candidate.proposal;
     if (!offer) return [];
     refreshProposalExpiry(offer);
-    if (!["enviada", "visualizada", "aceita", "recusada", "expirada", "vista"].includes(offer.status)) {
+    if (
+      ![
+        "enviada",
+        "visualizada",
+        "contraproposta",
+        "aceita",
+        "recusada",
+        "expirada",
+        "vista",
+      ].includes(offer.status)
+    ) {
       return [];
     }
     return [{
@@ -27170,7 +27518,7 @@ function getCandidatePortalActionMap() {
     items.push({
       vacancy,
       title: "Responder proposta",
-      text: "Aceite ou recuse os termos da contratação.",
+      text: "Aceite, recuse ou envie uma contra-proposta.",
       action: "offer",
       label: "Abrir proposta",
     });
@@ -27355,7 +27703,7 @@ function syncCandidateOfferPreAdNav() {
   if (offerNav) offerNav.hidden = true;
   if (preNav) preNav.hidden = true;
   const offerCount = getPortalOfferListItems().filter((item) =>
-    ["enviada", "visualizada", "vista"].includes(item.status),
+    ["enviada", "visualizada", "vista", "contraproposta"].includes(item.status),
   ).length;
   const preCount = getPortalPreAdmissionListItems().length;
   const doneAssessment = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
@@ -27482,6 +27830,7 @@ function renderCandidateOffer() {
   markPortalOfferViewed();
   const refreshed = current;
   const canDecide = refreshed.status === "enviada" || refreshed.status === "visualizada";
+  const waitingCounter = refreshed.status === "contraproposta" && refreshed.counterProposal;
   const vacancyTitle = refreshed.role || candidate.vacancy || selected.vacancy;
   body.innerHTML = `
     <button class="page-back-link" type="button" data-portal-offer-back>
@@ -27497,7 +27846,13 @@ function renderCandidateOffer() {
         </div>
         <span class="candidate-stage-pill">${escapeHtml(offerStatusLabel(refreshed.status))}</span>
       </header>
-      ${offerDetailsMarkup(refreshed)}
+      ${offerDetailsMarkup(refreshed, { hideNotes: true })}
+      ${
+        waitingCounter
+          ? `${counterProposalPanelMarkup(refreshed.counterProposal, { title: "Sua contra-proposta" })}
+             <p class="panel-note candidate-counter-waiting">Aguardando resposta do RH.</p>`
+          : ""
+      }
       <div class="candidate-offer-actions">
         ${
           refreshed.documentGeneratedAt
@@ -27507,8 +27862,11 @@ function renderCandidateOffer() {
         ${
           canDecide
             ? `<button type="button" class="primary-button" data-portal-offer-action="accept">Aceitar proposta</button>
+               <button type="button" class="secondary-button" data-portal-offer-action="counter">Enviar contra-proposta</button>
                <button type="button" class="secondary-button" data-portal-offer-action="refuse">Recusar</button>`
-            : `<p class="panel-note">Esta proposta está encerrada (${escapeHtml(offerStatusLabel(refreshed.status))}).</p>`
+            : waitingCounter
+              ? ""
+              : `<p class="panel-note">Esta proposta está encerrada (${escapeHtml(offerStatusLabel(refreshed.status))}).</p>`
         }
       </div>
     </article>
@@ -28297,6 +28655,152 @@ function setCandidateNavCount(el, count) {
   el.hidden = value <= 0;
 }
 
+function ensureInterviewConfirmDeadline(item) {
+  if (!item || item.status !== "Aguardando confirmação") return item;
+  if (!item.candidateConfirmUntil) {
+    const base = item.candidateInvitedAt || item.updatedAt || item.createdAt || stampOfferNow();
+    const start = new Date(base);
+    if (!Number.isNaN(start.getTime())) {
+      start.setHours(start.getHours() + 24);
+      item.candidateConfirmUntil = toLocalDateTimeIso(start);
+    }
+  }
+  return item;
+}
+
+function expireUnconfirmedCandidateInterviews() {
+  const now = new Date();
+  let changed = 0;
+  getCandidateInterviewItems().forEach((item) => {
+    if (item.status !== "Aguardando confirmação") return;
+    ensureInterviewConfirmDeadline(item);
+    if (!item.candidateConfirmUntil) return;
+    const deadline = new Date(item.candidateConfirmUntil);
+    if (Number.isNaN(deadline.getTime()) || deadline > now) return;
+    item.status = "Cancelada";
+    item.cancelReason = item.cancelReason || "Prazo de 24h para confirmação esgotado";
+    interviewActivity(item, "Cancelada automaticamente — candidato não confirmou em 24h");
+    changed += 1;
+  });
+  return changed;
+}
+
+function buildCandidateNotifications() {
+  expireUnconfirmedCandidateInterviews();
+  const items = [];
+  const doneAssessment = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+
+  getPortalOfferListItems().forEach((offer) => {
+    if (["enviada", "visualizada", "vista"].includes(offer.status)) {
+      items.push({
+        id: `offer-${offer.id}`,
+        view: "offer",
+        offerId: offer.id,
+        icon: "i-check-circle",
+        title: "Proposta disponível",
+        text: `${offer.vacancy || "Proposta"} — revise e responda os termos.`,
+      });
+    } else if (offer.status === "contraproposta") {
+      items.push({
+        id: `offer-counter-${offer.id}`,
+        view: "offer",
+        offerId: offer.id,
+        icon: "i-message",
+        title: "Contra-proposta enviada",
+        text: "Aguardando resposta do RH sobre os novos termos.",
+      });
+    }
+  });
+
+  getCandidateInterviewItems().forEach((item) => {
+    if (item.status === "Aguardando confirmação") {
+      ensureInterviewConfirmDeadline(item);
+      const until = item.candidateConfirmUntil
+        ? ` Confirme até ${formatCandidateInterviewDate(item.candidateConfirmUntil)}.`
+        : "";
+      items.push({
+        id: `interview-${item.id}`,
+        view: "interviews",
+        icon: "i-calendar",
+        title: "Confirmar entrevista",
+        text: `${item.title || item.vacancy || "Entrevista"} · ${formatCandidateInterviewDate(item.at)}.${until}`,
+      });
+    }
+  });
+
+  getCandidateTestItems()
+    .filter((item) => !doneAssessment.has(item.status))
+    .forEach((item) => {
+      items.push({
+        id: `test-${item.assignmentId || item.jobId}`,
+        view: "interviews",
+        icon: "i-check-circle",
+        title: "Avaliação pendente",
+        text: `${item.test?.title || "Teste técnico"} — ${item.status || "Pendente"}.`,
+      });
+    });
+
+  getCandidateFitItems()
+    .filter((item) => !doneAssessment.has(item.status))
+    .forEach((item) => {
+      items.push({
+        id: `fit-${item.fitAssignmentId}`,
+        view: "interviews",
+        icon: "i-users",
+        title: "Fit Cultural pendente",
+        text: `${item.model?.name || "Fit Cultural"} — ${item.status || "Pendente"}.`,
+      });
+    });
+
+  getPortalPreAdmissionListItems().forEach((entry) => {
+    const pre = preAdmissions.find((item) => String(item.id) === String(entry.id));
+    const rejected = (pre?.checklist || []).filter(
+      (row) => row.owner === "Candidato" && row.status === "Rejeitado",
+    );
+    if (!rejected.length) return;
+    items.push({
+      id: `pread-${entry.id}`,
+      view: "pre-admission",
+      preAdId: entry.id,
+      icon: "i-briefcase",
+      title: "Documento rejeitado",
+      text: `${rejected.length} documento${rejected.length === 1 ? "" : "s"} para reenviar em ${entry.vacancy || "pré-admissão"}.`,
+    });
+  });
+
+  return items;
+}
+
+function renderCandidateNotificationPopover() {
+  const popover = document.querySelector("#candidateNotificationPopover");
+  const btn = document.querySelector("#candidateNotificationBtn");
+  if (!popover || !btn) return;
+  const items = buildCandidateNotifications();
+  const header = `<header><strong>Notificações</strong><small>${
+    items.length
+      ? `${items.length} atualizaç${items.length === 1 ? "ão" : "ões"} pendente${items.length === 1 ? "" : "s"}`
+      : "Nenhuma atualização no momento"
+  }</small></header>`;
+  const body = items.length
+    ? items
+        .map(
+          (item) => `
+      <button type="button" data-candidate-notification-view="${escapeHtml(item.view)}" ${
+            item.offerId != null ? `data-candidate-notification-offer="${escapeHtml(String(item.offerId))}"` : ""
+          } ${
+            item.preAdId != null ? `data-candidate-notification-pread="${escapeHtml(String(item.preAdId))}"` : ""
+          }>
+        <span class="popover-icon"><svg class="ui-icon"><use href="#${item.icon}" /></svg></span>
+        <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></span>
+      </button>`,
+        )
+        .join("")
+    : `<p class="panel-note" style="margin:12px 14px">Você está em dia por enquanto.</p>`;
+  popover.innerHTML = header + body;
+  const dot = btn.querySelector(".notification-dot");
+  if (dot) dot.hidden = items.length === 0;
+}
+
 function updateCandidateSidebarUser() {
   const name = candidatePortalUser.name || "Candidato";
   const sidebarName = document.querySelector("#candidateSidebarName");
@@ -28318,7 +28822,7 @@ function updateCandidateSidebarUser() {
   setCandidateNavCount(document.querySelector("#candidateInterviewsNavCount"), activeInterviews);
   setCandidateNavCount(document.querySelector("#candidateTestsNavCount"), pendingTests);
   const offerPending = getPortalOfferListItems().filter((item) =>
-    ["enviada", "visualizada", "vista"].includes(item.status),
+    ["enviada", "visualizada", "vista", "contraproposta"].includes(item.status),
   ).length;
   const prePending = getPortalPreAdmissionListItems().length;
   setCandidateNavCount(
@@ -28331,6 +28835,7 @@ function updateCandidateSidebarUser() {
     jobsCount.hidden = false;
   }
   syncCandidateOfferPreAdNav();
+  renderCandidateNotificationPopover();
 }
 
 function setCandidatePortalView(view, options = {}) {
@@ -29543,6 +30048,27 @@ candidateMenuButton?.addEventListener("click", toggleCandidateSidebar);
 if (window.localStorage.getItem("portal-candidato-sidebar") === "collapsed") {
   setCandidateSidebarCollapsed(true);
 }
+on("#candidateNotificationBtn", "click", () => {
+  const popover = document.querySelector("#candidateNotificationPopover");
+  renderCandidateNotificationPopover();
+  const opening = popover.hidden;
+  closeTopbarPopovers(opening ? "candidateNotificationPopover" : "");
+  popover.hidden = !opening;
+});
+on("#candidateNotificationPopover", "click", (event) => {
+  const action = event.target.closest("[data-candidate-notification-view]");
+  if (!action) return;
+  closeTopbarPopovers();
+  const view = action.dataset.candidateNotificationView;
+  const options = {};
+  if (action.dataset.candidateNotificationOffer) {
+    options.offerId = action.dataset.candidateNotificationOffer;
+  }
+  if (action.dataset.candidateNotificationPread) {
+    options.preAdId = action.dataset.candidateNotificationPread;
+  }
+  setCandidatePortalView(view || "home", options);
+});
 on("#candidateProfileBtn", "click", () => {
   const popover = document.querySelector("#candidateProfilePopover");
   const opening = popover.hidden;
@@ -29553,7 +30079,22 @@ on("#candidateProfilePopover", "click", (event) => {
   const action = event.target.closest("[data-candidate-profile-action]");
   if (!action) return;
   closeTopbarPopovers();
-  if (action.dataset.candidateProfileAction === "profile") setCandidatePortalView("profile");
+  const kind = action.dataset.candidateProfileAction;
+  if (kind === "profile") {
+    setCandidatePortalView("profile");
+    return;
+  }
+  if (kind === "login") {
+    showToast("Entrar", "Simulação: em produção abriria a tela de login.");
+    return;
+  }
+  if (kind === "password") {
+    showToast("Redefinir senha", "Simulação: enviaremos um link para o e-mail cadastrado.");
+    return;
+  }
+  if (kind === "logout") {
+    showToast("Sair", "Sessão encerrada neste protótipo.");
+  }
 });
 document.querySelectorAll("[data-candidate-nav]").forEach((button) => {
   button.addEventListener("click", () => setCandidatePortalView(button.dataset.candidateNav));
@@ -29819,13 +30360,115 @@ on("#candidateOfferBody", "click", (event) => {
     return;
   }
   if (action === "accept") {
-    if (!window.confirm("Aceitar esta proposta de contratação?")) return;
-    runOfferAction(candidate, "aceitar");
+    openPortalAcceptOfferDialog(candidate);
+    return;
+  }
+  if (action === "counter") {
+    openPortalCounterOfferDialog(candidate);
     return;
   }
   if (action === "refuse") {
-    openOfferRefuseDialog(candidate);
+    openPortalRefuseOfferDialog(candidate);
   }
+});
+on("#portalCounterOfferForm", "submit", (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const selected = getPortalOfferListItems().find(
+    (item) => item.id === String(selectedPortalOfferId),
+  );
+  const candidate =
+    candidates.find((item) => item.id === selected?.candidateId) ||
+    getPortalPipelineCandidate();
+  if (!candidate?.proposal) return;
+  if (!["enviada", "visualizada"].includes(candidate.proposal.status)) {
+    showToast("Indisponível", "Só é possível contra-propor propostas abertas.");
+    return;
+  }
+  const values = readPortalCounterFormValues(form);
+  if (!values?.salary) {
+    showToast("Contra-proposta incompleta", "Informe o salário desejado.");
+    return;
+  }
+  const now = stampOfferNow();
+  candidate.proposal.counterProposal = buildCounterProposalFromValues(values, {
+    from: "candidato",
+    message: values.message,
+  });
+  candidate.proposal.status = "contraproposta";
+  candidate.proposal.updatedAt = now;
+  pushTimelineEvent(candidate, {
+    type: "proposta",
+    title: "Contra-proposta enviada",
+    description: values.message || `${formatOfferMoney(values.salary)} · ${values.workModel}`,
+    actor: candidatePortalUser.name,
+  });
+  if (!Array.isArray(candidate.history)) candidate.history = [];
+  candidate.history.unshift(["Contra-proposta enviada", `${candidatePortalUser.name} · agora`]);
+  document.querySelector("#portalCounterOfferDialog")?.close();
+  if (typeof syncPendenciasNavCount === "function") syncPendenciasNavCount();
+  refreshCandidatePortalAfterOfferChange();
+  showToast("Contra-proposta enviada", "O RH irá avaliar os novos termos.");
+});
+on("#cancelPortalCounterOffer", "click", () => document.querySelector("#portalCounterOfferDialog")?.close());
+document.querySelector("#portalCounterOfferDialog")?.addEventListener("click", (event) => {
+  if (event.target.id === "portalCounterOfferDialog") event.currentTarget.close();
+});
+on("#portalAcceptOfferForm", "submit", (event) => {
+  event.preventDefault();
+  const selected = getPortalOfferListItems().find(
+    (item) => item.id === String(selectedPortalOfferId),
+  );
+  const candidate =
+    candidates.find((item) => item.id === selected?.candidateId) ||
+    getPortalPipelineCandidate();
+  if (!candidate) return;
+  document.querySelector("#portalAcceptOfferDialog")?.close();
+  runOfferAction(candidate, "aceitar");
+});
+on("#cancelPortalAcceptOffer", "click", () => document.querySelector("#portalAcceptOfferDialog")?.close());
+document.querySelector("#portalAcceptOfferDialog")?.addEventListener("click", (event) => {
+  if (event.target.id === "portalAcceptOfferDialog") event.currentTarget.close();
+});
+on("#portalRefuseOfferForm", "submit", (event) => {
+  event.preventDefault();
+  const selected = getPortalOfferListItems().find(
+    (item) => item.id === String(selectedPortalOfferId),
+  );
+  const candidate =
+    candidates.find((item) => item.id === selected?.candidateId) ||
+    getPortalPipelineCandidate();
+  if (!candidate?.proposal) return;
+  const reason = document.querySelector("#portalRefuseOfferReason")?.value.trim();
+  const note = document.querySelector("#portalRefuseOfferNote")?.value.trim() || "";
+  if (!reason) {
+    showToast("Motivo obrigatório", "Informe o motivo da recusa.");
+    return;
+  }
+  const now = stampOfferNow();
+  candidate.proposal.status = "recusada";
+  candidate.proposal.refusalReason = reason;
+  candidate.proposal.refusalNote = note;
+  candidate.proposal.decidedAt = now;
+  candidate.proposal.updatedAt = now;
+  candidate.proposal.counterProposal = null;
+  pushTimelineEvent(candidate, {
+    type: "rejeicao",
+    title: "Proposta recusada",
+    description: note ? `${reason} — ${note}` : reason,
+    reason,
+    actor: candidatePortalUser.name,
+  });
+  if (!Array.isArray(candidate.history)) candidate.history = [];
+  candidate.history.unshift(["Proposta recusada", `${candidatePortalUser.name} · agora`]);
+  document.querySelector("#portalRefuseOfferDialog")?.close();
+  if (typeof syncPendenciasNavCount === "function") syncPendenciasNavCount();
+  refreshCandidatePortalAfterOfferChange();
+  showToast("Proposta recusada", reason);
+});
+on("#cancelPortalRefuseOffer", "click", () => document.querySelector("#portalRefuseOfferDialog")?.close());
+document.querySelector("#portalRefuseOfferDialog")?.addEventListener("click", (event) => {
+  if (event.target.id === "portalRefuseOfferDialog") event.currentTarget.close();
 });
 on("#candidatePreAdmissionBody", "click", (event) => {
   const openBtn = event.target.closest("[data-portal-pread-open]");

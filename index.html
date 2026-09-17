@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <link rel="stylesheet" href="./styles.css?v=nav-hubs-463" />
+    <link rel="stylesheet" href="./styles.css?v=nav-hubs-487" />
   </head>
   <body>
     <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
@@ -2419,11 +2419,13 @@
 
         <div class="candidate-actions" aria-label="Ações do candidato">
           <div class="candidate-action-row">
-            <button type="button" class="is-primary-action" data-candidate-action="Escolher etapa" id="candidatePrimaryActionBtn"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-columns" /></svg></span> <span data-primary-action-label>Mover etapa</span></button>
-            <button type="button" data-candidate-action="Reprovar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-x-circle" /></svg></span> Reprovar</button>
-            <button type="button" data-candidate-action="Aprovar no banco"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span> Banco de talentos</button>
-            <button type="button" data-candidate-action="contratar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span> Contratar</button>
-            <button type="button" data-candidate-action="Contactar" id="candidateContactActionBtn"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-mail" /></svg></span> Enviar comunicação</button>
+            <div class="candidate-action-row-end">
+              <button type="button" class="is-primary-action" data-candidate-action="Escolher etapa" id="candidatePrimaryActionBtn"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-columns" /></svg></span> <span data-primary-action-label>Mover etapa</span></button>
+              <button type="button" data-candidate-action="Reprovar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-x-circle" /></svg></span> Reprovar</button>
+              <button type="button" data-candidate-action="Aprovar no banco"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-users" /></svg></span> Banco de talentos</button>
+              <button type="button" data-candidate-action="contratar"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-check-circle" /></svg></span> Contratar</button>
+              <button type="button" data-candidate-action="Contactar" id="candidateContactActionBtn"><span aria-hidden="true"><svg class="ui-icon"><use href="#i-mail" /></svg></span> Enviar comunicação</button>
+            </div>
             <div class="candidate-more-wrap">
               <button
                 class="more-button"
@@ -2726,24 +2728,6 @@
 
         <footer class="interview-detail-footer">
           <div class="interview-detail-toolbar">
-            <button class="primary-button" type="button" id="interviewDetailConductAction" data-interview-detail-action="start">
-              Iniciar entrevista
-            </button>
-            <button class="secondary-button" type="button" id="interviewDetailConfirmAction" data-interview-detail-action="confirm" hidden>
-              Confirmar manualmente
-            </button>
-            <button class="secondary-button" type="button" id="interviewDetailFinishAction" data-interview-detail-action="complete" hidden>
-              Finalizar entrevista
-            </button>
-            <button class="secondary-button" type="button" id="interviewDetailRescheduleAction" data-interview-detail-action="reschedule" hidden>
-              Reagendar
-            </button>
-            <button class="secondary-button" type="button" id="interviewDetailNoShowAction" data-interview-detail-action="no-show" hidden>
-              Registrar não comparecimento
-            </button>
-            <button class="secondary-button" type="button" id="interviewDetailRebookAction" data-interview-detail-action="reschedule" hidden>
-              Agendar nova entrevista
-            </button>
             <div class="candidate-more-wrap interview-more-wrap">
               <button
                 class="more-button"
@@ -2778,6 +2762,26 @@
                   <button type="button" data-interview-detail-action="cancel" role="menuitem">Cancelar entrevista</button>
                 </div>
               </div>
+            </div>
+            <div class="interview-detail-toolbar-end">
+              <button class="primary-button" type="button" id="interviewDetailConductAction" data-interview-detail-action="start">
+                Iniciar entrevista
+              </button>
+              <button class="secondary-button" type="button" id="interviewDetailConfirmAction" data-interview-detail-action="confirm" hidden>
+                Confirmar manualmente
+              </button>
+              <button class="secondary-button" type="button" id="interviewDetailFinishAction" data-interview-detail-action="complete" hidden>
+                Finalizar entrevista
+              </button>
+              <button class="secondary-button" type="button" id="interviewDetailRescheduleAction" data-interview-detail-action="reschedule" hidden>
+                Reagendar
+              </button>
+              <button class="secondary-button" type="button" id="interviewDetailNoShowAction" data-interview-detail-action="no-show" hidden>
+                Registrar não comparecimento
+              </button>
+              <button class="secondary-button" type="button" id="interviewDetailRebookAction" data-interview-detail-action="reschedule" hidden>
+                Agendar nova entrevista
+              </button>
             </div>
           </div>
         </footer>
@@ -2868,7 +2872,6 @@
               <p class="panel-note" id="conductFinishCandidate"></p>
             </div>
             <div class="conduct-header-actions">
-              <button type="button" class="secondary-button" id="conductFinishBack">Voltar às perguntas</button>
               <button class="icon-button" type="button" id="conductFinishCloseBtn" aria-label="Fechar">×</button>
             </div>
           </header>
@@ -2904,6 +2907,7 @@
             </fieldset>
           </div>
           <footer class="dialog-actions conduct-footer">
+            <button type="button" class="secondary-button" id="conductFinishBack">Voltar às perguntas</button>
             <button type="button" class="primary-button" id="conductFinishConfirm">Confirmar finalização</button>
           </footer>
         </div>
@@ -2944,7 +2948,9 @@
                 </div>
               </div>
             </div>
-            <button class="primary-button" type="button" id="conductReviewEditBtn">Editar respostas</button>
+            <div class="interview-detail-toolbar-end">
+              <button class="primary-button" type="button" id="conductReviewEditBtn">Editar respostas</button>
+            </div>
           </div>
         </footer>
       </div>
@@ -3043,6 +3049,9 @@
             <p class="panel-note" id="fitCompareSubtitle">Aderência lado a lado</p>
           </div>
           <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitCompareDialog">×</button>
+        </header>
+        <div class="assignment-table-wrap">
+          <table class="assignment-table" id="fitCompareTable"></table>
         </div>
       </form>
     </dialog>
@@ -3071,7 +3080,6 @@
           <div class="scorecard-criteria-editor" id="scorecardCriteriaEditor"></div>
         </div>
         <footer class="stack-dialog-actions scorecard-editor-actions">
-          <button value="cancel" class="secondary-button">Cancelar</button>
           <button type="button" class="primary-button" id="scorecardEditorSave">Salvar</button>
         </footer>
       </form>
@@ -3105,6 +3113,9 @@
             <p class="panel-note" id="scoreCompareSubtitle">Composição lado a lado</p>
           </div>
           <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreCompareDialog">×</button>
+        </header>
+        <div class="assignment-table-wrap">
+          <table class="assignment-table" id="scoreCompareTable"></table>
         </div>
       </form>
     </dialog>
@@ -3451,8 +3462,8 @@
         </section>
 
         <div class="offer-toolbar">
-          <div class="offer-actions" id="offerActions" role="toolbar" aria-label="Ações da proposta"></div>
           <div class="offer-actions-more" id="offerActionsMore" hidden></div>
+          <div class="offer-actions" id="offerActions" role="toolbar" aria-label="Ações da proposta"></div>
         </div>
 
         <div class="offer-candidate-actions" id="offerCandidateActions" hidden>
@@ -3541,6 +3552,79 @@
             Enviar ao candidato
           </button>
         </footer>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog offer-form-dialog" id="portalCounterOfferDialog">
+      <form id="portalCounterOfferForm">
+        <header class="stack-dialog-header offer-form-header">
+          <div>
+            <span class="panel-kicker">CONTRA-PROPOSTA</span>
+            <h2>Sugerir novos termos</h2>
+            <p id="portalCounterOfferMeta" class="offer-dialog-meta">Informe salário, modelo e uma mensagem para o RH.</p>
+          </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalCounterOffer">×</button>
+        </header>
+        <div class="offer-form-body">
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Salário (R$)</span>
+              <input id="portalCounterSalary" name="salary" type="number" min="0" step="0.01" required />
+            </label>
+            <label class="form-field">
+              <span>Modelo de trabalho</span>
+              <select id="portalCounterWorkModel" name="workModel">
+                <option>Presencial</option>
+                <option>Híbrido</option>
+                <option>Remoto</option>
+              </select>
+            </label>
+            <label class="form-field full">
+              <span>Mensagem para o RH</span>
+              <textarea id="portalCounterMessage" name="message" rows="3" placeholder="Explique o que gostaria de ajustar"></textarea>
+            </label>
+          </div>
+        </div>
+        <footer class="dialog-actions offer-form-actions">
+          <button class="secondary-button" type="button" id="cancelPortalCounterOffer">Cancelar</button>
+          <button class="primary-button" type="submit">Enviar contra-proposta</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog" id="portalAcceptOfferDialog">
+      <form id="portalAcceptOfferForm">
+        <header class="stack-dialog-header">
+          <h2>Aceitar proposta</h2>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalAcceptOffer">×</button>
+        </header>
+        <p id="portalAcceptOfferSummary" class="panel-note"></p>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelPortalAcceptOffer">Cancelar</button>
+          <button class="primary-button" type="submit">Confirmar aceite</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="stack-dialog" id="portalRefuseOfferDialog">
+      <form id="portalRefuseOfferForm">
+        <header class="stack-dialog-header">
+          <h2>Recusar proposta</h2>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalRefuseOffer">×</button>
+        </header>
+        <p class="panel-note">Informe o motivo para o RH acompanhar sua decisão.</p>
+        <label class="form-field">
+          <span>Motivo</span>
+          <input id="portalRefuseOfferReason" required maxlength="200" />
+        </label>
+        <label class="form-field">
+          <span>Observação</span>
+          <textarea id="portalRefuseOfferNote" rows="4" placeholder="Opcional"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelPortalRefuseOffer">Cancelar</button>
+          <button class="primary-button" type="submit">Confirmar recusa</button>
+        </div>
       </form>
     </dialog>
 
@@ -3962,7 +4046,6 @@
           </p>
 
           <div class="job-detail-toolbar" aria-label="Ações da vaga">
-            <div class="job-detail-action-row" id="jobDetailPrimaryActions"></div>
             <div class="candidate-more-wrap job-more-wrap">
               <button
                 class="more-button"
@@ -3977,6 +4060,7 @@
               </button>
               <div class="candidate-more-menu job-more-menu" id="jobMoreActionsMenu" role="menu" hidden></div>
             </div>
+            <div class="job-detail-action-row" id="jobDetailPrimaryActions"></div>
           </div>
 
           <div class="job-detail-stack">
@@ -4527,6 +4611,17 @@
           <button class="icon-button" type="button" id="candidateShareBtn" hidden aria-label="Compartilhar vaga" title="Compartilhar">
             <svg class="ui-icon"><use href="#i-share" /></svg>
           </button>
+          <button
+            class="icon-button notification-button"
+            type="button"
+            id="candidateNotificationBtn"
+            aria-label="Notificações"
+            aria-expanded="false"
+            aria-controls="candidateNotificationPopover"
+          >
+            <span aria-hidden="true"><svg class="ui-icon"><use href="#i-bell" /></svg></span>
+            <span class="notification-dot"></span>
+          </button>
           <button class="profile-button candidate-profile-button" type="button" id="candidateProfileBtn" aria-label="Menu do perfil" aria-expanded="false" aria-controls="candidateProfilePopover">
             <span class="profile-copy">
               <strong id="candidateSidebarName">Levi Luz Sousa</strong>
@@ -4534,9 +4629,14 @@
             </span>
             <span class="avatar" id="candidateSidebarAvatar">LL</span>
           </button>
+          <div class="topbar-popover notification-popover" id="candidateNotificationPopover" hidden>
+            <header><strong>Notificações</strong><small>Carregando…</small></header>
+          </div>
           <div class="topbar-popover profile-popover candidate-profile-popover" id="candidateProfilePopover" hidden>
             <header><span class="avatar" id="candidatePopoverAvatar">LL</span><span><strong id="candidatePopoverName">Levi Luz Sousa</strong><small>Candidato</small></span></header>
             <button type="button" data-candidate-profile-action="profile"><span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Meu perfil</strong><small>Atualize seus dados profissionais.</small></span></button>
+            <button type="button" data-candidate-profile-action="login"><span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>Entrar em outra conta</strong><small>Simulação de login do candidato.</small></span></button>
+            <button type="button" data-candidate-profile-action="password"><span class="popover-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Redefinir senha</strong><small>Simulação de recuperação de acesso.</small></span></button>
             <button type="button" data-candidate-profile-action="logout"><span class="popover-icon"><svg class="ui-icon"><use href="#i-logout" /></svg></span><span><strong>Sair</strong><small>Encerrar a sessão neste protótipo.</small></span></button>
           </div>
         </div>
@@ -5082,6 +5182,6 @@
       </div>
     </div>
 
-    <script src="./app.js?v=nav-hubs-461"></script>
+    <script src="./app.js?v=nav-hubs-487"></script>
   </body>
 </html>
