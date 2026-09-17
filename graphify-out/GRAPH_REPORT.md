@@ -1,33 +1,33 @@
-# Graph Report - Prototipação Vagas  (2026-09-15)
+# Graph Report - Prototipação Vagas  (2026-09-16)
 
 ## Corpus Check
-- 70 files · ~186,866 words
+- 73 files · ~190,472 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1904 nodes · 3740 edges · 137 communities (119 shown, 18 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 68 edges (avg confidence: 0.85)
+- 1964 nodes · 3841 edges · 143 communities (128 shown, 15 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 67 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4f3f6010`
+- Built from commit: `f443d5bc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - app.js
 - Design: Fluxo completo da proposta de contratação
-- renderGestorPortal
+- formatBRDate
 - Design: Portal do candidato — Onda C (proposta + pré-admissão)
 - Estrutura de arquivos
-- initials
+- runPendenciaAction
 - dayKey
-- getStrategicAnalytics
-- renderPipeline
+- pendingTypeLabel
+- openMoveStageDialog
 - updateCandidateFilterButton
 - Design: Onda 1 — vagas, status, contratação e portal
 - Design: Reorganização de navegação e hubs (RH / Gestor / Candidato)
-- renderCandidateDetails
+- openInterviewEditor
 - departmentOptions
 - toggleSidebar
 - Design: Entrevistas — ciclo de vida completo
@@ -45,10 +45,10 @@
 - 05 — Layout e shell
 - 01 — Fundamentos
 - Design: Agenda enxuta — Dia / Semana / Mês
-- escapeHtml
+- persistCandidateTakingProgress
 - Design: Fichas de entrevista estruturadas
 - Estrutura de arquivos
-- syncFitCompareButton
+- computeMatch
 - findDuplicates
 - Estrutura de arquivos
 - Design: Condução de entrevista ao vivo
@@ -73,7 +73,7 @@
 - Design: Pendências (inbox de ação RH / equipe)
 - Estrutura de arquivos
 - File map
-- runPendenciaAction
+- commitGestorRequestDecision
 - Estrutura de arquivos
 - File map
 - Design: Pré-admissão (candidato aprovado → colaborador)
@@ -85,17 +85,17 @@
 - Design: Dashboard estratégico de recrutamento (Indicadores → Painel)
 - Estrutura de arquivos
 - getSheetTemplateById
-- submitGestorInterviewRequest
+- showToast
 - File map
-- renderGestorCandidatePanel
-- showPage
-- openInterviewEditor
+- proposalSalary
+- pushTimelineEvent
+- escapeHtml
 - Estrutura de arquivos
 - Estrutura de arquivos
-- jobActionsForStatus
-- sheetTemplateCard
-- renderPendenciasPage
-- renderFitCulturalPage
+- renderPipeline
+- renderCandidateAppDetail
+- Task 5 Review — Density polish + hub motion + cache + graphify
+- setCandidatePortalView
 - renderPreAdmissions
 - Design: Entrevistas do Gestor
 - syncCandidatePortalHash
@@ -103,96 +103,102 @@
 - 6. Telas do Portal RH
 - Estrutura de arquivos
 - 8. Portal do candidato
-- closePendenciasMoreMenus
+- renderCandidateDetails
 - renderEntityDialog
 - saveGestorRequestDraft
 - Portal RH — Documentação funcional
 - 7. Portal do gestor
 - defaultAnalyticsWidgetVisibility
 - readAnalyticsWidgetChecksIntoState
-- persistCandidateTakingProgress
-- normalize
+- fillCandidateProfileForm
+- openJobDetails
 - 2. Como executar e testar
 - 5. Fluxos principais (ponta a ponta)
 - goToPage
 - 4. Mapa do sistema (atual)
 - syncCandidateDossierPrimaryAction
-- forceCloseAllDialogs
+- buildGestorPendencies
 - 10. O que mudou em relação ao PDF de 28/08/2026
 - Spec compliance
-- renderGestorOverview
-- renderNewJobStages
-- showToast
+- sheetTemplateCard
+- renderPipelineFilterChips
+- syncTestsHubTab
 - Spec compliance
 - Design: Portal RH × Processo Ágil Guide
 - Task 1 Review — Shared chip styles + retire segmented chrome
 - renderCandidateHome
-- submitCandidateApplication
+- renderGestorPortal
 - Task 1 Report — Shared chip styles + retire segmented chrome
-- setCandidatePortalView
-- formatBRDate
+- Range inventory
+- buildCandidateTimeline
 - Task 1
-- buildGestorPendencies
-- renderCandidateTestsPanel
+- openContactDialog
+- Task 5 Report — Density polish + hub motion + cache + graphify
 - Task 1 Re-review — Fix round 1
 - Task 2 Report — Pendências RH buckets as toolbar chips
 - Task 3 Report — Talentos listas as chips in talent toolbar
 - Task 4 Report — Gestor buckets → workspace-filter-chips
 - File map
-- renderCandidateApply
-- buildCandidateTimeline
-- computeMatch
+- renderGestorOverview
+- renderGestorCandidatePanel
 - openNewJobFromHiringRequest
+- renderGestorPendenciasHub
+- fillGestorRequestForm
+- jobActionsForStatus
+- renderCandidateTestsPanel
 - renderGestorEntrevistasHub
-- renderCandidateHeaderTags
-- defaultConductNextStage
-- resultTemplate
 - task-1-brief.md
 - task-2-brief.md
 - task-3-brief.md
 - task-4-brief.md
 - task-5-brief.md
+- renderTalentFilterChips
+- fillInterviewCandidateOptions
+- openGestorCandidateDecisionDialog
+- openRhHiringRequestDecision
+- submitGestorInterviewRequest
+- renderCandidateHeaderTags
 
 ## God Nodes (most connected - your core abstractions)
-1. `escapeHtml()` - 134 edges
+1. `escapeHtml()` - 135 edges
 2. `showToast()` - 91 edges
-3. `normalize()` - 72 edges
+3. `normalize()` - 74 edges
 4. `renderCandidateDetails()` - 32 edges
 5. `goToPage()` - 31 edges
 6. `setCandidatePortalView()` - 30 edges
-7. `renderGestorPortal()` - 28 edges
-8. `renderPipeline()` - 27 edges
-9. `formatBRDate()` - 27 edges
+7. `renderGestorPortal()` - 29 edges
+8. `formatBRDate()` - 28 edges
+9. `renderPipeline()` - 27 edges
 10. `runPipelineCandidateAction()` - 27 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `renderResults()` --indirect_call--> `resultTemplate()`  [INFERRED]
-  app.js → app.js  _Bridges community 131 → community 99_
+  app.js → app.js  _Bridges community 125 → community 99_
+- `renderTests()` --indirect_call--> `testTemplate()`  [INFERRED]
+  app.js → app.js  _Bridges community 74 → community 107_
 - `renderGestorJobCandidatesTable()` --indirect_call--> `gestorCandidateRow()`  [INFERRED]
-  app.js → app.js  _Bridges community 72 → community 2_
+  app.js → app.js  _Bridges community 125 → community 112_
 - `buildCandidateTimeline()` --calls--> `testTypeLabel()`  [EXTRACTED]
-  app.js → app.js  _Bridges community 118 → community 125_
+  app.js → app.js  _Bridges community 130 → community 115_
 - `downloadAssignmentPdf()` --calls--> `testTypeLabel()`  [EXTRACTED]
-  app.js → app.js  _Bridges community 118 → community 53_
-- `renderCandidateTests()` --calls--> `testTypeLabel()`  [EXTRACTED]
-  app.js → app.js  _Bridges community 118 → community 96_
+  app.js → app.js  _Bridges community 130 → community 53_
 
 ## Import Cycles
 - None detected.
 
-## Communities (137 total, 18 thin omitted)
+## Communities (143 total, 15 thin omitted)
 
 ### Community 0 - "app.js"
 Cohesion: 0.01
-Nodes (183): activityList, ANALYTICS_CHART_WIDGETS, ANALYTICS_KPI_WIDGETS, analyticsDrillState, analyticsFilters, analyticsWidgetVisibility, APPROVAL_PERSONAS, approvalPersona (+175 more)
+Nodes (184): activityList, ANALYTICS_CHART_WIDGETS, ANALYTICS_KPI_WIDGETS, analyticsDrillState, analyticsFilters, analyticsWidgetVisibility, APPROVAL_PERSONAS, approvalPersona (+176 more)
 
 ### Community 1 - "Design: Fluxo completo da proposta de contratação"
 Cohesion: 0.12
 Nodes (15): Actions by status, Approval, Compatibilidade, Data model, Decisions, Design: Fluxo completo da proposta de contratação, Error / empty states, In (+7 more)
 
-### Community 2 - "renderGestorPortal"
-Cohesion: 0.19
-Nodes (16): applyHiringRequestDecision(), closeGestorRequestForm(), closeHiringRequestDecisionDialog(), formatOfferMoneyRange(), gestorJobCandidates(), jobDaysOpen(), jobSlaLabel(), jobSlaLabelPt() (+8 more)
+### Community 2 - "formatBRDate"
+Cohesion: 0.25
+Nodes (11): canGestorApproveRequests(), confirmBookingSlot(), filterGestorHiringRequests(), formatBRDate(), formatGestorPendDue(), hiringRequestDueMeta(), lastHiringMovement(), myGestorApprovalRequests() (+3 more)
 
 ### Community 3 - "Design: Portal do candidato — Onda C (proposta + pré-admissão)"
 Cohesion: 0.14
@@ -202,21 +208,21 @@ Nodes (13): Anti-redundância, Data, Decisions, Design: Portal do candidato — 
 Cohesion: 0.13
 Nodes (14): Estrutura de arquivos, Global Constraints, Placeholder scan, Scorecard (Resultados) — Implementation Plan, Spec coverage (self-review), Task 1: Modelo + seeds + cálculo + auto-fill, Task 2: Casca do hub Resultados (3 abas), Task 3: Aba Scorecards (lista + editor) (+6 more)
 
-### Community 5 - "initials"
-Cohesion: 0.40
-Nodes (6): fillCandidateProfileForm(), initials(), openCompanyForm(), renderCandidateSkillPicker(), renderCompanyLogoPreview(), updateCandidateProfileCompletion()
+### Community 5 - "runPendenciaAction"
+Cohesion: 0.07
+Nodes (45): buildPendencies(), clearConductAutosaveTimer(), closeAssignmentMoreActions(), closeCandidateMoreActions(), closeFitMoreActions(), closeGestorAnalysisMoreMenu(), closeInterviewMoreActions(), closeJobMoreActions() (+37 more)
 
 ### Community 6 - "dayKey"
 Cohesion: 0.13
 Nodes (25): agendaEventChip(), calendarEventsForMonth(), dayKey(), fillAgendaVacancyFilter(), formatInterviewGroupLabel(), fullCalendarEventClass(), getAgendaInterviews(), getFilteredInterviews() (+17 more)
 
-### Community 7 - "getStrategicAnalytics"
-Cohesion: 0.18
-Nodes (11): candidateToDrillItem(), countBy(), daysInStage(), exportAnalyticsStub(), getAnalyticsUniverse(), getStrategicAnalytics(), inAnalyticsPeriod(), jobToDrillItem() (+3 more)
+### Community 7 - "pendingTypeLabel"
+Cohesion: 0.29
+Nodes (7): makePendingItem(), pendenciasTypeOptionsFromItems(), pendingSubjectName(), pendingTypeChip(), pendingTypeLabel(), renderPendenciasTypeMenu(), syncPendenciasTypeMenu()
 
-### Community 8 - "renderPipeline"
-Cohesion: 0.05
-Nodes (78): addCandidateComment(), applyOfferFormValues(), applyPipelineBulkStage(), applyPipelineFiltersFromDialog(), archiveProposalVersion(), candidateAvatars(), candidateCardTemplate(), candidateComments() (+70 more)
+### Community 8 - "openMoveStageDialog"
+Cohesion: 0.40
+Nodes (5): moveCandidate(), openAnalyticsDrill(), openMoveStageDialog(), renderAnalyticsDrillList(), safeShowModal()
 
 ### Community 9 - "updateCandidateFilterButton"
 Cohesion: 0.19
@@ -230,9 +236,9 @@ Nodes (30): Approach A: Só lado RH, Approach B: Slice RH + pipeline + portal-re
 Cohesion: 0.09
 Nodes (22): 1. Navegação, 2. Início (RH), 3. Recrutamento + Seleção (RH), 4. Contratação (RH), 5. Gestor + Candidato, 6. Técnica, Anti-redundância, Arquivos principais (+14 more)
 
-### Community 12 - "renderCandidateDetails"
-Cohesion: 0.11
-Nodes (33): applyCatalogTestToCandidate(), closeInterviewConductReview(), closeInterviewMoreActions(), confirmCandidateInterview(), confirmInterviewRequest(), confirmPipelineAction(), ensureInterviewMeetLink(), finalizeConductInterview() (+25 more)
+### Community 12 - "openInterviewEditor"
+Cohesion: 0.21
+Nodes (12): applyInterviewCandidateSelection(), defaultInterviewTimeEnd(), fillInterviewInterviewers(), fillInterviewSheetOptions(), fillInterviewStageOptions(), getActiveSheetTemplates(), interviewInterviewerOptions(), isInterviewPipelineStage() (+4 more)
 
 ### Community 13 - "departmentOptions"
 Cohesion: 0.67
@@ -294,9 +300,9 @@ Nodes (7): 01 — Fundamentos, Azul navy — processo e meta (~15–20%), Neutro
 Cohesion: 0.29
 Nodes (6): Aceite, Decisions, Design: Agenda enxuta — Dia / Semana / Mês, Problem Statement, Scope (enxuto), Surfaces
 
-### Community 30 - "escapeHtml"
-Cohesion: 0.15
-Nodes (19): escapeHtml(), fillTalentFilterOptions(), getHiringApprovalFlow(), getTestGabaritoStats(), openTestPreview(), questionLabel(), renderGestorRequestReview(), renderNewJobSelects() (+11 more)
+### Community 30 - "persistCandidateTakingProgress"
+Cohesion: 0.40
+Nodes (5): candidateTestKey(), persistCandidateTakingProgress(), questionTypeLabel(), renderCandidateTestTaking(), saveCandidateTestDraft()
 
 ### Community 31 - "Design: Fichas de entrevista estruturadas"
 Cohesion: 0.12
@@ -305,6 +311,10 @@ Nodes (15): Aceite, Ações, Data model, Decisions, Design: Fichas de entrevista
 ### Community 32 - "Estrutura de arquivos"
 Cohesion: 0.17
 Nodes (11): Estrutura de arquivos, Fichas de Entrevista Implementation Plan, Global Constraints, Placeholder scan, Spec coverage check, Task 1: Nav, página shell e roteamento, Task 2: Modelo, seeds e helpers, Task 3: Listagem e ações de linha (+3 more)
+
+### Community 33 - "computeMatch"
+Cohesion: 0.13
+Nodes (27): candidateJobAvailability(), candidateJobDatePanel(), candidateMetaGrid(), computeMatch(), formatPublicDate(), getActiveCandidateApplyResumeName(), getCandidateApplyJobs(), getCandidateBulkApplyJobs() (+19 more)
 
 ### Community 35 - "Estrutura de arquivos"
 Cohesion: 0.18
@@ -327,8 +337,8 @@ Cohesion: 0.17
 Nodes (11): Estrutura de arquivos, Global Constraints, Spec coverage, Task 1: Modelo de dados + seeds tipados, Task 2: Catálogo — tipo no editor e listagem, Task 3: Hub HTML — página Testes aplicados + nav, Task 4: Render hub + dossiê (lista padronizada), Task 5: Modal detalhe + ações operacionais (+3 more)
 
 ### Community 40 - "renderAnalytics"
-Cohesion: 0.13
-Nodes (20): chartRamp(), clearAnalyticsAdvancedFilters(), clearSingleAnalyticsFilter(), closeAnalyticsFiltersDialog(), fillAnalyticsFilterOptions(), formatAnalyticsPeriodLabel(), formatDays(), getActiveAnalyticsFilters() (+12 more)
+Cohesion: 0.08
+Nodes (31): candidateToDrillItem(), chartRamp(), clearAnalyticsAdvancedFilters(), clearSingleAnalyticsFilter(), closeAnalyticsFiltersDialog(), countBy(), daysInStage(), exportAnalyticsStub() (+23 more)
 
 ### Community 41 - "openConductHistory"
 Cohesion: 0.67
@@ -347,12 +357,12 @@ Cohesion: 0.13
 Nodes (14): Approval, Data model, Decisions, Design: Scorecard (critérios, avaliação e Score Geral), Error / empty states, In, Out, Problem Statement (+6 more)
 
 ### Community 45 - "openFitAssignmentDetail"
-Cohesion: 0.15
-Nodes (23): closeFitMoreActions(), computeFitAdherence(), createFitAssignment(), duplicateFitQuestion(), findReusableFitAssignment(), fitAssignmentActionsFor(), fitModelTitle(), fitOptionScore() (+15 more)
+Cohesion: 0.08
+Nodes (43): addFitPillar(), applyCatalogTestToCandidate(), computeFitAdherence(), createFitAssignment(), defaultFitModelForJob(), duplicateFitQuestion(), ensureJobInstrumentsForCandidate(), findReusableFitAssignment() (+35 more)
 
 ### Community 46 - "openScoreEvaluationDetail"
-Cohesion: 0.13
-Nodes (34): activeScorecardForVacancy(), autoScoreForCriterion(), computeOverallScore(), defaultScorecardCriteria(), deriveEvaluationStatus(), duplicateScorecard(), emptyScoreRows(), ensureScoreEvaluation() (+26 more)
+Cohesion: 0.11
+Nodes (38): activeScorecardForVacancy(), autoScoreForCriterion(), computeOverallScore(), defaultScorecardCriteria(), deriveEvaluationStatus(), duplicateScorecard(), emptyScoreRows(), ensureScoreEvaluation() (+30 more)
 
 ### Community 47 - "Design: Timeline da candidatura (dossiê)"
 Cohesion: 0.13
@@ -375,12 +385,12 @@ Cohesion: 0.11
 Nodes (17): Approval, Data model, Decisions, Design: Acompanhamento da vaga (Portal do Gestor), Error / empty states, In, Out, Parecer / comentário (+9 more)
 
 ### Community 52 - "renderTalents"
-Cohesion: 0.11
-Nodes (28): applyTalentEdit(), clearTalentAdvancedFilters(), closeTalentDrawer(), closeTalentEditDialog(), formatTalentMoney(), getActiveTalentFilters(), getFilteredTalents(), inviteTalentToJob() (+20 more)
+Cohesion: 0.16
+Nodes (20): applyTalentEdit(), clearTalentAdvancedFilters(), closeTalentDrawer(), closeTalentEditDialog(), formatTalentMoney(), getFilteredTalents(), inviteTalentToJob(), openTalentDrawer() (+12 more)
 
 ### Community 53 - "openCandidateTestDetail"
-Cohesion: 0.19
-Nodes (20): assignmentActionsFor(), assignmentCatalog(), assignmentsForCandidate(), assignmentTitle(), closeAssignmentMoreActions(), downloadAssignmentPdf(), getAssignmentById(), getCandidateTestItems() (+12 more)
+Cohesion: 0.24
+Nodes (17): assignmentActionsFor(), assignmentCatalog(), assignmentTitle(), downloadAssignmentPdf(), getAssignmentById(), getFilteredAssignments(), openCandidateTest(), openCandidateTestDetail() (+9 more)
 
 ### Community 54 - "File map"
 Cohesion: 0.22
@@ -398,9 +408,9 @@ Nodes (10): Estrutura de arquivos, Global Constraints, Pendências (inbox de aç
 Cohesion: 0.25
 Nodes (7): File map, Pré-admissão Implementation Plan, Task 1: Shell UI na aba Resultados, Task 2: Modelo + seeds + sync docs, Task 3: Lista + detalhe + ações, Task 4: Rewire Contratar, Task 5: CSS + graphify + smoke
 
-### Community 58 - "runPendenciaAction"
-Cohesion: 0.11
-Nodes (24): contactPreviewText(), dossierTabForPendingType(), focusPendingTarget(), moveCandidate(), openCandidate(), openContactDialog(), openMoveStageDialog(), openPendingContact() (+16 more)
+### Community 58 - "commitGestorRequestDecision"
+Cohesion: 0.29
+Nodes (12): blankHiringRequest(), commitGestorRequestDecision(), ensureHiringRequestReadyForRhDecision(), getCompanyHiringApprovalFlowId(), getHiringApprovalSteps(), linkHiringRequestToCreatedJob(), makeHiringHistory(), pushHiringRequestHistory() (+4 more)
 
 ### Community 59 - "Estrutura de arquivos"
 Cohesion: 0.17
@@ -443,28 +453,28 @@ Cohesion: 0.14
 Nodes (13): Estrutura de arquivos, Global Constraints, Reorganização navegação e hubs — Implementation Plan, Spec coverage (self-review), Task 1: Routing `#hub/aba` + maps + redirects, Task 2: Sidebar RH + shell Recrutamento, Task 3: Shell Seleção (Entrevistas | Instrumentos | Resultados), Task 4: Início RH (KPIs + Pendências de hoje + Currículos + Histórico) (+5 more)
 
 ### Community 69 - "getSheetTemplateById"
-Cohesion: 0.09
-Nodes (49): addConductPoint(), addSheetQuestion(), autosaveConductDraft(), backToConductWorkspace(), clearConductAutosaveTimer(), closeInterviewConduct(), conductProgress(), createSheetTemplate() (+41 more)
+Cohesion: 0.05
+Nodes (74): addConductPoint(), addSheetQuestion(), autosaveConductDraft(), backToConductWorkspace(), closeInterviewConduct(), closeInterviewConductReview(), conductProgress(), confirmCandidateInterview() (+66 more)
 
-### Community 70 - "submitGestorInterviewRequest"
-Cohesion: 0.29
-Nodes (7): blankInterviewRequest(), cancelInterviewRequest(), collectGestorIrSlots(), findOpenInterviewRequest(), interviewRequestIsOpen(), openGestorInterviewRequestDialog(), submitGestorInterviewRequest()
+### Community 70 - "showToast"
+Cohesion: 0.13
+Nodes (30): approveCandidateToTalentBank(), blockCandidate(), cancelInterviewRequest(), finalizeConductInterview(), findCandidateByEmail(), findCandidateForAnalysis(), findOpenInterviewRequest(), interviewRequestIsOpen() (+22 more)
 
 ### Community 71 - "File map"
 Cohesion: 0.22
 Nodes (8): Dashboard estratégico (Indicadores → Painel) — Implementation Plan, File map, Global Constraints, Spec coverage, Task 1: Shell HTML + redirect Relatórios + seeds, Task 2: `getStrategicAnalytics` + render cards/indicadores, Task 3: Drawer drill-down + abrir dossiê/vaga, Task 4: Export stub + polish + graphify
 
-### Community 72 - "renderGestorCandidatePanel"
+### Community 72 - "proposalSalary"
+Cohesion: 0.17
+Nodes (23): applyOfferFormValues(), archiveProposalVersion(), candidateVacancyPickerCard(), createEmptyProposal(), ensureCandidateProposal(), ensureProposalShape(), formatOfferMoney(), formatOfferMoneyRange() (+15 more)
+
+### Community 73 - "pushTimelineEvent"
 Cohesion: 0.13
-Nodes (22): candidateHasPendingGestorAnalysis(), emptyProcessValue(), fitAssignmentsForCandidate(), gestorAnalysisToolbarIcon(), gestorCandidateDaysInProcess(), gestorCandidateResponsible(), gestorCandidateRow(), gestorCandidateTags() (+14 more)
+Nodes (19): addCandidateComment(), applyPipelineBulkStage(), confirmMoveStage(), defaultPreAdmissionChecklist(), ensureCandidateComments(), ensureCandidateGestorNotes(), ensureCandidateTimeline(), findPreAdmissionForCandidate() (+11 more)
 
-### Community 73 - "showPage"
-Cohesion: 0.15
-Nodes (15): closeGestorJobView(), closeSidebar(), createTest(), gestorHashFromState(), gestorNavKeyFromState(), hubHash(), openTestEditor(), renderSelecaoHub() (+7 more)
-
-### Community 74 - "openInterviewEditor"
-Cohesion: 0.21
-Nodes (13): applyInterviewCandidateSelection(), defaultInterviewTimeEnd(), fillInterviewCandidateOptions(), fillInterviewInterviewers(), fillInterviewSheetOptions(), fillInterviewStageOptions(), getActiveSheetTemplates(), interviewInterviewerOptions() (+5 more)
+### Community 74 - "escapeHtml"
+Cohesion: 0.14
+Nodes (20): escapeHtml(), fillTalentFilterOptions(), getHiringApprovalFlow(), getTestGabaritoStats(), matchBlockMarkup(), matchTitleAttr(), openTalentEditDialog(), openTestPreview() (+12 more)
 
 ### Community 75 - "Estrutura de arquivos"
 Cohesion: 0.17
@@ -474,21 +484,21 @@ Nodes (11): Análise de Candidatos pelo Gestor — Implementation Plan, Estrutur
 Cohesion: 0.18
 Nodes (10): Central de Pendências do Gestor — Implementation Plan, Estrutura de arquivos, Global Constraints, Placeholder scan, Spec coverage, Task 1: Modelo `buildGestorPendencies` + prioridade, Task 2: Shell HTML da vista Pendências, Task 3: Render do hub + CTAs (+2 more)
 
-### Community 77 - "jobActionsForStatus"
-Cohesion: 0.40
-Nodes (6): jobActionsForStatus(), jobListMenuActions(), jobMoreActionGroups(), jobPrimaryActions(), renderJobDetailActions(), renderJobMoreActionsMenu()
+### Community 77 - "renderPipeline"
+Cohesion: 0.24
+Nodes (12): candidateCardTemplate(), candidateComments(), cardPanelMarkup(), clearPipelineAdvancedFilters(), clearPipelineSelection(), clearSinglePipelineFilter(), renderPipeline(), renderPipelineFilters() (+4 more)
 
-### Community 78 - "sheetTemplateCard"
-Cohesion: 0.29
-Nodes (7): closeSheetMoreMenus(), formatSheetDate(), getFilteredSheetTemplates(), renderSheetTemplates(), sheetJobsLabel(), sheetQuestionsLabel(), sheetTemplateCard()
+### Community 78 - "renderCandidateAppDetail"
+Cohesion: 0.26
+Nodes (12): candidateApplicationMatchesFilter(), candidateApplicationTimeline(), candidateAppNextSteps(), candidateAppsFilterLabel(), candidateAppStageClass(), formatShortDate(), getCandidateAppNextHint(), isCandidateAppActive() (+4 more)
 
-### Community 79 - "renderPendenciasPage"
-Cohesion: 0.16
-Nodes (21): buildPendencies(), countPendenciesByBucket(), findPendingItemById(), formatPendingDue(), getPendenciesForBucket(), isPendingDueSoon(), isPendingMine(), isPendingOverdue() (+13 more)
+### Community 79 - "Task 5 Review — Density polish + hub motion + cache + graphify"
+Cohesion: 0.10
+Nodes (19): Critical, Findings, Important, Issues, Mandatory verification, Minor, Overlap / redundancy (anti-redundância), Recommendation (+11 more)
 
-### Community 80 - "renderFitCulturalPage"
-Cohesion: 0.14
-Nodes (19): addFitPillar(), fitQuestionTypeLabel(), getFitPillarById(), hydrateJobInstrumentLinks(), openFitModelEditor(), openFitQuestionEditor(), removeFitPillar(), renderFitBanco() (+11 more)
+### Community 80 - "setCandidatePortalView"
+Cohesion: 0.26
+Nodes (14): closeTopbarPopovers(), getPortalOfferListItems(), getPortalPreAdmissionListItems(), handleCandidateNextAction(), openCandidatePortal(), refreshCandidatePortalAfterOfferChange(), renderCandidatePreAdmission(), setCandidateNavCount() (+6 more)
 
 ### Community 81 - "renderPreAdmissions"
 Cohesion: 0.15
@@ -514,6 +524,10 @@ Nodes (9): Entrevistas do Gestor — Implementation Plan, Estrutura de arquivos,
 Cohesion: 0.22
 Nodes (9): 8.1 Organização da sidebar, 8.2 Início, 8.3 Vagas → Detalhe → Candidatura → Sucesso, 8.4 Candidaturas + detalhe, 8.5 Entrevistas, 8.6 Avaliações (hub), 8.7 Proposta e Pré-admissão, 8.8 Perfil (+1 more)
 
+### Community 88 - "renderCandidateDetails"
+Cohesion: 0.25
+Nodes (11): confirmPipelineAction(), fitAssignmentsForCandidate(), openCandidate(), registerCandidateOperationalEvent(), renderCandidateDetails(), resolveCandidateDossierTab(), setCandidateActivityCollapsed(), setCandidateDossierGroup() (+3 more)
+
 ### Community 89 - "renderEntityDialog"
 Cohesion: 0.29
 Nodes (7): entityButton(), entityStatusMeta(), isTalentInActiveBank(), openEntityDialog(), openPendingTalentReview(), renderEntityDialog(), setEntityActivityCollapsed()
@@ -530,13 +544,13 @@ Nodes (7): 11. Auditoria rápida: implementado × limitado, 12. Roteiro de demon
 Cohesion: 0.33
 Nodes (6): 7.1 Início, 7.2 Pendências, 7.3 Minhas vagas, 7.4 Entrevistas (gestor), 7.5 Parecer / painel do candidato (gestor), 7. Portal do gestor
 
-### Community 95 - "persistCandidateTakingProgress"
-Cohesion: 0.40
-Nodes (5): candidateTestKey(), persistCandidateTakingProgress(), questionTypeLabel(), renderCandidateTestTaking(), saveCandidateTestDraft()
+### Community 95 - "fillCandidateProfileForm"
+Cohesion: 0.33
+Nodes (7): candidateActionMapMarkup(), candidateNextActionsMarkup(), fillCandidateProfileForm(), getCandidateProfileCompletion(), getCandidateProfileCompletionData(), renderCandidateSkillPicker(), updateCandidateProfileCompletion()
 
-### Community 96 - "normalize"
-Cohesion: 0.18
-Nodes (19): candidateApplicationMatchesFilter(), candidateApplicationTimeline(), candidateAppsFilterLabel(), candidateAppStageClass(), candidateVisibleStage(), findCandidateByEmail(), fitStatusClass(), formatShortDate() (+11 more)
+### Community 96 - "openJobDetails"
+Cohesion: 0.16
+Nodes (24): candidateAvatars(), convertPreAdmissionToEmployee(), duplicateJob(), ensureJobDefaults(), getFilteredJobs(), jobCanHire(), jobFilledCount(), jobHiredCandidates() (+16 more)
 
 ### Community 97 - "2. Como executar e testar"
 Cohesion: 0.40
@@ -547,16 +561,16 @@ Cohesion: 0.40
 Nodes (5): 5.1 Fluxo RH — publicar e conduzir uma vaga, 5.2 Fluxo Gestor — solicitação e parecer, 5.3 Fluxo Candidato — candidatar e acompanhar, 5.4 Troca de papéis e retorno, 5. Fluxos principais (ponta a ponta)
 
 ### Community 99 - "goToPage"
-Cohesion: 0.13
-Nodes (21): approveCandidateToTalentBank(), blockCandidate(), dismissCandidate(), getFilteredResults(), goToPage(), handleGoTarget(), hideCandidate(), openBlockDialog() (+13 more)
+Cohesion: 0.10
+Nodes (27): closeGestorJobView(), closeOverlayDialogs(), closeSidebar(), createTest(), dismissCandidate(), gestorHashFromState(), gestorNavKeyFromState(), getFilteredResults() (+19 more)
 
 ### Community 100 - "4. Mapa do sistema (atual)"
 Cohesion: 0.50
 Nodes (4): 4. Mapa do sistema (atual), Portal do candidato (`#portal-candidato/...`), Portal do gestor (switch = Gestor), Portal RH (switch = RH)
 
-### Community 102 - "forceCloseAllDialogs"
-Cohesion: 0.38
-Nodes (7): closeCandidateMoreActions(), closeGestorAnalysisMoreMenu(), forceCloseAllDialogs(), placeCandidateMoreMenu(), resetCandidateMoreMenuPlacement(), toggleCandidateMoreActions(), toggleGestorAnalysisMoreMenu()
+### Community 102 - "buildGestorPendencies"
+Cohesion: 0.26
+Nodes (12): buildGestorPendencies(), collectGestorOverviewMetrics(), countGestorPendencies(), isGestorInterview(), myGestorFichaPendencies(), myGestorHiringRequests(), myGestorJobs(), myGestorJobTitles() (+4 more)
 
 ### Community 103 - "10. O que mudou em relação ao PDF de 28/08/2026"
 Cohesion: 0.67
@@ -566,13 +580,17 @@ Nodes (3): 10. O que mudou em relação ao PDF de 28/08/2026, Incluído / evolu�
 Cohesion: 0.11
 Nodes (18): Critical, Design / wave alignment, Findings, Global constraints checklist, Important, Issues, Minor, Overlap / redundancy (anti-redundância) (+10 more)
 
-### Community 105 - "renderGestorOverview"
-Cohesion: 0.18
-Nodes (12): formatGestorPendDueLabel(), gestorPendenciesByBucket(), gestorPendingActionLabel(), gestorPendingPriority(), gestorPendingPriorityLabel(), gestorPendingTypeLabel(), makeGestorPendingItem(), myGestorAwaitingActions() (+4 more)
+### Community 105 - "sheetTemplateCard"
+Cohesion: 0.22
+Nodes (9): closeSheetMoreMenus(), formatSheetDate(), getFilteredSheetTemplates(), padCount(), renderSheetTemplates(), sheetJobsLabel(), sheetQuestionsLabel(), sheetTemplateCard() (+1 more)
 
-### Community 107 - "showToast"
-Cohesion: 0.16
-Nodes (20): applyGestorCandidateDecision(), closeGestorCandidateDecisionDialog(), commitGestorCandidateDecision(), findAnalysisForCandidate(), findCandidateForAnalysis(), openCandidateResume(), openFromShareHash(), openGestorAnalysis() (+12 more)
+### Community 106 - "renderPipelineFilterChips"
+Cohesion: 0.40
+Nodes (6): applyPipelineFiltersFromDialog(), closePipelineFiltersDialog(), getActivePipelineFilters(), openPipelineFiltersDialog(), renderPipelineFilterChips(), syncPipelineFilterButton()
+
+### Community 107 - "syncTestsHubTab"
+Cohesion: 0.67
+Nodes (3): renderTests(), setTestsHubTab(), syncTestsHubTab()
 
 ### Community 108 - "Spec compliance"
 Cohesion: 0.11
@@ -588,35 +606,35 @@ Nodes (17): Critical, Findings, Global constraints checklist, Important, Issues,
 
 ### Community 111 - "renderCandidateHome"
 Cohesion: 0.19
-Nodes (17): candidateActionMapMarkup(), candidateAppNextSteps(), candidateNextActionsMarkup(), candidatePortalHasActiveOffer(), candidatePortalHasActivePreAdmission(), formatCandidateInterviewDate(), getCandidateFitItems(), getCandidateInterviewItems() (+9 more)
+Nodes (21): candidatePortalHasActiveOffer(), candidatePortalHasActivePreAdmission(), candidateVisibleStage(), formatCandidateInterviewDate(), getCandidateFitItems(), getCandidateHomeHistoryItems(), getCandidateInterviewItems(), getCandidatePortalActionMap() (+13 more)
 
-### Community 112 - "submitCandidateApplication"
-Cohesion: 0.19
-Nodes (17): candidateJobAvailability(), candidateMetaGrid(), getCandidateApplyJobs(), getCandidateBulkApplyJobs(), getCandidateHomeMatchAverage(), getCandidateMatchProfile(), jobAcceptsApplications(), jobIsVisibleInPortal() (+9 more)
+### Community 112 - "renderGestorPortal"
+Cohesion: 0.26
+Nodes (12): closeGestorRequestForm(), gestorFunnelCounts(), gestorFunnelStageId(), gestorJobCandidates(), jobDaysOpen(), jobSlaLabel(), jobSlaLabelPt(), renderGestorJobCandidatesTable() (+4 more)
 
 ### Community 113 - "Task 1 Report — Shared chip styles + retire segmented chrome"
 Cohesion: 0.12
 Nodes (16): Commands, Commits, Commits, Concerns, Fix round 1/5 (review `task-1-review.md`), How verified, Hub L2 (underline), Self-review (+8 more)
 
-### Community 114 - "setCandidatePortalView"
-Cohesion: 0.23
-Nodes (16): candidateVacancyPickerCard(), closeOverlayDialogs(), closeTopbarPopovers(), getPortalOfferListItems(), getPortalPreAdmissionListItems(), handleCandidateNextAction(), openCandidatePortal(), refreshCandidatePortalAfterOfferChange() (+8 more)
+### Community 114 - "Range inventory"
+Cohesion: 0.14
+Nodes (13): Anti-redundância, Assessment, Critical (Must Fix), Deferred minors — triage, Final review — Workspace Contínuo layout wave, Important (Should Fix), Issues, Minor (Nice to Have) (+5 more)
 
-### Community 115 - "formatBRDate"
-Cohesion: 0.08
-Nodes (38): analysisStatusMeta(), blankHiringRequest(), canApproveHiringRequest(), canGestorApproveRequests(), commitGestorRequestDecision(), confirmBookingSlot(), ensureHiringRequestReadyForRhDecision(), fillGestorRequestForm() (+30 more)
+### Community 115 - "buildCandidateTimeline"
+Cohesion: 0.47
+Nodes (6): buildCandidateTimeline(), formatTimelineAt(), renderCandidateTimeline(), timelineEventCardMarkup(), timelineInterviewType(), timelineTypeLabel()
 
 ### Community 116 - "Task 1"
+Cohesion: 0.14
+Nodes (13): Fix round 1/5 open, Preflight scan, Ruling: Important #1 (scope creep sidebar), Ruling: work in place on main, SDD ledger — plan: docs/superpowers/plans/2026-09-15-workspace-continuo-layout.md, Setup, Task 1, Task 1: complete (commits 7595acb..f08b965, review clean) (+5 more)
+
+### Community 117 - "openContactDialog"
+Cohesion: 0.67
+Nodes (4): contactPreviewText(), openContactDialog(), setContactChannel(), updateContactPreview()
+
+### Community 118 - "Task 5 Report — Density polish + hub motion + cache + graphify"
 Cohesion: 0.15
-Nodes (12): Fix round 1/5 open, Preflight scan, Ruling: Important #1 (scope creep sidebar), Ruling: work in place on main, SDD ledger — plan: docs/superpowers/plans/2026-09-15-workspace-continuo-layout.md, Setup, Task 1, Task 1: complete (commits 7595acb..f08b965, review clean) (+4 more)
-
-### Community 117 - "buildGestorPendencies"
-Cohesion: 0.26
-Nodes (12): buildGestorPendencies(), collectGestorOverviewMetrics(), countGestorPendencies(), isGestorInterview(), myGestorFichaPendencies(), myGestorJobs(), myGestorJobTitles(), myGestorPendencies() (+4 more)
-
-### Community 118 - "renderCandidateTestsPanel"
-Cohesion: 0.20
-Nodes (11): assignmentStatusClass(), defaultFitModelForJob(), ensureJobInstrumentsForCandidate(), getCatalogTestsByType(), jobInstrumentIds(), openApplyTestForCandidate(), openPipelineActionDialog(), renderAssignmentRow() (+3 more)
+Nodes (12): Cache (`index.html`), Commits, Concerns, Density (`styles.css`), graphify, Motion (`styles.css`), QA checklist, Status (+4 more)
 
 ### Community 119 - "Task 1 Re-review — Fix round 1"
 Cohesion: 0.18
@@ -638,45 +656,69 @@ Nodes (10): Commits, Concerns, Overlap checklist (anti-redundância), Self-revie
 Cohesion: 0.20
 Nodes (9): File map, Global Constraints, Spec coverage (self-review), Task 1: Shared chip styles + retire segmented chrome, Task 2: Pendências RH — buckets as toolbar chips, Task 3: Talentos — listas as chips in talent toolbar, Task 4: Gestor — same chip contract on shared bucket navs, Task 5: Density polish + hub motion + cache + graphify (+1 more)
 
-### Community 124 - "renderCandidateApply"
-Cohesion: 0.36
-Nodes (8): candidateJobDatePanel(), formatPublicDate(), getActiveCandidateApplyResumeName(), getCandidateProfileApplyBlockers(), renderCandidateApply(), renderCandidateApplyResumeField(), renderCandidateApplySuccess(), updateCandidateApplySubmitState()
+### Community 124 - "renderGestorOverview"
+Cohesion: 0.40
+Nodes (6): gestorPendingPriorityLabel(), myGestorAwaitingActions(), portalFirstName(), portalHomeWelcomeDateLabel(), renderGestorOverview(), syncPortalHomeWelcome()
 
-### Community 125 - "buildCandidateTimeline"
-Cohesion: 0.60
-Nodes (5): buildCandidateTimeline(), formatTimelineAt(), renderCandidateTimeline(), timelineEventCardMarkup(), timelineTypeLabel()
+### Community 125 - "renderGestorCandidatePanel"
+Cohesion: 0.10
+Nodes (27): applyGestorCandidateDecision(), assignmentsForCandidate(), candidateHasPendingGestorAnalysis(), closeGestorCandidateDecisionDialog(), commitGestorCandidateDecision(), emptyProcessValue(), findAnalysisForCandidate(), formatMoney() (+19 more)
 
-### Community 126 - "computeMatch"
-Cohesion: 0.50
-Nodes (5): computeMatch(), getCandidateTestScore(), getFilteredCandidates(), renderJobCandidateList(), syncJobBoardView()
+### Community 126 - "openNewJobFromHiringRequest"
+Cohesion: 0.22
+Nodes (10): fillNewJobFromHiringRequest(), getCatalogTestsByType(), openApplyTestForCandidate(), openNewJobFromHiringRequest(), openNewJobPage(), openPipelineActionDialog(), renderNewJobCatalogs(), renderNewJobStages() (+2 more)
 
-### Community 127 - "openNewJobFromHiringRequest"
-Cohesion: 0.50
-Nodes (5): fillNewJobFromHiringRequest(), openNewJobFromHiringRequest(), openNewJobPage(), renderNewJobCatalogs(), renderNewJobInstrumentSelects()
+### Community 127 - "renderGestorPendenciasHub"
+Cohesion: 0.25
+Nodes (9): formatGestorPendDueLabel(), gestorPendenciesByBucket(), gestorPendingActionLabel(), gestorPendingPriority(), gestorPendingTypeLabel(), makeGestorPendingItem(), renderGestorPendenciasHub(), syncGestorPendenciasBucketSelect() (+1 more)
 
-### Community 128 - "renderGestorEntrevistasHub"
+### Community 128 - "fillGestorRequestForm"
+Cohesion: 0.21
+Nodes (12): analysisStatusMeta(), applyHiringRequestDecision(), closeHiringRequestDecisionDialog(), fillGestorRequestForm(), hiringRequestStatusClass(), isGestorRequestApproverView(), openGestorRequestForm(), refreshHiringRequestSurfaces() (+4 more)
+
+### Community 129 - "jobActionsForStatus"
+Cohesion: 0.40
+Nodes (6): jobActionsForStatus(), jobListMenuActions(), jobMoreActionGroups(), jobPrimaryActions(), renderJobDetailActions(), renderJobMoreActionsMenu()
+
+### Community 130 - "renderCandidateTestsPanel"
+Cohesion: 0.29
+Nodes (8): assignmentStatusClass(), formatAssignmentDate(), isTestPipelineStage(), openFitApplyDialog(), renderAssignmentRow(), renderCandidateSelecaoTestRow(), renderCandidateTestsPanel(), testTypeLabel()
+
+### Community 131 - "renderGestorEntrevistasHub"
 Cohesion: 1.00
 Nodes (3): countGestorInterviewBuckets(), gestorInterviewBucket(), renderGestorEntrevistasHub()
 
+### Community 137 - "renderTalentFilterChips"
+Cohesion: 1.00
+Nodes (3): getActiveTalentFilters(), renderTalentFilterChips(), syncTalentFilterButton()
+
+### Community 140 - "openRhHiringRequestDecision"
+Cohesion: 0.83
+Nodes (4): canApproveHiringRequest(), openHiringRequestDecisionDialog(), openRhHiringRequestDecision(), runGestorRequestDecision()
+
+### Community 141 - "submitGestorInterviewRequest"
+Cohesion: 0.67
+Nodes (3): blankInterviewRequest(), collectGestorIrSlots(), submitGestorInterviewRequest()
+
 ## Knowledge Gaps
-- **855 isolated node(s):** `jobs`, `candidates`, `candidateSkillDefaults`, `candidateStageEnteredDefaults`, `candidateConsentDefaults` (+850 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 947 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **892 isolated node(s):** `jobs`, `candidates`, `candidateSkillDefaults`, `candidateStageEnteredDefaults`, `candidateConsentDefaults` (+887 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 986 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `escapeHtml()` connect `escapeHtml` to `app.js`, `renderCandidateHeaderTags`, `renderGestorEntrevistasHub`, `renderGestorPortal`, `initials`, `dayKey`, `renderPipeline`, `renderCandidateDetails`, `renderAnalytics`, `openConductHistory`, `openFitAssignmentDetail`, `openScoreEvaluationDetail`, `renderTalents`, `openCandidateTestDetail`, `runPendenciaAction`, `getSheetTemplateById`, `renderGestorCandidatePanel`, `openInterviewEditor`, `sheetTemplateCard`, `renderPendenciasPage`, `renderFitCulturalPage`, `renderPreAdmissions`, `persistCandidateTakingProgress`, `normalize`, `goToPage`, `renderGestorOverview`, `renderNewJobStages`, `showToast`, `renderCandidateHome`, `submitCandidateApplication`, `setCandidatePortalView`, `formatBRDate`, `renderCandidateTestsPanel`, `renderCandidateApply`, `buildCandidateTimeline`, `computeMatch`, `openNewJobFromHiringRequest`?**
+- **Why does `escapeHtml()` connect `escapeHtml` to `app.js`, `fillGestorRequestForm`, `renderCandidateTestsPanel`, `formatBRDate`, `renderGestorEntrevistasHub`, `runPendenciaAction`, `dayKey`, `pendingTypeLabel`, `openMoveStageDialog`, `renderTalentFilterChips`, `fillInterviewCandidateOptions`, `openGestorCandidateDecisionDialog`, `openInterviewEditor`, `openRhHiringRequestDecision`, `renderCandidateHeaderTags`, `persistCandidateTakingProgress`, `computeMatch`, `renderAnalytics`, `openConductHistory`, `openFitAssignmentDetail`, `openScoreEvaluationDetail`, `renderTalents`, `openCandidateTestDetail`, `getSheetTemplateById`, `showToast`, `proposalSalary`, `pushTimelineEvent`, `renderPipeline`, `renderCandidateAppDetail`, `setCandidatePortalView`, `renderPreAdmissions`, `renderCandidateDetails`, `fillCandidateProfileForm`, `openJobDetails`, `sheetTemplateCard`, `renderPipelineFilterChips`, `renderCandidateHome`, `renderGestorPortal`, `buildCandidateTimeline`, `renderGestorOverview`, `renderGestorCandidatePanel`, `openNewJobFromHiringRequest`, `renderGestorPendenciasHub`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Why does `showToast()` connect `showToast` to `app.js`, `fillGestorRequestForm`, `formatBRDate`, `runPendenciaAction`, `openRhHiringRequestDecision`, `submitGestorInterviewRequest`, `persistCandidateTakingProgress`, `computeMatch`, `renderAnalytics`, `openFitAssignmentDetail`, `openScoreEvaluationDetail`, `renderTalents`, `openCandidateTestDetail`, `commitGestorRequestDecision`, `getSheetTemplateById`, `proposalSalary`, `pushTimelineEvent`, `setCandidatePortalView`, `renderPreAdmissions`, `renderCandidateDetails`, `saveGestorRequestDraft`, `openJobDetails`, `goToPage`, `renderCandidateHome`, `openContactDialog`, `renderGestorCandidatePanel`, `openNewJobFromHiringRequest`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `showToast()` connect `showToast` to `app.js`, `renderGestorPortal`, `getStrategicAnalytics`, `renderPipeline`, `renderCandidateDetails`, `openFitAssignmentDetail`, `openScoreEvaluationDetail`, `renderTalents`, `openCandidateTestDetail`, `runPendenciaAction`, `getSheetTemplateById`, `submitGestorInterviewRequest`, `renderGestorCandidatePanel`, `showPage`, `openInterviewEditor`, `renderPendenciasPage`, `renderFitCulturalPage`, `renderPreAdmissions`, `saveGestorRequestDraft`, `persistCandidateTakingProgress`, `goToPage`, `renderCandidateHome`, `submitCandidateApplication`, `setCandidatePortalView`, `formatBRDate`, `buildGestorPendencies`, `renderCandidateTestsPanel`, `openNewJobFromHiringRequest`?**
+- **Why does `06 — Componentes` connect `06 — Componentes` to `README.md`, `Cards e painéis`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `jobs`, `candidates`, `candidateSkillDefaults` to the rest of the system?**
-  _855 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _892 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `app.js` be split into smaller, more focused modules?**
   _Cohesion score 0.009259259259259259 - nodes in this community are weakly interconnected._
 - **Should `Design: Fluxo completo da proposta de contratação` be split into smaller, more focused modules?**
   _Cohesion score 0.125 - nodes in this community are weakly interconnected._
 - **Should `Design: Portal do candidato — Onda C (proposta + pré-admissão)` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
-- **Should `Estrutura de arquivos` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._

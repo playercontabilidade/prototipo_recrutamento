@@ -3587,7 +3587,6 @@ const ID_ALIASES = {
   closeTimePicker: "closeTimePicker",
   datePickerPrev: "datePickerPrev",
   datePickerNext: "datePickerNext",
-  closeContactDialog: "closeContactDialog",
   cancelContact: "cancelContact",
   contactForm: "contactForm",
   closeOfferDialog: "closeOfferDialog",
@@ -3637,7 +3636,6 @@ const ID_ALIASES = {
   datePickerNext: "datePickerNext",
   datePickerGrid: "datePickerGrid",
   timeSlotGrid: "timeSlotGrid",
-  closeContactDialog: "closeContactDialog",
   cancelContact: "cancelContact",
   contactForm: "contactForm",
   closeOfferDialog: "closeOfferDialog",
@@ -3816,7 +3814,7 @@ const gestorViewState = {
   mode: "home",
   homeFilter: "overview", // overview | vagas | analises | abertas | solicitacoes | candidatos | entrevistas
   entrevistasBucket: "today", // today | upcoming | awaiting_finish | done | cancelled
-  vagasHubTab: "vagas", // vagas | solicitacoes
+  vagasHubTab: "vagas", // vagas | pendencias | solicitacoes
   requestInboxTab: "mine", // mine | approval
   requestFilters: {
     status: "all",
@@ -3829,6 +3827,9 @@ const gestorViewState = {
   analysisStatusFilter: "all",
   pendenciasBucket: "all", // all | overdue | today | soon
   pendenciasTypeGroup: "all", // all | type id (ex.: gestor_analise)
+  pendenciasSearchQuery: "",
+  pendenciasFiltersOpen: false,
+  vagasSearchQuery: "",
   jobId: null,
   funnelStage: "all",
   tab: "andamento",
@@ -4751,12 +4752,36 @@ function openGestorInterviewRequestFollowup(requestId) {
     : "Ainda sem horário do RH";
   if (body) {
     body.innerHTML = `
-      <p class="panel-note"><strong>${escapeHtml(candidate?.name || "Candidato")}</strong> · ${escapeHtml(request.vacancy || "—")}</p>
-      <p class="panel-note">Status: ${escapeHtml(request.status)}</p>
-      <p class="panel-note">Tipo: ${escapeHtml(request.interviewType || "—")}</p>
-      <p class="panel-note">Motivo: ${escapeHtml(request.reason || "—")}</p>
-      <p class="panel-note">Horário proposto: ${escapeHtml(slotLabel)}</p>
-      <p class="panel-note">Proposto por: ${escapeHtml(slot?.proposedBy || "—")}</p>`;
+      <div class="gestor-request-facts gestor-ir-confirm-facts">
+        <div class="gestor-request-fact is-full">
+          <span>Candidato</span>
+          <strong>${escapeHtml(candidate?.name || "Candidato")}</strong>
+        </div>
+        <div class="gestor-request-fact is-full">
+          <span>Vaga</span>
+          <strong>${escapeHtml(request.vacancy || "—")}</strong>
+        </div>
+        <div class="gestor-request-fact">
+          <span>Status</span>
+          <strong>${escapeHtml(request.status || "—")}</strong>
+        </div>
+        <div class="gestor-request-fact">
+          <span>Tipo</span>
+          <strong>${escapeHtml(request.interviewType || "—")}</strong>
+        </div>
+        <div class="gestor-request-fact is-full">
+          <span>Motivo</span>
+          <strong>${escapeHtml(request.reason || "—")}</strong>
+        </div>
+        <div class="gestor-request-fact is-full">
+          <span>Horário proposto</span>
+          <strong>${escapeHtml(slotLabel)}</strong>
+        </div>
+        <div class="gestor-request-fact is-full">
+          <span>Proposto por</span>
+          <strong>${escapeHtml(slot?.proposedBy || "—")}</strong>
+        </div>
+      </div>`;
   }
   const submit = document.querySelector("#gestorIrConfirmSubmit");
   if (submit) submit.hidden = request.status !== "Aguardando agenda";
@@ -4930,6 +4955,29 @@ let pendingInterviewForceConflict = false;
 let pendingPortalRescheduleInterviewId = null;
 let datePickerCursor = new Date(2026, 7, 1);
 const TODAY_KEY = "2026-08-27";
+
+function portalFirstName(fullName = "") {
+  const part = String(fullName || "")
+    .trim()
+    .split(/\s+/)
+    .find(Boolean);
+  return part || "você";
+}
+
+function portalHomeWelcomeDateLabel(isoDay = TODAY_KEY) {
+  const date = new Date(`${isoDay}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return "";
+  return date
+    .toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })
+    .toUpperCase();
+}
+
+function syncPortalHomeWelcome({ eyebrowId, nameId, fullName }) {
+  const eyebrow = document.querySelector(eyebrowId);
+  const nameEl = document.querySelector(nameId);
+  if (eyebrow) eyebrow.textContent = portalHomeWelcomeDateLabel();
+  if (nameEl) nameEl.textContent = portalFirstName(fullName);
+}
 refreshFitAssignmentStatuses();
 let selectedFunnelStage = "Proposta";
 let pipelineStageFilter = "all";
@@ -4958,6 +5006,7 @@ let talentFilters = {
   score: "all",
   fit: "all",
   availability: "all",
+  validity: "all",
   onlyValid: false,
 };
 let selectedResultTab = "contratados";
@@ -5002,8 +5051,8 @@ let expandedCardPanel = "";
 
 const pageNames = {
   dashboard: "Início",
-  painel: "Relatórios",
-  relatorios: "Relatórios",
+  painel: "Seleção",
+  relatorios: "Seleção",
   recrutamento: "Recrutamento",
   pipeline: "Recrutamento",
   pendencias: "Recrutamento",
@@ -5019,7 +5068,7 @@ const pageNames = {
   fichas: "Seleção",
   designSystem: "Design System",
   analisesGestores: "Pendências",
-  indicadores: "Relatórios",
+  indicadores: "Seleção",
   gestor: "Portal do gestor",
   settings: "Configurações",
 };
@@ -5047,14 +5096,15 @@ const pageByHash = {
   gestor: "gestor",
   "gestor-pendencias": "gestor",
   "gestor-vagas": "gestor",
+  "gestor-solicitacoes": "gestor",
   "gestor-entrevistas": "gestor",
   configuracoes: "settings",
 };
 
 const hashByPage = {
   dashboard: "dashboard",
-  painel: "relatorios",
-  relatorios: "relatorios",
+  painel: "selecao/relatorio",
+  relatorios: "selecao/relatorio",
   recrutamento: "recrutamento/pipeline",
   pipeline: "recrutamento/pipeline",
   pendencias: "recrutamento/pendencias",
@@ -5106,6 +5156,9 @@ function resolveAppHash(hash = window.location.hash) {
   if (hub === "selecao") {
     if (tab === "entrevistas") return { page: "entrevistas", options: { selecaoTab: "entrevistas" } };
     if (tab === "resultados") return { page: "resultados", options: { selecaoTab: "resultados" } };
+    if (tab === "relatorio" || tab === "relatorios" || tab === "painel") {
+      return { page: "painel", options: { selecaoTab: "relatorio" } };
+    }
     return { page: "selecao", options: { selecaoTab: "instrumentos" } };
   }
   if (hub === "contratacao") {
@@ -5129,7 +5182,7 @@ function resolveAppHash(hash = window.location.hash) {
     return { page: "resultados", options: {} };
   }
   if (hub === "relatorios" || hub === "painel" || hub === "indicadores") {
-    return { page: "dashboard", options: {} };
+    return { page: "painel", options: { selecaoTab: "relatorio" } };
   }
 
   const legacy = pageByHash[raw] || pageByHash[hub];
@@ -5145,6 +5198,7 @@ function resolveAppHash(hash = window.location.hash) {
 function gestorHomeFilterFromHash(hash) {
   const key = String(hash || "").replace(/^#/, "");
   if (key === "gestor-pendencias" || key === "analises-gestores") return "analises";
+  if (key === "gestor-solicitacoes") return "solicitacoes";
   if (key === "gestor-vagas") return "vagas";
   if (key === "gestor-entrevistas" || key === "entrevistas") return "entrevistas";
   return "overview";
@@ -5152,8 +5206,14 @@ function gestorHomeFilterFromHash(hash) {
 
 function gestorHashFromState() {
   if (gestorViewState.mode === "job") return "gestor-vagas";
-  if (gestorViewState.homeFilter === "analises") return "gestor-pendencias";
   if (gestorViewState.homeFilter === "entrevistas") return "gestor-entrevistas";
+  if (gestorViewState.homeFilter === "analises") return "gestor-pendencias";
+  if (
+    gestorViewState.homeFilter === "solicitacoes" ||
+    (gestorViewState.homeFilter === "vagas" && gestorViewState.vagasHubTab === "solicitacoes")
+  ) {
+    return "gestor-solicitacoes";
+  }
   if (gestorViewState.homeFilter === "vagas" || gestorViewState.homeFilter === "abertas") {
     return "gestor-vagas";
   }
@@ -5167,6 +5227,7 @@ function gestorNavKeyFromState() {
     gestorViewState.homeFilter === "analises" ||
     gestorViewState.homeFilter === "vagas" ||
     gestorViewState.homeFilter === "abertas" ||
+    gestorViewState.homeFilter === "solicitacoes" ||
     gestorViewState.homeFilter === "candidatos"
   ) {
     return "recrutamento";
@@ -5175,8 +5236,15 @@ function gestorNavKeyFromState() {
 }
 
 function gestorNavKeyFromDataset(nav) {
-  if (nav === "pendencias" || nav === "recrutamento") return "analises";
+  if (nav === "pendencias" || nav === "recrutamento") {
+    gestorViewState.vagasHubTab = "pendencias";
+    return "analises";
+  }
   if (nav === "entrevistas") return "entrevistas";
+  if (nav === "solicitacoes") {
+    gestorViewState.vagasHubTab = "solicitacoes";
+    return "solicitacoes";
+  }
   if (nav === "vagas") {
     gestorViewState.vagasHubTab = "vagas";
     return "vagas";
@@ -5189,9 +5257,31 @@ function syncGestorNavCounts() {
   const counts = countGestorPendencies();
   const pendEl = document.querySelector("#gestorPendenciasNavCount");
   const vagasEl = document.querySelector("#gestorVagasNavCount");
+  const solEl = document.querySelector("#gestorSolicitacoesNavCount");
+  const hubPendEl = document.querySelector("#gestorHubPendenciasCount");
+  const hubSolEl = document.querySelector("#gestorHubSolicitacoesCount");
   const ivEl = document.querySelector("#interviewsNavCountGestor");
   if (pendEl) pendEl.textContent = String(counts.total);
   if (vagasEl) vagasEl.textContent = String(myGestorJobs().length);
+  const openStatuses = new Set([
+    "Rascunho",
+    "Enviada",
+    "Em análise",
+    "Aguardando aprovação",
+    "Ajuste solicitado",
+  ]);
+  const solicitacoesN =
+    myGestorHiringRequests().filter((item) => openStatuses.has(item.status)).length +
+    myGestorApprovalRequests().length;
+  if (solEl) solEl.textContent = String(solicitacoesN);
+  if (hubPendEl) {
+    hubPendEl.textContent = String(counts.total);
+    hubPendEl.hidden = counts.total <= 0;
+  }
+  if (hubSolEl) {
+    hubSolEl.textContent = String(solicitacoesN);
+    hubSolEl.hidden = solicitacoesN <= 0;
+  }
   if (ivEl) ivEl.textContent = String(myGestorInterviews().length);
 }
 
@@ -5213,9 +5303,9 @@ function syncGestorSidebarChrome() {
 
 /** Sidebar highlight parent when deep pages are open */
 const navHighlightByPage = {
-  painel: "dashboard",
-  relatorios: "dashboard",
-  indicadores: "dashboard",
+  painel: "selecao",
+  relatorios: "selecao",
+  indicadores: "selecao",
   analisesGestores: "gestor",
   pipeline: "recrutamento",
   pendencias: "recrutamento",
@@ -5300,6 +5390,40 @@ function pendingTypeLabel(type) {
       banco_revisao: "Revisão no banco",
     }[type] || type
   );
+}
+
+function pendingTypeChip(type) {
+  return (
+    {
+      curriculo: { label: "Currículo", tone: "mint" },
+      entrevista: { label: "Entrevista", tone: "navy" },
+      entrevista_resultado: { label: "Resultado", tone: "info" },
+      entrevista_solicitacao_gestor: { label: "Solicitação", tone: "navy" },
+      ficha: { label: "Ficha", tone: "info" },
+      avaliacao: { label: "Score", tone: "mint" },
+      teste: { label: "Teste", tone: "mint" },
+      fit: { label: "Fit", tone: "mint" },
+      parado: { label: "Parado", tone: "warn" },
+      sla: { label: "SLA", tone: "danger" },
+      vaga_aprovacao: { label: "Vaga", tone: "action" },
+      proposta_aprovacao: { label: "Proposta", tone: "action" },
+      parecer_gestor: { label: "Parecer", tone: "info" },
+      retorno: { label: "Retorno", tone: "warn" },
+      banco_revisao: { label: "Banco", tone: "neutral" },
+    }[type] || { label: pendingTypeLabel(type), tone: "neutral" }
+  );
+}
+
+function pendingSubjectName(item) {
+  if (item?.candidateName) return item.candidateName;
+  if (item?.subject?.kind === "candidate" && item.subject.id != null) {
+    const found = (candidates || []).find((c) => String(c.id) === String(item.subject.id));
+    if (found?.name) return found.name;
+  }
+  const title = String(item?.title || "");
+  const parts = title.split(/\s+[—–-]\s+/);
+  if (parts.length > 1) return parts.slice(1).join(" — ").trim();
+  return title || pendingTypeLabel(item?.type);
 }
 
 function pendingActionLabel(action) {
@@ -5749,6 +5873,8 @@ function countPendenciesByBucket(all = buildPendencies()) {
 
 let pendenciasBucket = "mine";
 let pendenciasTypeFilter = "all";
+let pendenciasSearchQuery = "";
+let pendenciasFiltersOpen = false;
 
 function formatPendingDue(item) {
   const day = pendingDueDay(item);
@@ -5771,181 +5897,112 @@ function syncPendenciasNavCount(all = buildPendencies()) {
   if (el) el.textContent = String(counts.mine);
 }
 
-const PENDENCIAS_PRIMARY_TYPE_LIMIT = 3;
-
-function pendenciasTypeChipButton(chip, activeId, dataAttr) {
-  const on = activeId === chip.id;
-  return `<button type="button" class="pendencias-type-chip${on ? " is-active" : ""}" ${dataAttr}="${escapeHtml(
-    chip.id,
-  )}" aria-pressed="${on ? "true" : "false"}"><span class="pendencias-type-chip-label">${escapeHtml(
-    chip.label,
-  )}</span><span class="pendencias-type-chip-count">${chip.count}</span></button>`;
-}
-
-function renderPendenciasTypeFilterHost({
-  host,
-  bar,
-  itemsInBucket,
-  activeId,
-  dataAttr,
-  labelFn,
-  moreBtnId,
-  moreMenuId,
-  orderedTypes,
-}) {
-  if (!host) return { activeId: "all", visible: false };
-
+function pendenciasTypeOptionsFromItems(itemsInBucket, orderedTypes, labelFn) {
   const counts = {};
   (itemsInBucket || []).forEach((item) => {
     if (!item?.type) return;
     counts[item.type] = (counts[item.type] || 0) + 1;
   });
-
   const catalog = (orderedTypes || []).length
     ? orderedTypes.slice()
     : Object.keys(counts).sort((a, b) => labelFn(a).localeCompare(labelFn(b), "pt-BR"));
-
-  const catalogChips = catalog.map((type) => ({
-    id: type,
-    label: labelFn(type),
-    count: counts[type] || 0,
+  return catalog.map((typeId) => ({
+    value: typeId,
+    label: labelFn(typeId),
+    count: counts[typeId] || 0,
   }));
+}
 
-  let nextActive = activeId || "all";
-  if (nextActive !== "all" && !catalog.includes(nextActive)) nextActive = "all";
-
-  // Sem itens no bucket → esconde a barra
-  if (!(itemsInBucket || []).length) {
-    if (bar) bar.hidden = true;
-    host.innerHTML = "";
-    return { activeId: "all", visible: false };
-  }
-
-  const demandChips = catalogChips
-    .filter((chip) => chip.count > 0)
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "pt-BR"));
-
-  let primary =
-    demandChips.length <= PENDENCIAS_PRIMARY_TYPE_LIMIT + 1
-      ? demandChips
-      : demandChips.slice(0, PENDENCIAS_PRIMARY_TYPE_LIMIT);
-  const primaryIds = new Set(primary.map((chip) => chip.id));
-
-  let more = catalogChips
-    .filter((chip) => !primaryIds.has(chip.id))
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "pt-BR"));
-
-  let pinned = null;
-  if (nextActive !== "all" && more.some((chip) => chip.id === nextActive)) {
-    pinned = more.find((chip) => chip.id === nextActive) || null;
-    more = more.filter((chip) => chip.id !== nextActive);
-  }
-
-  // Catálogo único e já nos chips → sem barra de tipo
-  if (!primary.length && !more.length) {
-    if (bar) bar.hidden = true;
-    host.innerHTML = "";
-    return { activeId: "all", visible: false };
-  }
-
-  if (bar) bar.hidden = false;
-  const allChip = { id: "all", label: "Todos", count: itemsInBucket.length };
-  const moreActive = Boolean(pinned) || more.some((chip) => chip.id === nextActive);
-  const moreDemandCount = more.reduce((sum, chip) => sum + chip.count, 0) + (pinned?.count || 0);
-
-  const primaryHtml = [allChip, ...primary, ...(pinned ? [pinned] : [])]
-    .map((chip) => pendenciasTypeChipButton(chip, nextActive, dataAttr))
+function renderPendenciasTypeMenu({
+  menu,
+  button,
+  countEl,
+  itemsInBucket,
+  activeType,
+  orderedTypes,
+  labelFn,
+  dataAttr,
+  open,
+}) {
+  if (!menu || !button) return;
+  const total = (itemsInBucket || []).length;
+  const options = [
+    { value: "all", label: "Todos", count: total },
+    ...pendenciasTypeOptionsFromItems(itemsInBucket, orderedTypes, labelFn),
+  ];
+  menu.innerHTML = options
+    .map((opt) => {
+      const on = (activeType || "all") === opt.value;
+      return `<button type="button" role="menuitem" class="pendencias-type-menu-item${
+        on ? " is-active" : ""
+      }${opt.count === 0 && opt.value !== "all" ? " is-empty" : ""}" ${dataAttr}="${escapeHtml(
+        opt.value,
+      )}"><span>${escapeHtml(opt.label)}</span><span class="pendencias-type-menu-count">${opt.count}</span></button>`;
+    })
     .join("");
-
-  const moreHtml = more.length
-    ? `<div class="candidate-more-wrap pendencias-more-wrap">
-        <button type="button" class="secondary-button pendencias-more-trigger${
-          moreActive ? " is-active" : ""
-        }" id="${moreBtnId}" aria-expanded="false" aria-haspopup="menu" aria-controls="${moreMenuId}">
-          Mais filtros${moreDemandCount ? ` · ${moreDemandCount}` : ""}
-        </button>
-        <div class="candidate-more-menu pendencias-more-menu" id="${moreMenuId}" role="menu" hidden>
-          <div class="candidate-more-section">
-            <span class="candidate-more-label">Todos os tipos</span>
-            ${more
-              .map(
-                (chip) =>
-                  `<button type="button" role="menuitem" class="${
-                    nextActive === chip.id ? "is-active" : ""
-                  }${chip.count === 0 ? " is-empty" : ""}" ${dataAttr}="${escapeHtml(chip.id)}"><span class="pendencias-more-item-label">${escapeHtml(
-                    chip.label,
-                  )}</span><span class="pendencias-more-item-count">${chip.count}</span></button>`,
-              )
-              .join("")}
-          </div>
-        </div>
-      </div>`
-    : "";
-
-  host.innerHTML = `${primaryHtml}${moreHtml}`;
-  return { activeId: nextActive, visible: true };
-}
-
-function closePendenciasMoreMenus() {
-  ["#pendenciasMoreTypesMenu", "#gestorPendenciasMoreTypesMenu"].forEach((sel) => {
-    const menu = document.querySelector(sel);
-    if (menu) menu.hidden = true;
-  });
-  ["#pendenciasMoreTypesBtn", "#gestorPendenciasMoreTypesBtn"].forEach((sel) => {
-    const btn = document.querySelector(sel);
-    if (btn) btn.setAttribute("aria-expanded", "false");
-  });
-}
-
-function togglePendenciasMoreMenu(btnId, menuId) {
-  const btn = document.querySelector(`#${btnId}`);
-  const menu = document.querySelector(`#${menuId}`);
-  if (!btn || !menu) return;
-  const open = menu.hidden;
-  closePendenciasMoreMenus();
-  if (open) {
-    menu.hidden = false;
-    btn.setAttribute("aria-expanded", "true");
+  menu.hidden = !open;
+  button.setAttribute("aria-expanded", open ? "true" : "false");
+  button.classList.toggle("is-active", open || (activeType && activeType !== "all"));
+  if (countEl) {
+    const on = activeType && activeType !== "all";
+    countEl.hidden = !on;
+    countEl.textContent = on ? "1" : "0";
   }
 }
 
-function renderPendenciasTypeFilters(itemsInBucket) {
-  const result = renderPendenciasTypeFilterHost({
-    host: document.querySelector("#pendenciasTypeFilters"),
-    bar: document.querySelector("#pendenciasTypeBar"),
-    itemsInBucket,
-    activeId: pendenciasTypeFilter,
-    dataAttr: "data-pendencias-type",
-    labelFn: pendingTypeLabel,
-    moreBtnId: "pendenciasMoreTypesBtn",
-    moreMenuId: "pendenciasMoreTypesMenu",
-    orderedTypes: PENDING_TYPES,
+function syncPendenciasBucketSelect(counts) {
+  const select = document.querySelector("#pendenciasBucketSelect");
+  if (!select) return;
+  const labels = {
+    mine: "Minhas",
+    team: "Equipe",
+    overdue: "Vencidas",
+    dueSoon: "Próximas do vencimento",
+  };
+  Array.from(select.options).forEach((opt) => {
+    const key = opt.value;
+    opt.textContent = `${labels[key] || key} (${counts[key] ?? 0})`;
   });
-  pendenciasTypeFilter = result.activeId;
+  select.value = pendenciasBucket;
+}
+
+function syncPendenciasTypeMenu(itemsInBucket) {
+  renderPendenciasTypeMenu({
+    menu: document.querySelector("#pendenciasTypeMenu"),
+    button: document.querySelector("#pendenciasFilterBtn"),
+    countEl: document.querySelector("#pendenciasFilterCount"),
+    itemsInBucket,
+    activeType: pendenciasTypeFilter,
+    orderedTypes: PENDING_TYPES,
+    labelFn: pendingTypeLabel,
+    dataAttr: "data-pendencias-type",
+    open: pendenciasFiltersOpen,
+  });
 }
 
 function renderPendenciasPage() {
   const all = buildPendencies();
   const counts = countPendenciesByBucket(all);
-  const setCount = (id, n) => {
-    const el = document.querySelector(id);
-    if (el) el.textContent = String(n);
-  };
-  setCount("#pendenciasMineCount", counts.mine);
-  setCount("#pendenciasTeamCount", counts.team);
-  setCount("#pendenciasOverdueCount", counts.overdue);
-  setCount("#pendenciasDueSoonCount", counts.dueSoon);
   syncPendenciasNavCount(all);
-
-  document.querySelectorAll("[data-pendencias-bucket]").forEach((btn) => {
-    const on = btn.dataset.pendenciasBucket === pendenciasBucket;
-    btn.setAttribute("aria-selected", on ? "true" : "false");
-  });
+  syncPendenciasBucketSelect(counts);
 
   let list = getPendenciesForBucket(pendenciasBucket, all);
-  renderPendenciasTypeFilters(list);
+  syncPendenciasTypeMenu(list);
+
   if (pendenciasTypeFilter !== "all") {
     list = list.filter((item) => item.type === pendenciasTypeFilter);
+  }
+
+  const q = normalize(pendenciasSearchQuery.trim());
+  if (q) {
+    list = list.filter((item) => {
+      const hay = normalize(
+        [item.title, item.description, pendingTypeLabel(item.type), item.jobTitle, item.candidateName]
+          .filter(Boolean)
+          .join(" "),
+      );
+      return hay.includes(q);
+    });
   }
 
   const host = document.querySelector("#pendenciasList");
@@ -5965,23 +6022,13 @@ function renderPendenciasPage() {
       const dueSoon = isPendingDueSoon(item);
       const urgent = overdue ? " is-overdue" : dueSoon ? " is-duesoon" : "";
       const dueChipClass = overdue ? "test-chip is-error" : dueSoon ? "test-chip is-warning" : "test-chip";
-      const secondary = (item.secondaryActions || [])
-        .map(
-          (action) =>
-            `<button type="button" class="secondary-button" data-pendencias-action="${escapeHtml(
-              action,
-            )}" data-pendencias-id="${escapeHtml(item.id)}">${escapeHtml(pendingActionLabel(action))}</button>`,
-        )
-        .join("");
       return `<article class="pendencias-card${urgent}" data-pendencias-id="${escapeHtml(item.id)}">
         <div class="pendencias-card-main">
           <strong class="pendencias-card-title">${escapeHtml(item.title)}</strong>
           <p class="pendencias-card-desc">${escapeHtml(item.description)}</p>
-          <div class="test-meta pendencias-card-meta">
-            <span class="test-chip">${escapeHtml(pendingTypeLabel(item.type))}</span>
-            <span class="test-chip">${escapeHtml(item.assignee)}</span>
-            <span class="${dueChipClass}">${escapeHtml(formatPendingDue(item))}</span>
-          </div>
+        </div>
+        <div class="test-meta pendencias-card-meta">
+          <span class="${dueChipClass}">${escapeHtml(formatPendingDue(item))}</span>
         </div>
         <div class="pendencias-card-actions test-card-actions">
           <button type="button" class="primary-button" data-pendencias-action="${escapeHtml(
@@ -5989,7 +6036,6 @@ function renderPendenciasPage() {
           )}" data-pendencias-id="${escapeHtml(item.id)}">${escapeHtml(
             pendingActionLabel(item.primaryAction),
           )}</button>
-          ${secondary}
         </div>
       </article>`;
     })
@@ -6796,6 +6842,9 @@ function jobPrimaryActions(job) {
   if (["Aberta", "Pausada", "Encerrada"].includes(job.status)) {
     actions.push({ id: "compartilhar", label: "Compartilhar" });
   }
+  if (job.status === "Aberta" && jobFilledCount(job) >= Number(job.openings || 1)) {
+    actions.push({ id: "encerrar", label: "Encerrar vaga" });
+  }
   if (job.status === "Encerrada") {
     actions.push({ id: "contratados", label: "Contratados" });
   }
@@ -6901,10 +6950,10 @@ function renderJobDetailActions(job) {
   const primaryHost = document.querySelector("#jobDetailPrimaryActions");
   if (!primaryHost) return;
   primaryHost.innerHTML = jobPrimaryActions(job)
-    .map(
-      (action) =>
-        `<button type="button" class="secondary-button" data-job-detail-action="${action.id}">${action.label}</button>`,
-    )
+    .map((action) => {
+      const cls = action.id === "encerrar" ? "primary-button" : "secondary-button";
+      return `<button type="button" class="${cls}" data-job-detail-action="${action.id}">${action.label}</button>`;
+    })
     .join("");
   renderJobMoreActionsMenu(job);
 }
@@ -6915,6 +6964,7 @@ function closeJobMoreActions() {
   if (!menu || !trigger) return;
   menu.hidden = true;
   trigger.setAttribute("aria-expanded", "false");
+  resetCandidateMoreMenuPlacement(menu);
 }
 
 function toggleJobMoreActions() {
@@ -6922,8 +6972,13 @@ function toggleJobMoreActions() {
   const trigger = document.querySelector("#jobMoreActionsBtn");
   if (!menu || !trigger || trigger.hidden) return;
   const opening = menu.hidden;
-  menu.hidden = !opening;
-  trigger.setAttribute("aria-expanded", String(opening));
+  if (!opening) {
+    closeJobMoreActions();
+    return;
+  }
+  menu.hidden = false;
+  trigger.setAttribute("aria-expanded", "true");
+  placeCandidateMoreMenu(menu, trigger);
 }
 
 function jobTemplate(job) {
@@ -7370,12 +7425,11 @@ function getFilteredTalents() {
   const query = normalize(talentSearch?.value.trim() || "");
   return talents.filter((talent) => {
     if (talent.status !== selectedTalentTab) return false;
-    if (
-      selectedTalentTab !== "removidos" &&
-      talentFilters.onlyValid &&
-      talentValidityStatus(talent).id === "expired"
-    ) {
-      return false;
+    if (selectedTalentTab !== "removidos") {
+      const validityMode = talentFilters.validity || (talentFilters.onlyValid ? "valid" : "all");
+      const statusId = talentValidityStatus(talent).id;
+      if (validityMode === "valid" && statusId === "expired") return false;
+      if (validityMode === "expired" && statusId !== "expired") return false;
     }
     if (talentFilters.role !== "all" && normalize(talent.role || "") !== normalize(talentFilters.role)) {
       return false;
@@ -7427,6 +7481,7 @@ function getActiveTalentFilters() {
     score: "Score",
     fit: "Fit",
     availability: "Disponibilidade",
+    validity: "Validade",
   };
   const salaryLabels = {
     ate3500: "Até R$ 3.500",
@@ -7434,15 +7489,21 @@ function getActiveTalentFilters() {
     acima5000: "Acima de R$ 5.000",
   };
   const scoreLabels = { high: "≥ 80%", mid: "60–79%", low: "< 60%" };
+  const validityLabels = { valid: "Só válidos", expired: "Só expirados" };
   return Object.entries(talentFilters)
     .filter(([key, value]) => key !== "onlyValid" && value !== "all")
     .map(([key, value]) => ({
       key,
       label: `${labels[key] || key}: ${
-        key === "salary" ? salaryLabels[value] || value : key === "score" || key === "fit" ? scoreLabels[value] || value : value
+        key === "salary"
+          ? salaryLabels[value] || value
+          : key === "score" || key === "fit"
+            ? scoreLabels[value] || value
+            : key === "validity"
+              ? validityLabels[value] || value
+              : value
       }`,
-    }))
-    .concat(talentFilters.onlyValid ? [{ key: "onlyValid", label: "Só válidos" }] : []);
+    }));
 }
 
 function fillTalentFilterOptions() {
@@ -7498,11 +7559,14 @@ function fillTalentFilterOptions() {
     score: "#talentFilterScore",
     fit: "#talentFilterFit",
     availability: "#talentFilterAvailability",
+    validity: "#talentFilterValidity",
   };
   Object.entries(map).forEach(([key, sel]) => {
     const el = document.querySelector(sel);
     if (el) el.value = talentFilters[key] || "all";
   });
+  const onlyValid = document.querySelector("#talentOnlyValid");
+  if (onlyValid) onlyValid.checked = talentFilters.validity === "valid" || talentFilters.onlyValid;
 }
 
 function syncTalentFilterButton() {
@@ -7553,6 +7617,7 @@ function clearTalentAdvancedFilters(options = {}) {
     score: "all",
     fit: "all",
     availability: "all",
+    validity: "all",
     onlyValid: false,
   };
   const onlyValid = document.querySelector("#talentOnlyValid");
@@ -7572,28 +7637,11 @@ function closeTalentMenus() {
 function talentTemplate(talent) {
   const selected = talent.id === selectedTalentId ? " selected" : "";
   const validity = talentValidityStatus(talent);
-  const skillList = talent.skills || [];
-  const tagList = (talent.tags || []).filter((tag) => !skillList.includes(tag));
-  const skills = skillList.slice(0, 4);
-  const tags = tagList.slice(0, 2);
-  const extraChips = Math.max(0, skillList.length + tagList.length - skills.length - tags.length);
   const purgeAt = talent.status === "removidos" ? talentPurgeAt(talent) : "";
-  const metaItems =
+  const validityText =
     talent.status === "removidos"
-      ? [
-          { label: "Removido em", value: talent.removedAt ? formatBRDate(talent.removedAt) : "—" },
-          { label: "Exclusão em", value: purgeAt ? formatBRDate(purgeAt) : "—" },
-          { label: "Cidade", value: talent.city || "—" },
-          { label: "Pretensão", value: formatTalentMoney(talent.salaryExpectation) },
-          { label: "No banco", value: talent.bankEnteredAt ? formatBRDate(talent.bankEnteredAt) : "—" },
-        ]
-      : [
-          { label: "Cidade", value: talent.city || "—" },
-          { label: "Pretensão", value: formatTalentMoney(talent.salaryExpectation) },
-          { label: "Disponibilidade", value: talent.availability || "—" },
-          { label: "Última cand.", value: talent.lastApplicationAt ? formatBRDate(talent.lastApplicationAt) : "—" },
-          { label: "No banco", value: talent.bankEnteredAt ? formatBRDate(talent.bankEnteredAt) : "—" },
-        ];
+      ? `Removido${purgeAt ? ` · exclusão ${formatBRDate(purgeAt)}` : ""}`
+      : `${validity.label}${talent.validUntil ? ` · ${formatBRDate(talent.validUntil)}` : ""}`;
   const menuActions =
     talent.status === "removidos"
       ? `
@@ -7611,63 +7659,45 @@ function talentTemplate(talent) {
           <button type="button" data-talent-action="toggle">${talent.status === "aprovados" ? "Bloquear" : "Aprovar"}</button>
           <button type="button" class="is-danger" data-talent-action="remover">Remover do banco</button>
         `;
+  const primaryAction =
+    talent.status === "removidos"
+      ? `<button class="primary-button" type="button" data-talent-action="restaurar">Restaurar</button>`
+      : `<button class="primary-button" type="button" data-talent-action="convidar" ${
+          talent.status !== "aprovados" ? "disabled" : ""
+        }>Convidar</button>`;
+  const accentClass =
+    talent.status === "removidos" ? "is-removed" : `is-${validity.id}`;
   return `
-    <article class="talent-card talent-card-rich${selected}" data-talent-id="${talent.id}" tabindex="0">
-      <header class="talent-card-header">
-        <span class="talent-avatar" aria-hidden="true">${initials(talent.name)}</span>
-        <div class="talent-card-identity">
-          <h3>${escapeHtml(talent.name)}</h3>
-          <div class="talent-card-sub">
-            <span class="talent-validity is-${validity.id}">${
-              talent.status === "removidos"
-                ? `Removido${purgeAt ? ` · exclusão ${formatBRDate(purgeAt)}` : ""}`
-                : `${escapeHtml(validity.label)}${talent.validUntil ? ` · ${formatBRDate(talent.validUntil)}` : ""}`
-            }</span>
-            <p class="talent-role-line">${escapeHtml(talent.role || "—")} · ${escapeHtml(talent.area || "—")}</p>
-          </div>
-        </div>
-        <button class="more-button" type="button" aria-label="Mais ações para ${escapeHtml(talent.name)}" aria-haspopup="menu">⋮</button>
-        <div class="talent-menu" hidden role="menu">
-          ${menuActions}
-        </div>
-      </header>
-      <div class="talent-card-body">
-        <div class="talent-metrics-bar">
-          <div class="talent-score-pair" aria-label="Score e fit">
-            <div class="talent-score-pill">
-              <span>Score</span>
-              <strong>${escapeHtml(String(talent.score ?? "—"))}%</strong>
-            </div>
-            <div class="talent-score-pill is-fit">
-              <span>Fit</span>
-              <strong>${escapeHtml(String(talent.fitScore ?? "—"))}%</strong>
-            </div>
-          </div>
-          <div class="talent-meta-grid">
-            ${metaItems
-              .map(
-                (item) => `
-              <div class="talent-meta-item">
-                <span>${escapeHtml(item.label)}</span>
-                <strong>${escapeHtml(item.value)}</strong>
-              </div>`
-              )
-              .join("")}
-          </div>
-        </div>
-        <div class="talent-chip-row">
-          ${skills.map((skill) => `<span class="talent-skill-chip">${escapeHtml(skill)}</span>`).join("")}
-          ${tags.map((tag) => `<span class="talent-tag-chip">${escapeHtml(tag)}</span>`).join("")}
-          ${extraChips ? `<span class="talent-skill-chip is-more">+${extraChips}</span>` : ""}
+    <article class="talent-card talent-card-rich talent-card-row ${accentClass}${selected}" data-talent-id="${talent.id}" tabindex="0">
+      <span class="talent-avatar is-${validity.id}" aria-hidden="true">${initials(talent.name)}</span>
+      <div class="talent-card-identity">
+        <h3>${escapeHtml(talent.name)}</h3>
+        <div class="talent-card-sub">
+          <span class="talent-validity is-${validity.id}">${escapeHtml(validityText)}</span>
+          <p class="talent-role-line">${escapeHtml(talent.role || "—")} · ${escapeHtml(talent.area || "—")}</p>
         </div>
       </div>
-      <footer class="talent-card-actions">
-        ${
-          talent.status === "removidos"
-            ? `<button class="primary-button" type="button" data-talent-action="restaurar">Restaurar</button>`
-            : `<button class="primary-button" type="button" data-talent-action="convidar" ${talent.status !== "aprovados" ? "disabled" : ""}>Convidar</button>`
-        }
-      </footer>
+      <div class="talent-row-metrics" aria-label="Score, fit e pretensão">
+        <span class="talent-inline-metric">
+          <span>Score</span>
+          <strong>${escapeHtml(String(talent.score ?? "—"))}%</strong>
+        </span>
+        <span class="talent-inline-metric is-fit">
+          <span>Fit</span>
+          <strong>${escapeHtml(String(talent.fitScore ?? "—"))}%</strong>
+        </span>
+        <span class="talent-inline-metric">
+          <span>Pretensão</span>
+          <strong>${escapeHtml(formatTalentMoney(talent.salaryExpectation))}</strong>
+        </span>
+      </div>
+      <div class="talent-card-actions">
+        ${primaryAction}
+      </div>
+      <button class="more-button" type="button" aria-label="Mais ações para ${escapeHtml(talent.name)}" aria-haspopup="menu">⋮</button>
+      <div class="talent-menu" hidden role="menu">
+        ${menuActions}
+      </div>
     </article>
   `;
 }
@@ -7704,14 +7734,14 @@ function renderTalents() {
 function matchBlockMarkup(match, jobTitle) {
   if (!match) return "";
   return `
-    <section class="talent-drawer-section talent-match-block">
-      <header class="talent-drawer-section-head">
+    <section class="talent-drawer-block talent-match-block">
+      <div class="talent-match-head">
         <div>
           <h3>Compatibilidade</h3>
           <p class="panel-note">${escapeHtml(jobTitle || "Vaga")}</p>
         </div>
         <span class="talent-match-score">${match.total}%</span>
-      </header>
+      </div>
       <ul class="talent-match-reasons">
         ${(match.reasons || []).map((reason) => `<li>${escapeHtml(reason)}</li>`).join("") || "<li>Sem motivos detalhados.</li>"}
       </ul>
@@ -7763,22 +7793,27 @@ function openTalentDrawer(talent, options = {}) {
     .map((job) => `<option value="${escapeHtml(job.title)}" ${matchJob === job.title ? "selected" : ""}>${escapeHtml(job.title)}</option>`)
     .join("");
   const email = talent.email || "";
+  const scorePct = Math.max(0, Math.min(100, Number(talent.score) || 0));
+  const fitPct = Math.max(0, Math.min(100, Number(talent.fitScore) || 0));
   body.innerHTML = `
-    <div class="talent-score-pair talent-drawer-scores" aria-label="Score e fit">
-      <div class="talent-score-pill">
-        <span>Score</span>
-        <strong>${escapeHtml(String(talent.score ?? "—"))}%</strong>
+    <div class="talent-drawer-stack">
+      <div class="talent-drawer-metrics" aria-label="Score e fit">
+        <div class="talent-metric-bar">
+          <div class="talent-metric-bar-head">
+            <span>Score</span>
+            <strong>${escapeHtml(String(talent.score ?? "—"))}%</strong>
+          </div>
+          <div class="talent-metric-track" aria-hidden="true"><span style="width:${scorePct}%"></span></div>
+        </div>
+        <div class="talent-metric-bar is-fit">
+          <div class="talent-metric-bar-head">
+            <span>Fit cultural</span>
+            <strong>${escapeHtml(String(talent.fitScore ?? "—"))}%</strong>
+          </div>
+          <div class="talent-metric-track" aria-hidden="true"><span style="width:${fitPct}%"></span></div>
+        </div>
       </div>
-      <div class="talent-score-pill is-fit">
-        <span>Fit cultural</span>
-        <strong>${escapeHtml(String(talent.fitScore ?? "—"))}%</strong>
-      </div>
-    </div>
 
-    <section class="talent-drawer-section">
-      <header class="talent-drawer-section-head">
-        <h3>Perfil</h3>
-      </header>
       <div class="talent-drawer-facts">
         <div class="talent-fact"><strong>Área</strong><span>${escapeHtml(talent.area || "—")}</span></div>
         <div class="talent-fact"><strong>Pretensão</strong><span>${escapeHtml(formatTalentMoney(talent.salaryExpectation))}</span></div>
@@ -7794,98 +7829,86 @@ function openTalentDrawer(talent, options = {}) {
           }
         </div>
       </div>
-    </section>
 
-    <section class="talent-drawer-section">
-      <header class="talent-drawer-section-head">
+      <section class="talent-drawer-block">
         <h3>Competências e tags</h3>
-      </header>
-      <div class="talent-chip-row">
-        ${(talent.skills || []).map((skill) => `<span class="talent-skill-chip">${escapeHtml(skill)}</span>`).join("")}
-        ${(talent.tags || []).map((tag) => `<span class="talent-tag-chip">${escapeHtml(tag)}</span>`).join("")}
-      </div>
-    </section>
+        <div class="talent-chip-row">
+          ${(talent.skills || []).map((skill) => `<span class="talent-skill-chip">${escapeHtml(skill)}</span>`).join("")}
+          ${(talent.tags || []).map((tag) => `<span class="talent-tag-chip">${escapeHtml(tag)}</span>`).join("")}
+          ${!(talent.skills || []).length && !(talent.tags || []).length ? `<span class="muted">Nenhuma competência ou tag.</span>` : ""}
+        </div>
+      </section>
 
-    ${matchBlockMarkup(match, matchJob)}
+      ${matchBlockMarkup(match, matchJob)}
 
-    ${
-      talent.status === "removidos"
-        ? `
-    <section class="talent-drawer-section talent-drawer-actions-panel">
-      <header class="talent-drawer-section-head">
+      ${
+        talent.status === "removidos"
+          ? `
+      <section class="talent-drawer-block talent-drawer-actions-panel">
         <h3>Removidos</h3>
-      </header>
-      <p class="panel-note">Removido em ${talent.removedAt ? formatBRDate(talent.removedAt) : "—"} · exclusão automática em ${
-          talentPurgeAt(talent) ? formatBRDate(talentPurgeAt(talent)) : "—"
-        } (${TALENT_REMOVED_RETENTION_DAYS} dias).</p>
-      <div class="talent-drawer-tools" role="group" aria-label="Ações do talento removido">
-        <button type="button" class="primary-button" data-talent-drawer-action="restaurar">Restaurar</button>
-        <button type="button" class="secondary-button talent-tool-chip is-danger" data-talent-drawer-action="excluir_agora">Excluir agora</button>
-      </div>
-    </section>`
-        : `
-    <section class="talent-drawer-section talent-drawer-actions-panel" id="talentInviteSection">
-      <header class="talent-drawer-section-head">
-        <h3>Convidar para processo</h3>
-      </header>
-      <p class="panel-note">Escolha a vaga e envie o talento para a Triagem do pipeline.</p>
-      <div class="talent-invite-row">
-        <label class="form-field talent-invite-field">
-          <span class="sr-only">Vaga</span>
-          <select id="talentDrawerJobSelect">
-            <option value="">Selecione uma vaga</option>
-            ${jobOptions}
-          </select>
-        </label>
-        <button type="button" class="primary-button" data-talent-drawer-action="convidar">Convidar</button>
-      </div>
-    </section>
-    <section class="talent-drawer-section">
-      <header class="talent-drawer-section-head">
-        <h3>Ficha do talento</h3>
-      </header>
-      <div class="talent-drawer-tools is-ficha" role="group" aria-label="Ações da ficha">
-        <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="curriculo">Currículo</button>
-        <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="tag">Tag</button>
-        <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="obs">Observação</button>
-        <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="validade">Validade</button>
-      </div>
-    </section>`
-    }
+        <p class="panel-note">Removido em ${talent.removedAt ? formatBRDate(talent.removedAt) : "—"} · exclusão automática em ${
+            talentPurgeAt(talent) ? formatBRDate(talentPurgeAt(talent)) : "—"
+          } (${TALENT_REMOVED_RETENTION_DAYS} dias).</p>
+        <div class="talent-drawer-tools" role="group" aria-label="Ações do talento removido">
+          <button type="button" class="primary-button" data-talent-drawer-action="restaurar">Restaurar</button>
+          <button type="button" class="secondary-button talent-tool-chip is-danger" data-talent-drawer-action="excluir_agora">Excluir agora</button>
+        </div>
+      </section>`
+          : `
+      <section class="talent-drawer-block talent-drawer-actions-panel" id="talentInviteSection">
+        <h3>Convidar e ficha</h3>
+        <p class="panel-note">Escolha a vaga e envie o talento para a Triagem, ou abra atalhos da ficha.</p>
+        <div class="talent-invite-row">
+          <label class="form-field talent-invite-field">
+            <span class="sr-only">Vaga</span>
+            <select id="talentDrawerJobSelect">
+              <option value="">Selecione uma vaga</option>
+              ${jobOptions}
+            </select>
+          </label>
+          <button type="button" class="primary-button" data-talent-drawer-action="convidar">Convidar</button>
+        </div>
+        <div class="talent-drawer-tools is-ficha" role="group" aria-label="Ações da ficha">
+          <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="curriculo">Currículo</button>
+          <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="tag">Tag</button>
+          <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="obs">Observação</button>
+          <button type="button" class="secondary-button talent-tool-chip" data-talent-drawer-action="validade">Validade</button>
+        </div>
+      </section>`
+      }
 
-    <section class="talent-drawer-section talent-history-block">
-      <header class="talent-drawer-section-head">
+      <section class="talent-drawer-block talent-history-block">
         <h3>Histórico</h3>
-      </header>
-      <ol class="talent-timeline">
-        ${(talent.history || [])
-          .map(
-            (item) => `
-              <li>
-                <span class="talent-timeline-dot" aria-hidden="true"></span>
-                <div>
-                  <strong>${escapeHtml(item.title || "Evento")}</strong>
-                  <time>${item.at ? formatBRDate(item.at) : "—"}</time>
-                  <p>${escapeHtml(item.detail || "")}</p>
-                </div>
-              </li>
-            `,
-          )
-          .join("") || "<li><div><p>Sem histórico registrado.</p></div></li>"}
-      </ol>
-      ${(talent.notes || []).length
-        ? `<div class="talent-notes-list">${(talent.notes || [])
+        <ol class="talent-timeline">
+          ${(talent.history || [])
             .map(
-              (note) => `
-                <article class="talent-note">
-                  <header><strong>${escapeHtml(note.author || "RH")}</strong><time>${note.at ? formatBRDate(note.at) : ""}</time></header>
-                  <p>${escapeHtml(note.text || "")}</p>
-                </article>
+              (item) => `
+                <li>
+                  <span class="talent-timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>${escapeHtml(item.title || "Evento")}</strong>
+                    <time>${item.at ? formatBRDate(item.at) : "—"}</time>
+                    <p>${escapeHtml(item.detail || "")}</p>
+                  </div>
+                </li>
               `,
             )
-            .join("")}</div>`
-        : ""}
-    </section>
+            .join("") || "<li><div><p>Sem histórico registrado.</p></div></li>"}
+        </ol>
+        ${(talent.notes || []).length
+          ? `<div class="talent-notes-list">${(talent.notes || [])
+              .map(
+                (note) => `
+                  <article class="talent-note">
+                    <header><strong>${escapeHtml(note.author || "RH")}</strong><time>${note.at ? formatBRDate(note.at) : ""}</time></header>
+                    <p>${escapeHtml(note.text || "")}</p>
+                  </article>
+                `,
+              )
+              .join("")}</div>`
+          : ""}
+      </section>
+    </div>
   `;
   if (!drawer.open) drawer.showModal();
   renderTalents();
@@ -8569,8 +8592,16 @@ function openScoreEvaluationDetail(id) {
     .join("");
   document.querySelector("#scoreEvalActions").innerHTML = `
     <button type="button" class="primary-button" data-score-eval-action="save">Salvar</button>
-    <button type="button" class="secondary-button" data-score-eval-action="review">Revisar</button>
-    <button type="button" class="secondary-button" data-score-eval-action="close">Fechar</button>`;
+    <div class="candidate-more-wrap interview-more-wrap">
+      <button class="more-button" type="button" id="scoreEvalMoreBtn" aria-label="Mais ações" aria-expanded="false" aria-haspopup="menu" aria-controls="scoreEvalMoreMenu">⋮</button>
+      <div class="candidate-more-menu" id="scoreEvalMoreMenu" role="menu" hidden>
+        <div class="candidate-more-section">
+          <span class="candidate-more-label">Ações</span>
+          <button type="button" data-score-eval-action="review" role="menuitem">Revisar</button>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="secondary-button" id="closeScoreEvalDialog" data-score-eval-action="close">Fechar</button>`;
   document.querySelector("#scoreEvaluationDialog")?.showModal();
 }
 
@@ -9640,6 +9671,7 @@ function closeInterviewMoreActions() {
   if (!menu || !trigger) return;
   menu.hidden = true;
   trigger.setAttribute("aria-expanded", "false");
+  resetCandidateMoreMenuPlacement(menu);
 }
 
 function toggleInterviewMoreActions() {
@@ -9647,8 +9679,13 @@ function toggleInterviewMoreActions() {
   const trigger = document.querySelector("#interviewMoreActionsBtn");
   if (!menu || !trigger) return;
   const opening = menu.hidden;
-  menu.hidden = !opening;
-  trigger.setAttribute("aria-expanded", String(opening));
+  if (!opening) {
+    closeInterviewMoreActions();
+    return;
+  }
+  menu.hidden = false;
+  trigger.setAttribute("aria-expanded", "true");
+  placeCandidateMoreMenu(menu, trigger);
 }
 
 function renderInterviewDetail() {
@@ -9714,13 +9751,35 @@ function renderInterviewDetail() {
     });
   };
   setDisabled("edit", terminal);
-  setDisabled("reschedule", terminal);
+  setDisabled("reschedule", terminal && item.status !== "Não compareceu" && !/recusad/i.test(item.status || ""));
   setDisabled("cancel", terminal);
   setDisabled("confirm", !["Agendada", "Aguardando confirmação"].includes(item.status));
   setDisabled("copy-link", false);
   setDisabled("invite", terminal);
   setDisabled("reminder", terminal);
   setDisabled("no-show", terminal);
+
+  const overdueNow = interviewIsOverdue(item);
+  const noShow = item.status === "Não compareceu";
+  const declined = /recusad/i.test(item.status || "");
+  const rescheduleBtn = document.querySelector("#interviewDetailRescheduleAction");
+  const noShowBtn = document.querySelector("#interviewDetailNoShowAction");
+  const rebookBtn = document.querySelector("#interviewDetailRebookAction");
+  if (rescheduleBtn) {
+    const show = overdueNow && interviewIsActive(item) && !item.rescheduleRequest;
+    rescheduleBtn.hidden = !show;
+    rescheduleBtn.disabled = !show;
+  }
+  if (noShowBtn) {
+    const show = overdueNow && interviewIsActive(item);
+    noShowBtn.hidden = !show;
+    noShowBtn.disabled = !show;
+  }
+  if (rebookBtn) {
+    const show = noShow || declined;
+    rebookBtn.hidden = !show;
+    rebookBtn.disabled = !show;
+  }
 
   const canConduct =
     (interviewIsActive(item) && item.status !== "Realizada") ||
@@ -10205,10 +10264,10 @@ function renderConductCompetencyFields(item) {
   host.innerHTML = options
     .map((name) => {
       const current = draft.competencyScores.find((row) => row.name === name)?.score;
-      return `<label class="form-field conduct-competency-row"><span>${escapeHtml(name)}</span>
-        <input type="number" min="0" max="10" step="1" data-conduct-competency="${escapeHtml(name)}" value="${
+      return `<label class="form-field conduct-competency-card"><span>${escapeHtml(name)}</span>
+        <input type="number" min="0" max="10" step="1" inputmode="numeric" data-conduct-competency="${escapeHtml(name)}" value="${
           current != null ? escapeHtml(String(current)) : ""
-        }" /></label>`;
+        }" placeholder="0–10" /></label>`;
     })
     .join("");
 }
@@ -10573,22 +10632,32 @@ function openInterviewConductReview(item) {
     evaluate_later: "Aguardar decisão",
   };
   if (summary) {
+    const scoreText = draft.score != null && draft.score !== "" ? String(draft.score) : "—";
+    const recoText = recoLabels[draft.recommendation] || draft.recommendation || "—";
+    let finalizedText = "—";
+    if (draft.finalizedAt) {
+      const raw = String(draft.finalizedAt);
+      const isoMatch = raw.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})/);
+      if (isoMatch) finalizedText = `${formatBRDate(isoMatch[1])} às ${isoMatch[2]}`;
+      else finalizedText = formatInterviewWhen(raw) || raw.replace("T", " ").slice(0, 16);
+    }
+    const opinionText = draft.opinion || "—";
+    const positivesText = (draft.positives || []).length
+      ? (draft.positives || []).join(" · ")
+      : "—";
+    const attentionText = (draft.attentionPoints || []).length
+      ? (draft.attentionPoints || []).join(" · ")
+      : "—";
+    const notesText = draft.notes || "—";
+    const emptyClass = (value) => (value === "—" ? " is-empty" : "");
     summary.innerHTML = `
-      <article><small>Nota</small><strong>${draft.score != null && draft.score !== "" ? escapeHtml(String(draft.score)) : "—"}</strong></article>
-      <article><small>Recomendação</small><strong>${escapeHtml(recoLabels[draft.recommendation] || draft.recommendation || "—")}</strong></article>
-      <article><small>Finalizada em</small><strong>${draft.finalizedAt ? escapeHtml(String(draft.finalizedAt).replace("T", " ").slice(0, 16)) : "—"}</strong></article>
-      <article class="is-wide"><small>Parecer</small><strong>${escapeHtml(draft.opinion || "—")}</strong></article>
-      <article class="is-wide"><small>Pontos positivos</small><strong>${
-        (draft.positives || []).length
-          ? escapeHtml((draft.positives || []).join(" · "))
-          : "—"
-      }</strong></article>
-      <article class="is-wide"><small>Pontos de atenção</small><strong>${
-        (draft.attentionPoints || []).length
-          ? escapeHtml((draft.attentionPoints || []).join(" · "))
-          : "—"
-      }</strong></article>
-      <article class="is-wide"><small>Anotações</small><strong>${escapeHtml(draft.notes || "—")}</strong></article>
+      <article class="is-metric"><small>Nota</small><strong>${escapeHtml(scoreText)}</strong></article>
+      <article class="is-metric"><small>Recomendação</small><strong>${escapeHtml(recoText)}</strong></article>
+      <article class="is-metric"><small>Finalizada em</small><strong>${escapeHtml(finalizedText)}</strong></article>
+      <article class="is-half${emptyClass(opinionText)}"><small>Parecer</small><strong>${escapeHtml(opinionText)}</strong></article>
+      <article class="is-half${emptyClass(positivesText)}"><small>Pontos positivos</small><strong>${escapeHtml(positivesText)}</strong></article>
+      <article class="is-half${emptyClass(attentionText)}"><small>Pontos de atenção</small><strong>${escapeHtml(attentionText)}</strong></article>
+      <article class="is-half${emptyClass(notesText)}"><small>Anotações</small><strong>${escapeHtml(notesText)}</strong></article>
     `;
   }
 
@@ -10997,12 +11066,12 @@ function sheetTemplateCard(item) {
         <div class="sheet-more-wrap">
           <button
             type="button"
-            class="secondary-button sheet-more-toggle"
+            class="more-button sheet-more-toggle"
             data-sheet-more-toggle
             aria-expanded="false"
             aria-haspopup="menu"
             aria-label="Mais ações"
-          >⋯</button>
+          >⋮</button>
           <div class="sheet-more-menu" role="menu" hidden>
             <button type="button" role="menuitem" data-sheet-action="duplicate">Duplicar</button>
             <button type="button" role="menuitem" data-sheet-action="${item.active ? "inactivate" : "reactivate"}">
@@ -12005,7 +12074,10 @@ function fitAssignmentActionsFor(assignment) {
 function closeFitMoreActions() {
   const menu = document.querySelector("#fitMoreActionsMenu");
   const trigger = document.querySelector("#fitMoreActionsBtn");
-  if (menu) menu.hidden = true;
+  if (menu) {
+    menu.hidden = true;
+    resetCandidateMoreMenuPlacement(menu);
+  }
   if (trigger) trigger.setAttribute("aria-expanded", "false");
 }
 
@@ -12067,21 +12139,32 @@ function openFitAssignmentDetail(id, panel = "answers") {
   const primaryHtml = groups.primary
     .map(([aid, label]) => `<button type="button" class="primary-button" data-fit-action="${aid}">${escapeHtml(label)}</button>`)
     .join("");
-  const secondaryHtml = groups.secondary
-    .map(([aid, label]) => `<button type="button" class="secondary-button" data-fit-action="${aid}">${escapeHtml(label)}</button>`)
-    .join("");
-  const moreHtml = groups.more.length
+  const moreItems = [...groups.secondary, ...groups.more];
+  const moreHtml = moreItems.length
     ? `<div class="candidate-more-wrap interview-more-wrap assignment-more-wrap">
-        <button class="secondary-button candidate-more-trigger" type="button" id="fitMoreActionsBtn" aria-expanded="false">Mais ações</button>
+        <button
+          class="more-button"
+          type="button"
+          id="fitMoreActionsBtn"
+          aria-label="Mais ações"
+          aria-expanded="false"
+          aria-haspopup="menu"
+          aria-controls="fitMoreActionsMenu"
+        >⋮</button>
         <div class="candidate-more-menu" id="fitMoreActionsMenu" role="menu" hidden>
           <div class="candidate-more-section">
             <span class="candidate-more-label">Ações</span>
-            ${groups.more.map(([aid, label]) => `<button type="button" data-fit-action="${aid}" role="menuitem">${escapeHtml(label)}</button>`).join("")}
+            ${moreItems
+              .map(
+                ([aid, label]) =>
+                  `<button type="button" data-fit-action="${aid}" role="menuitem">${escapeHtml(label)}</button>`,
+              )
+              .join("")}
           </div>
         </div>
       </div>`
     : "";
-  actions.innerHTML = `${primaryHtml}${secondaryHtml}${moreHtml}`;
+  actions.innerHTML = `${primaryHtml}${moreHtml}`;
   document.querySelectorAll("[data-fit-panel]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.fitPanel === panel);
   });
@@ -12339,7 +12422,10 @@ function assignmentActionsFor(assignment) {
 function closeAssignmentMoreActions() {
   const menu = document.querySelector("#assignmentMoreActionsMenu");
   const trigger = document.querySelector("#assignmentMoreActionsBtn");
-  if (menu) menu.hidden = true;
+  if (menu) {
+    menu.hidden = true;
+    resetCandidateMoreMenuPlacement(menu);
+  }
   if (trigger) trigger.setAttribute("aria-expanded", "false");
 }
 
@@ -12348,8 +12434,13 @@ function toggleAssignmentMoreActions() {
   const trigger = document.querySelector("#assignmentMoreActionsBtn");
   if (!menu || !trigger) return;
   const opening = menu.hidden;
-  menu.hidden = !opening;
-  trigger.setAttribute("aria-expanded", String(opening));
+  if (!opening) {
+    closeAssignmentMoreActions();
+    return;
+  }
+  menu.hidden = false;
+  trigger.setAttribute("aria-expanded", "true");
+  placeCandidateMoreMenu(menu, trigger);
 }
 
 function openCandidateTestDetail(id, panel = "answers") {
@@ -12388,28 +12479,22 @@ function openCandidateTestDetail(id, panel = "answers") {
           `<button type="button" class="primary-button" data-assignment-action="${id}">${escapeHtml(label)}</button>`,
       )
       .join("");
-    const secondaryHtml = groups.secondary
-      .map(
-        ([id, label]) =>
-          `<button type="button" class="secondary-button" data-assignment-action="${id}">${escapeHtml(label)}</button>`,
-      )
-      .join("");
-    const moreHtml = groups.more.length
+    const moreItems = [...groups.secondary, ...groups.more];
+    const moreHtml = moreItems.length
       ? `<div class="candidate-more-wrap interview-more-wrap assignment-more-wrap">
           <button
-            class="secondary-button candidate-more-trigger"
+            class="more-button"
             type="button"
             id="assignmentMoreActionsBtn"
+            aria-label="Mais ações"
             aria-expanded="false"
             aria-haspopup="menu"
             aria-controls="assignmentMoreActionsMenu"
-          >
-            Mais ações
-          </button>
+          >⋮</button>
           <div class="candidate-more-menu" id="assignmentMoreActionsMenu" role="menu" hidden>
             <div class="candidate-more-section">
               <span class="candidate-more-label">Ações do teste</span>
-              ${groups.more
+              ${moreItems
                 .map(
                   ([id, label]) =>
                     `<button type="button" data-assignment-action="${id}" role="menuitem">${escapeHtml(label)}</button>`,
@@ -12419,7 +12504,7 @@ function openCandidateTestDetail(id, panel = "answers") {
           </div>
         </div>`
       : "";
-    actions.innerHTML = `${primaryHtml}${secondaryHtml}${moreHtml}`;
+    actions.innerHTML = `${primaryHtml}${moreHtml}`;
   }
   setAssignmentDetailPanel(panel);
   closeAssignmentMoreActions();
@@ -12545,22 +12630,55 @@ function openApplyTestForCandidate(candidate) {
 }
 
 function renderDashboard() {
-  document.querySelector("#dashboardCandidatesCount").textContent = candidates.length;
-  document.querySelector("#dashboardJobsCount").textContent = jobs.filter(
-    (job) => job.status === "Aberta",
-  ).length;
+  syncPortalHomeWelcome({
+    eyebrowId: "#rhHomeWelcomeEyebrow",
+    nameId: "#rhHomeWelcomeName",
+    fullName: "Larissa Dias",
+  });
+  const pendAll = typeof buildPendencies === "function" ? buildPendencies() : [];
+  const pendMine =
+    typeof countPendenciesByBucket === "function"
+      ? countPendenciesByBucket(pendAll).mine
+      : pendAll.length;
+  const talentN =
+    typeof talentCounts === "function"
+      ? (() => {
+          const c = talentCounts();
+          return (c.aprovados || 0) + (c.bloqueados || 0);
+        })()
+      : Array.isArray(talents)
+        ? talents.length
+        : 0;
+  const pipelineN = Array.isArray(candidates) ? candidates.length : 0;
   const ivCount = Array.isArray(interviews)
     ? interviews.filter((item) => item.status !== "Cancelada").length
     : 0;
-  const ivEl = document.querySelector("#dashboardInterviewsCount");
-  if (ivEl) ivEl.textContent = String(ivCount);
-  const rejectCount = candidates.filter((c) =>
-    ["Dispensado", "Recusou Proposta", "Ocultado"].includes(c.stage),
-  ).length;
-  const rejectEl = document.querySelector("#dashboardRejectCount");
-  if (rejectEl) rejectEl.textContent = String(rejectCount || 6);
+  const fitCount = Array.isArray(fitAssignments)
+    ? fitAssignments.filter((a) => a.status !== "Cancelado").length
+    : 0;
+  const sheetsCount = Array.isArray(interviewSheetTemplates)
+    ? interviewSheetTemplates.length
+    : 0;
+  const instrumentosN =
+    (Array.isArray(tests) ? tests.length : 0) + fitCount + sheetsCount;
+  const preN = Array.isArray(preAdmissions)
+    ? preAdmissions.filter((item) => item.status !== "convertida").length
+    : 0;
+  const encN = Array.isArray(results) ? results.length : 0;
 
-  const todayPend = typeof buildPendencies === "function" ? buildPendencies() : [];
+  const setText = (id, value) => {
+    const el = document.querySelector(id);
+    if (el) el.textContent = String(value);
+  };
+  setText("#homeMapPipelineCount", pipelineN);
+  setText("#homeMapPendenciasCount", pendMine);
+  setText("#homeMapTalentosCount", talentN);
+  setText("#homeMapEntrevistasCount", ivCount);
+  setText("#homeMapInstrumentosCount", instrumentosN);
+  setText("#homeMapPreadmissaoCount", preN);
+  setText("#homeMapEncerradosCount", encN);
+
+  const todayPend = pendAll;
   const todayItems = todayPend
     .filter((item) => !item.dueAt || String(item.dueAt).startsWith(TODAY_KEY))
     .slice(0, 6);
@@ -12572,41 +12690,63 @@ function renderDashboard() {
     .concat(typeof fitAssignments !== "undefined" && Array.isArray(fitAssignments) ? fitAssignments : [])
     .filter((a) => String(a.dueAt || a.sentAt || "").startsWith(TODAY_KEY))
     .slice(0, 3);
+  const hojeTotal = todayItems.length + todayIv.length + todayTests.length;
   const pendList = document.querySelector("#dashPendenciasHojeList");
   const pendCount = document.querySelector("#dashPendenciasHojeCount");
-  if (pendCount) pendCount.textContent = String(todayItems.length + todayIv.length + todayTests.length);
+  if (pendCount) pendCount.textContent = String(hojeTotal);
   if (pendList) {
     const rows = [
-      ...todayItems.map(
-        (item) =>
-          `<button type="button" class="dash-pend-row" data-pendencia-id="${item.id}">
-            <strong>${escapeHtml(item.title || pendingTypeLabel(item.type))}</strong>
-            <span>${escapeHtml(item.subtitle || item.type || "")}</span>
-          </button>`,
-      ),
-      ...todayIv.map(
-        (item) =>
-          `<button type="button" class="dash-pend-row" data-open-interview="${item.id}">
-            <strong>Entrevista · ${escapeHtml(item.candidateName || "Candidato")}</strong>
-            <span>${escapeHtml(item.type || "")} · hoje</span>
-          </button>`,
-      ),
-      ...todayTests.map(
-        (item) =>
-          `<button type="button" class="dash-pend-row" data-go-page="talentos">
-            <strong>Teste · ${escapeHtml(item.title || "Avaliação")}</strong>
-            <span>Prazo/envio hoje</span>
-          </button>`,
-      ),
-    ];
+      ...todayItems.map((item) => {
+        const chip = pendingTypeChip(item.type);
+        const name = pendingSubjectName(item);
+        const due = item.dueAt ? String(item.dueAt).slice(11, 16) || "hoje" : "hoje";
+        const metaParts = [item.jobTitle || item.subtitle, due].filter(Boolean);
+        return `<button type="button" class="dash-pend-row" data-pendencia-id="${item.id}">
+            <div class="dash-pend-main">
+              <strong>${escapeHtml(name)}</strong>
+              <span class="dash-pend-meta">${escapeHtml(metaParts.join(" · "))}</span>
+            </div>
+            <span class="dash-pend-type tone-${chip.tone}">${escapeHtml(chip.label)}</span>
+          </button>`;
+      }),
+      ...todayIv.map((item) => {
+        const time = String(item.at || "").slice(11, 16) || "hoje";
+        const metaParts = [item.type || item.modality, time].filter(Boolean);
+        return `<button type="button" class="dash-pend-row" data-open-interview="${item.id}">
+            <div class="dash-pend-main">
+              <strong>${escapeHtml(item.candidateName || "Candidato")}</strong>
+              <span class="dash-pend-meta">${escapeHtml(metaParts.join(" · "))}</span>
+            </div>
+            <span class="dash-pend-type tone-navy">Entrevista</span>
+          </button>`;
+      }),
+      ...todayTests.map((item) => {
+        return `<button type="button" class="dash-pend-row" data-go-page="talentos">
+            <div class="dash-pend-main">
+              <strong>${escapeHtml(item.candidateName || item.title || "Avaliação")}</strong>
+              <span class="dash-pend-meta">Prazo/envio hoje</span>
+            </div>
+            <span class="dash-pend-type tone-mint">Teste</span>
+          </button>`;
+      }),
+    ].slice(0, 6);
     pendList.innerHTML =
       rows.join("") ||
-      `<p class="panel-note">Nenhuma pendência, entrevista ou teste para hoje.</p>`;
+      `<p class="panel-note">Nada na fila para hoje. Bom sinal.</p>`;
+  }
+
+  const dayNote = document.querySelector("#dashDayNoteText");
+  if (dayNote) {
+    const agendaN = todayIv.length || 2;
+    dayNote.textContent =
+      hojeTotal === 0
+        ? `Agenda com ${agendaN} compromisso${agendaN === 1 ? "" : "s"} · fila limpa.`
+        : `${hojeTotal} item${hojeTotal === 1 ? "" : "s"} na fila · ${agendaN} na agenda.`;
   }
 
   const inboxTalents = (typeof talents !== "undefined" && Array.isArray(talents) ? talents : [])
     .filter((t) => !t.jobId && !t.vacancy)
-    .slice(0, 5);
+    .slice(0, 3);
   const curList = document.querySelector("#dashCurriculosList");
   if (curList) {
     curList.innerHTML = inboxTalents.length
@@ -12614,18 +12754,23 @@ function renderDashboard() {
           .map(
             (t) =>
               `<button type="button" class="dash-pend-row" data-go-page="talentos" data-talent-id="${t.id}">
-                <strong>${escapeHtml(t.name || "Currículo")}</strong>
-                <span>${escapeHtml(t.role || t.area || "Sem vaga")}</span>
+                <div class="dash-pend-main">
+                  <strong>${escapeHtml(t.name || "Currículo")}</strong>
+                  <span class="dash-pend-meta">${escapeHtml(t.role || t.area || "Sem vaga")}</span>
+                </div>
               </button>`,
           )
           .join("")
-      : `<p class="panel-note">Nenhum currículo novo sem vaga no momento.</p>`;
+      : `<p class="panel-note">Nenhum currículo novo sem vaga.</p>`;
   }
 
-  document.querySelector("#dashboardJobList").innerHTML = jobs
-    .slice(0, 3)
-    .map(
-      (job) => `
+  const jobList = document.querySelector("#dashboardJobList");
+  if (jobList) {
+    jobList.innerHTML = jobs
+      .filter((job) => job.status === "Aberta")
+      .slice(0, 3)
+      .map(
+        (job) => `
         <article class="dashboard-job" data-dashboard-job="${job.id}" data-open-job="${job.title}">
           <span class="dashboard-job-icon" aria-hidden="true">${job.title.charAt(0)}</span>
           <div class="dashboard-job-copy">
@@ -12638,75 +12783,9 @@ function renderDashboard() {
           </div>
         </article>
       `,
-    )
-    .join("");
-
-  document.querySelector("#dashboardMatchList").innerHTML = candidates
-    .slice(0, 4)
-    .map((candidate) => {
-      const match = computeMatch(candidate.vacancy, candidate);
-      return `
-        <article class="dashboard-match" data-dashboard-candidate="${candidate.id}" tabindex="0">
-          <span class="dashboard-match-avatar">${initials(candidate.name)}</span>
-          <div class="dashboard-match-copy">
-            <strong>${candidate.name}</strong>
-            <span>${candidate.vacancy}</span>
-          </div>
-          <span class="match-score" title="${matchTitleAttr(match)}">${match.total}%</span>
-        </article>
-      `;
-    })
-    .join("");
-
-  const stageLabels = {
-    Triagem: "Triagem",
-    "Entrevista RH": "Entrevistas",
-    Proposta: "Propostas",
-    "Recusou Proposta": "Recusadas",
-  };
-  const stageCounts = pipelineStages.map((stage) =>
-    candidates.filter((candidate) => candidate.stage === stage).length,
-  );
-  const maxCount = Math.max(...stageCounts, 1);
-  document.querySelector("#dashboardFunnel").innerHTML = pipelineStages
-    .map((stage, index) => {
-      const count = stageCounts[index];
-      const selected = stage === selectedFunnelStage;
-      const height = Math.max(12, Math.round((count / maxCount) * 100));
-      return `
-        <button
-          type="button"
-          class="funnel-step${selected ? " active" : ""}"
-          data-funnel-stage="${stage}"
-          aria-pressed="${selected}"
-        >
-          <div class="funnel-bar-wrap">
-            <span class="funnel-bar" style="height: ${height}%"></span>
-          </div>
-          <div class="funnel-label">
-            <span>${stageLabels[stage] || stage}</span>
-            <strong>${count}</strong>
-          </div>
-        </button>
-      `;
-    })
-    .join("");
-
-  const recentCandidates = [candidates[0], candidates[5], candidates[9], candidates[2]];
-  document.querySelector("#dashboardActivity").innerHTML = recentCandidates
-    .map((candidate) => {
-      const activity = candidate.activities[0];
-      return `
-        <article class="dashboard-activity-item" data-open-candidate="${candidate.id}" tabindex="0">
-          <span class="activity-avatar">${initials(candidate.name)}</span>
-          <div>
-            <strong>${candidate.name}</strong>
-            <span>${activity[2]} · ${activity[3]}</span>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+      )
+      .join("");
+  }
 }
 
 function initials(name) {
@@ -12904,6 +12983,8 @@ function syncCandidateDossierPrimaryAction(candidate) {
   document.querySelectorAll(".candidate-action-row > button[data-candidate-action]").forEach((button) => {
     button.classList.toggle("is-primary-action", button === btn);
   });
+  const contactBtn = document.querySelector("#candidateContactActionBtn");
+  if (contactBtn) contactBtn.hidden = primary.action === "Contactar";
 }
 
 function syncCandidateDossierMetrics(candidate) {
@@ -12912,12 +12993,17 @@ function syncCandidateDossierMetrics(candidate) {
   const fitMetric = document.querySelector("#candidateFitMetric");
   const scoreValue = String(scoreEl?.textContent || "—").trim();
   if (scoreMetric) {
-    scoreMetric.classList.toggle("is-empty", scoreValue === "—");
-    scoreMetric.title = scoreValue === "—" ? "Abrir avaliação de score" : "Ver avaliação";
+    const empty = scoreValue === "—" || scoreValue === "Avaliar";
+    if (empty && scoreEl) scoreEl.textContent = "Avaliar";
+    scoreMetric.classList.toggle("is-empty", empty);
+    scoreMetric.title = empty ? "Abrir avaliação de score" : "Ver avaliação";
   }
   if (fitMetric) {
-    const fitValue = String(document.querySelector("#candidateFit")?.textContent || "—").trim();
-    fitMetric.classList.toggle("is-empty", fitValue === "—" || fitValue === "Pendente");
+    const fitEl = document.querySelector("#candidateFit");
+    const fitValue = String(fitEl?.textContent || "—").trim();
+    const fitEmpty = fitValue === "—" || fitValue === "Pendente" || fitValue === "Avaliar";
+    if (fitEmpty && fitEl && fitValue !== "Pendente") fitEl.textContent = "Avaliar";
+    fitMetric.classList.toggle("is-empty", fitEmpty);
     fitMetric.title = "Abrir Fit Cultural";
   }
   void candidate;
@@ -14215,7 +14301,7 @@ function renderCandidateDetails(candidate) {
   activityList.innerHTML =
     (archivedCount
       ? `<div class="candidate-comment-toolbar">
-          <button type="button" id="toggleArchivedComments" class="dialog-text-button">
+          <button type="button" id="toggleArchivedComments" class="secondary-button">
             ${showArchivedCandidateComments ? "Ocultar arquivados" : `Mostrar arquivados (${archivedCount})`}
           </button>
         </div>`
@@ -14260,26 +14346,26 @@ function documentStatusClass(status) {
 
 function renderCandidateDocumentActions(doc) {
   const status = doc.status || "Pendente";
+  const view = doc.fileName
+    ? `<button type="button" class="secondary-button candidate-doc-action-btn" data-view-doc="${doc.id}">Ver</button>`
+    : "";
   if (status === "Aprovado") {
-    return doc.fileName
-      ? `<button type="button" class="dialog-text-button" data-view-doc="${doc.id}">Ver</button>`
-      : "";
+    return view;
   }
   if (status === "Rejeitado") {
     return `
-      ${doc.fileName ? `<button type="button" class="dialog-text-button" data-view-doc="${doc.id}">Ver</button>` : ""}
+      ${view}
       <button type="button" class="secondary-button candidate-doc-action-btn" data-replace-doc="${doc.id}">Reenviar</button>
     `;
   }
   if (status === "Enviado" || status === "Em análise") {
     return `
-      ${doc.fileName ? `<button type="button" class="dialog-text-button" data-view-doc="${doc.id}">Ver</button>` : ""}
-      <button type="button" class="dialog-text-button" data-replace-doc="${doc.id}">Substituir</button>
-      <button type="button" class="dialog-text-button is-approve" data-doc-approve="${doc.id}">Aprovar</button>
-      <button type="button" class="dialog-text-button is-reject" data-doc-reject="${doc.id}">Rejeitar</button>
+      ${view}
+      <button type="button" class="secondary-button candidate-doc-action-btn" data-replace-doc="${doc.id}">Substituir</button>
+      <button type="button" class="primary-button candidate-doc-action-btn" data-doc-approve="${doc.id}">Aprovar</button>
+      <button type="button" class="secondary-button candidate-doc-action-btn is-reject" data-doc-reject="${doc.id}">Rejeitar</button>
     `;
   }
-  // Pendente / Aguardando envio
   return `<button type="button" class="secondary-button candidate-doc-action-btn" data-replace-doc="${doc.id}">Enviar</button>`;
 }
 
@@ -14874,13 +14960,27 @@ function renderOfferDialog(candidate) {
       .join("");
   }
   if (actionsMore) {
-    actionsMore.hidden = moreActions.length === 0;
-    actionsMore.innerHTML = moreActions
-      .map(
-        (action) =>
-          `<button type="button" class="offer-link-button${action.id === "cancelar" ? " is-danger" : ""}" data-offer-action="${action.id}">${escapeHtml(action.label)}</button>`,
-      )
-      .join("");
+    if (!moreActions.length) {
+      actionsMore.hidden = true;
+      actionsMore.innerHTML = "";
+    } else {
+      actionsMore.hidden = false;
+      actionsMore.innerHTML = `
+        <div class="candidate-more-wrap offer-more-wrap">
+          <button class="more-button" type="button" id="offerMoreActionsBtn" aria-label="Mais ações" aria-expanded="false" aria-haspopup="menu" aria-controls="offerMoreActionsMenu">⋮</button>
+          <div class="candidate-more-menu" id="offerMoreActionsMenu" role="menu" hidden>
+            <div class="candidate-more-section">
+              <span class="candidate-more-label">Mais ações</span>
+              ${moreActions
+                .map(
+                  (action) =>
+                    `<button type="button" data-offer-action="${action.id}" role="menuitem">${escapeHtml(action.label)}</button>`,
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>`;
+    }
   }
 
   const canSimulate = ["enviada", "visualizada"].includes(offer.status);
@@ -17057,9 +17157,14 @@ function setCandidateSidebarCollapsed(collapsed) {
   candidatePortal.classList.toggle("is-sidebar-collapsed", collapsed);
   const label = collapsed ? "Abrir menu" : "Recolher menu";
   const icon = collapsed ? "›" : "‹";
-  candidateSidebarToggle.setAttribute("aria-label", label);
-  candidateSidebarToggle.setAttribute("aria-expanded", String(!collapsed));
-  candidateSidebarToggle.querySelector("span").textContent = icon;
+  [candidateSidebarToggle, candidateMenuButton].forEach((button) => {
+    if (!button) return;
+    button.setAttribute("aria-label", label);
+    button.setAttribute("aria-expanded", String(!collapsed));
+  });
+  if (candidateSidebarToggle?.querySelector("span")) {
+    candidateSidebarToggle.querySelector("span").textContent = icon;
+  }
   window.localStorage.setItem(
     "portal-candidato-sidebar",
     collapsed ? "collapsed" : "open",
@@ -17067,7 +17172,12 @@ function setCandidateSidebarCollapsed(collapsed) {
 }
 
 function toggleCandidateSidebar() {
-  if (window.matchMedia("(max-width: 820px)").matches) return;
+  if (window.matchMedia("(max-width: 820px)").matches) {
+    candidatePortal.classList.toggle("is-nav-open");
+    const open = candidatePortal.classList.contains("is-nav-open");
+    candidateMenuButton?.setAttribute("aria-expanded", String(open));
+    return;
+  }
   setCandidateSidebarCollapsed(!candidatePortal.classList.contains("is-sidebar-collapsed"));
 }
 
@@ -17864,6 +17974,10 @@ on("#talentFiltersForm", "submit", (event) => {
   talentFilters.score = document.querySelector("#talentFilterScore")?.value || "all";
   talentFilters.fit = document.querySelector("#talentFilterFit")?.value || "all";
   talentFilters.availability = document.querySelector("#talentFilterAvailability")?.value || "all";
+  talentFilters.validity = document.querySelector("#talentFilterValidity")?.value || "all";
+  talentFilters.onlyValid = talentFilters.validity === "valid";
+  const onlyValid = document.querySelector("#talentOnlyValid");
+  if (onlyValid) onlyValid.checked = talentFilters.onlyValid;
   document.querySelector("#talentFiltersDialog")?.close();
   renderTalents();
   showToast("Filtros aplicados", "Lista do banco atualizada.");
@@ -17875,6 +17989,7 @@ on("#talentFiltersClear", "click", () => {
 });
 on("#talentOnlyValid", "change", (event) => {
   talentFilters.onlyValid = Boolean(event.target.checked);
+  talentFilters.validity = talentFilters.onlyValid ? "valid" : "all";
   renderTalents();
 });
 on("#talentActiveFilters", "click", (event) => {
@@ -17885,8 +18000,9 @@ on("#talentActiveFilters", "click", (event) => {
   const chip = event.target.closest("[data-clear-talent-filter]");
   if (!chip) return;
   const key = chip.dataset.clearTalentFilter;
-  if (key === "onlyValid") {
+  if (key === "onlyValid" || key === "validity") {
     talentFilters.onlyValid = false;
+    talentFilters.validity = "all";
     const input = document.querySelector("#talentOnlyValid");
     if (input) input.checked = false;
   } else if (key) {
@@ -18087,8 +18203,29 @@ document.querySelector("#scoreEvaluationDialog")?.addEventListener("click", (eve
     refreshCriterionFromSource(selectedScoreEvaluationId, refresh.dataset.scoreRefresh);
     return;
   }
+  if (event.target.closest("#scoreEvalMoreBtn")) {
+    event.preventDefault();
+    const menu = document.querySelector("#scoreEvalMoreMenu");
+    const btn = document.querySelector("#scoreEvalMoreBtn");
+    if (menu) {
+      const open = menu.hidden;
+      if (open) {
+        menu.hidden = false;
+        btn?.setAttribute("aria-expanded", "true");
+        placeCandidateMoreMenu(menu, btn);
+      } else {
+        menu.hidden = true;
+        btn?.setAttribute("aria-expanded", "false");
+        resetCandidateMoreMenuPlacement(menu);
+      }
+    }
+    return;
+  }
   const actionBtn = event.target.closest("[data-score-eval-action]");
   if (!actionBtn) return;
+  const menu = document.querySelector("#scoreEvalMoreMenu");
+  if (menu) menu.hidden = true;
+  document.querySelector("#scoreEvalMoreBtn")?.setAttribute("aria-expanded", "false");
   const action = actionBtn.dataset.scoreEvalAction;
   if (action === "save") saveScoreEvaluationFromDialog();
   if (action === "review") markScoreEvaluationReview(selectedScoreEvaluationId);
@@ -18665,8 +18802,13 @@ document.querySelector("#fitAssignmentDetailDialog")?.addEventListener("click", 
     const trigger = document.querySelector("#fitMoreActionsBtn");
     if (!menu || !trigger) return;
     const opening = menu.hidden;
-    menu.hidden = !opening;
-    trigger.setAttribute("aria-expanded", String(opening));
+    if (!opening) {
+      closeFitMoreActions();
+      return;
+    }
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    placeCandidateMoreMenu(menu, trigger);
     return;
   }
   const menuItem = event.target.closest("#fitMoreActionsMenu [data-fit-action]");
@@ -19093,6 +19235,23 @@ document.querySelector("#interviewConductReviewDialog")?.addEventListener("click
 document.querySelector("#conductReviewEditBtn")?.addEventListener("click", () => {
   runInterviewDetailAction("edit");
 });
+document.querySelector("#conductReviewMoreBtn")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  const menu = document.querySelector("#conductReviewMoreMenu");
+  const btn = event.currentTarget;
+  if (!menu) return;
+  const open = menu.hidden;
+  if (open) {
+    menu.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    placeCandidateMoreMenu(menu, btn);
+  } else {
+    menu.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    resetCandidateMoreMenuPlacement(menu);
+  }
+});
 document.querySelector("#conductReviewRescheduleBtn")?.addEventListener("click", () => {
   runInterviewDetailAction("reschedule");
 });
@@ -19114,7 +19273,6 @@ document.querySelector("#conductSaveDraft")?.addEventListener("click", () => {
 });
 document.querySelector("#conductFinishBtn")?.addEventListener("click", () => showConductFinishView());
 document.querySelector("#conductFinishBack")?.addEventListener("click", () => backToConductWorkspace());
-document.querySelector("#conductFinishCancel")?.addEventListener("click", () => backToConductWorkspace());
 document.querySelector("#conductFinishConfirm")?.addEventListener("click", () => finalizeConductInterview());
 document.querySelector("#conductAddPositive")?.addEventListener("click", () => {
   const input = document.querySelector("#conductPositiveInput");
@@ -19268,6 +19426,17 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     if (!pipelinePage.hidden) {
       candidateSearch.focus();
+    } else if (!pendenciasPage?.hidden) {
+      document.querySelector("#pendenciasSearch")?.focus();
+    } else if (!gestorPage?.hidden && gestorViewState.homeFilter === "analises") {
+      document.querySelector("#gestorPendenciasSearch")?.focus();
+    } else if (
+      !gestorPage?.hidden &&
+      (gestorViewState.homeFilter === "vagas" ||
+        gestorViewState.homeFilter === "abertas") &&
+      gestorViewState.vagasHubTab === "vagas"
+    ) {
+      document.querySelector("#gestorVagasSearch")?.focus();
     } else if (!jobsPage.hidden) {
       searchInput.focus();
     } else if (!talentosPage.hidden) {
@@ -19761,6 +19930,18 @@ function showPage(page, options = {}) {
       gestorViewState.mode = "home";
       gestorViewState.homeFilter = options.gestorHomeFilter;
       gestorViewState.jobId = null;
+      if (options.gestorHomeFilter === "analises") {
+        gestorViewState.vagasHubTab = "pendencias";
+      } else if (options.gestorHomeFilter === "solicitacoes") {
+        gestorViewState.vagasHubTab = "solicitacoes";
+      } else if (
+        options.gestorHomeFilter === "vagas" ||
+        options.gestorHomeFilter === "abertas"
+      ) {
+        if (gestorViewState.vagasHubTab === "pendencias") {
+          gestorViewState.vagasHubTab = "vagas";
+        }
+      }
     } else if (!gestorViewState.homeFilter) {
       gestorViewState.homeFilter = "overview";
     }
@@ -19784,11 +19965,12 @@ function showPage(page, options = {}) {
   if (options.contratacaoFiltro) contratacaoFiltro = options.contratacaoFiltro;
   if (page === "pipeline") recrutamentoTab = "pipeline";
   if (page === "pendencias") recrutamentoTab = "pendencias";
-  if (page === "jobs") recrutamentoTab = "vagas";
+  if (page === "jobs" || page === "newJob") recrutamentoTab = "vagas";
   if (page === "talentos") recrutamentoTab = "talentos";
   if (page === "entrevistas" && workspaceRole !== "gestor") selecaoTab = "entrevistas";
   if (page === "selecao") selecaoTab = "instrumentos";
   if (page === "resultados") selecaoTab = "resultados";
+  if (page === "painel") selecaoTab = "relatorio";
   if (page === "tecnicos" || page === "fit-cultural" || page === "fichas") selecaoTab = "instrumentos";
 
   const appShell = document.querySelector(".app-shell");
@@ -19940,7 +20122,7 @@ function syncRhHubChrome(page) {
     ["pipeline", "pendencias", "jobs", "talentos", "newJob"].includes(page);
   const inSel =
     workspaceRole === "rh" &&
-    ["entrevistas", "selecao", "resultados", "tecnicos", "fit-cultural", "fichas"].includes(page);
+    ["entrevistas", "selecao", "resultados", "painel", "tecnicos", "fit-cultural", "fichas"].includes(page);
   if (recr) recr.hidden = !inRec;
   if (sel) sel.hidden = !inSel;
   if (inRec) {
@@ -21030,17 +21212,17 @@ function renderGestorRequestActions(item, readOnly) {
   const isApproverView = isGestorRequestApproverView(item);
 
   if (item.status === "Rascunho" && !readOnly) {
-    secondary.push(`<button type="button" class="dialog-text-button" data-request-form-action="delete">Excluir</button>`);
+    secondary.push(`<button type="button" class="secondary-button" data-request-form-action="delete">Excluir</button>`);
     primary.push(`<button type="button" class="secondary-button" data-request-form-action="save">Salvar</button>`);
     primary.push(`<button type="submit" form="gestorRequestForm" class="primary-button" data-request-form-action="send">Enviar solicitação</button>`);
   } else if (item.status === "Ajuste solicitado" && !readOnly) {
     primary.push(`<button type="button" class="secondary-button" data-request-form-action="save">Salvar</button>`);
     primary.push(`<button type="submit" form="gestorRequestForm" class="primary-button" data-request-form-action="resend">Reenviar para análise</button>`);
   } else if (isApproverView) {
-    secondary.push(`<button type="button" class="dialog-text-button" data-request-form-action="observe">Adicionar comentário</button>`);
-    secondary.push(`<button type="button" class="dialog-text-button" data-request-form-action="attach">Anexar documento</button>`);
+    secondary.push(`<button type="button" class="secondary-button" data-request-form-action="observe">Adicionar comentário</button>`);
+    secondary.push(`<button type="button" class="secondary-button" data-request-form-action="attach">Anexar documento</button>`);
     secondary.push(`<button type="button" class="secondary-button" data-request-form-action="request-adjust">Solicitar ajuste</button>`);
-    secondary.push(`<button type="button" class="dialog-text-button" data-request-form-action="reject">Reprovar</button>`);
+    secondary.push(`<button type="button" class="secondary-button" data-request-form-action="reject">Reprovar</button>`);
     primary.push(`<button type="button" class="primary-button" data-request-form-action="approve">Aprovar</button>`);
     primary.push(`<button type="button" class="secondary-button" data-request-form-action="close">Fechar</button>`);
   } else {
@@ -21049,7 +21231,7 @@ function renderGestorRequestActions(item, readOnly) {
       item.cancelAllowed &&
       normalize(item.requester || "") === normalize(currentManagerName)
     ) {
-      secondary.push(`<button type="button" class="dialog-text-button" data-request-form-action="cancel">Cancelar</button>`);
+      secondary.push(`<button type="button" class="secondary-button" data-request-form-action="cancel">Cancelar</button>`);
     }
     if (item.status === "Rascunho") {
       primary.push(`<button type="button" class="secondary-button" data-request-form-action="edit">Editar</button>`);
@@ -21913,9 +22095,14 @@ function renderGestorJobCandidatesTable(job) {
             .map(
               (row) => `
             <tr data-gestor-open-candidate="${row.id}">
-              <td>
-                <strong>${escapeHtml(row.name)}</strong>
-                <button type="button" class="offer-link-button" data-gestor-cand-action="curriculo" data-gestor-cand-id="${row.id}">Currículo</button>
+              <td class="gestor-cand-name-cell">
+                <div class="gestor-cand-name">
+                  <strong>${escapeHtml(row.name)}</strong>
+                  <button type="button" class="gestor-cand-resume-link" data-gestor-cand-action="curriculo" data-gestor-cand-id="${row.id}">
+                    <svg class="ui-icon" aria-hidden="true"><use href="#i-file" /></svg>
+                    Currículo
+                  </button>
+                </div>
               </td>
               <td>${escapeHtml(row.stage)}</td>
               <td>${escapeHtml(String(row.score))}</td>
@@ -21925,7 +22112,7 @@ function renderGestorJobCandidatesTable(job) {
               <td>${escapeHtml(String(row.pendencies))}</td>
               <td>
                 <div class="gestor-cand-row-actions">
-                  <button type="button" class="secondary-button" data-gestor-cand-action="abrir" data-gestor-cand-id="${row.id}">Abrir</button>
+                  <button type="button" class="primary-button" data-gestor-cand-action="abrir" data-gestor-cand-id="${row.id}">Abrir</button>
                 </div>
               </td>
             </tr>`,
@@ -22071,8 +22258,8 @@ function renderGestorCandidatePanel(candidate) {
 
   if (chips) {
     chips.innerHTML = tags.length
-      ? tags.map((tag) => `<span class="neutral-pill">${escapeHtml(tag)}</span>`).join("")
-      : `<span class="neutral-pill">Sem tags</span>`;
+      ? tags.map((tag) => `<span class="role-tag">${escapeHtml(tag)}</span>`).join("")
+      : "";
   }
 
   if (metrics) {
@@ -22086,7 +22273,9 @@ function renderGestorCandidatePanel(candidate) {
   if (banner) {
     if (analysis) {
       banner.hidden = false;
-      banner.textContent = `Análise pendente · ${analysis.role || candidate.vacancy || "vaga"} · prazo ${analysis.due || "—"}`;
+      banner.innerHTML = `<svg class="ui-icon" aria-hidden="true"><use href="#i-clock" /></svg> Análise pendente · ${escapeHtml(
+        analysis.role || candidate.vacancy || "vaga",
+      )} · prazo ${escapeHtml(analysis.due || "—")}`;
     } else {
       banner.hidden = true;
       banner.textContent = "";
@@ -22106,25 +22295,25 @@ function renderGestorCandidatePanel(candidate) {
   if (toolbar) {
     const canSchedule = Boolean(companyGestorPermissions.gestorPodeAgendarEntrevista);
     toolbar.innerHTML = `
+      <button type="button" class="is-primary-action" data-gestor-panel-action="avancar">${gestorAnalysisToolbarIcon("i-check-circle")} Recomendar avanço</button>
       <button type="button" data-gestor-panel-action="entrevistar">${gestorAnalysisToolbarIcon("i-calendar")} Solicitar entrevista</button>
       ${
         canSchedule
           ? `<button type="button" data-gestor-panel-action="agendar_entrevista">${gestorAnalysisToolbarIcon("i-calendar")} Agendar entrevista</button>`
           : ""
       }
-      <button type="button" data-gestor-panel-action="avancar">${gestorAnalysisToolbarIcon("i-check-circle")} Recomendar avanço</button>
       <button type="button" data-gestor-panel-action="avaliacao_adicional">${gestorAnalysisToolbarIcon("i-columns")} Avaliação adicional</button>
       <div class="candidate-more-wrap">
         <button
           type="button"
-          class="candidate-more-trigger"
+          class="more-button"
           id="gestorAnalysisMoreBtn"
+          aria-label="Mais ações"
           aria-expanded="false"
           aria-haspopup="menu"
           aria-controls="gestorAnalysisMoreMenu"
         >
-          ${gestorAnalysisToolbarIcon("i-more")}
-          Mais ações
+          ⋮
         </button>
         <div class="candidate-more-menu" id="gestorAnalysisMoreMenu" role="menu" hidden>
           <div class="candidate-more-section">
@@ -22146,26 +22335,40 @@ function renderGestorCandidatePanel(candidate) {
       candidate.salaryExpectation != null
         ? `R$ ${Number(candidate.salaryExpectation).toLocaleString("pt-BR")}`
         : "—";
-    const dataRows = [
-      { label: "E-mail", value: candidate.email || "—" },
-      { label: "Telefone", value: candidate.phone || "—" },
-      { label: "Experiências", value: candidate.experience || candidate.experiences || "—" },
-      { label: "Formação", value: candidate.education || "—" },
-      { label: "Competências", value: (candidate.skills || []).join(", ") || candidate.competencies || "—" },
-      { label: "Conhecimentos", value: candidate.knowledge || "—" },
-      { label: "Disponibilidade", value: candidate.availability || "—" },
-      showSalary ? { label: "Pretensão salarial", value: salary } : null,
-    ].filter(Boolean);
     content.innerHTML = `
-      <div class="candidate-dossier-grid">
+      <div class="candidate-profile-stack">
         <article class="candidate-dossier-card">
-          <h3>Dados principais</h3>
+          <h3>Perfil</h3>
           <dl class="candidate-dossier-data">
-            ${dataRows
-              .map(
-                (row) => `<div><dt>${escapeHtml(row.label)}</dt><dd>${escapeHtml(String(row.value))}</dd></div>`,
-              )
-              .join("")}
+            <div><dt>Nome</dt><dd>${escapeHtml(candidate.name || "—")}</dd></div>
+            <div><dt>E-mail</dt><dd>${escapeHtml(candidate.email || "—")}</dd></div>
+            <div><dt>Telefone</dt><dd>${escapeHtml(candidate.phone || "—")}</dd></div>
+            <div><dt>Localização</dt><dd>${escapeHtml(candidate.location || "—")}</dd></div>
+            <div><dt>Disponibilidade</dt><dd>${escapeHtml(candidate.availability || "—")}</dd></div>
+            <div><dt>Formação</dt><dd>${escapeHtml(candidate.education || "—")}</dd></div>
+            ${
+              showSalary
+                ? `<div><dt>Pretensão</dt><dd>${escapeHtml(salary)}</dd></div>`
+                : ""
+            }
+            <div><dt>Origem</dt><dd>${escapeHtml(candidate.origin || candidate.source || "—")}</dd></div>
+          </dl>
+        </article>
+        <article class="candidate-dossier-card">
+          <h3>Resumo profissional</h3>
+          <dl class="candidate-dossier-data candidate-dossier-data-stack">
+            <div class="is-wide">
+              <dt>Experiência</dt>
+              <dd>${escapeHtml(candidate.experience || candidate.experiences || "Não informado")}</dd>
+            </div>
+            <div class="is-wide">
+              <dt>Competências</dt>
+              <dd>${escapeHtml((candidate.skills || []).join(", ") || candidate.competencies || "Não informado")}</dd>
+            </div>
+            <div class="is-wide">
+              <dt>Conhecimentos</dt>
+              <dd>${escapeHtml(candidate.knowledge || "Não informado")}</dd>
+            </div>
           </dl>
         </article>
         <article class="candidate-dossier-card candidate-resume-card">
@@ -22654,7 +22857,6 @@ function runGestorCandidateAction(candidate, actionId) {
 
 function renderGestorOverview() {
   const metrics = collectGestorOverviewMetrics();
-  const kpis = document.querySelector("#gestorKpis");
   const interviewsHost = document.querySelector("#gestorUpcomingInterviews");
   const awaitingHost = document.querySelector("#gestorAwaitingActions");
   const jobsHost = document.querySelector("#gestorMyJobsSummary");
@@ -22663,74 +22865,32 @@ function renderGestorOverview() {
   const eyebrow = document.querySelector("#gestorOverviewEyebrow");
 
   if (eyebrow) {
-    const date = new Date(`${TODAY_KEY}T12:00:00`);
-    eyebrow.textContent = date
-      .toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })
-      .toUpperCase();
+    eyebrow.textContent = portalHomeWelcomeDateLabel();
   }
+  const gestorName = document.querySelector("#gestorManagerName");
+  if (gestorName) gestorName.textContent = portalFirstName(currentManagerName);
 
-  if (kpis) {
-    const nextInterview = metrics.upcoming[0];
-    const nextLabel = nextInterview
-      ? `Próxima ${formatInterviewWhen(nextInterview.at)}`
-      : "Sem compromissos à vista";
-    const cards = [
-      {
-        id: "abertas",
-        tone: "metric-mint",
-        count: metrics.openJobs.length,
-        label: "Vagas abertas",
-        small: `${metrics.awaitingApproval.length} aguardando aprovação`,
-        trend: metrics.awaitingApproval.length ? `${padCount(metrics.awaitingApproval.length)} apr.` : "No prazo",
-        trendClass: metrics.awaitingApproval.length ? "" : "positive",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v13H4z" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M10 12h4" /></svg>`,
-      },
-      {
-        id: "candidatos",
-        tone: "metric-green",
-        count: metrics.myCandidates.length,
-        label: "Candidatos em processo",
-        small: "Nas vagas sob sua gestão",
-        trend: `${padCount(metrics.pendingAnalyses.length)} análise`,
-        trendClass: "positive",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" /><circle cx="9.5" cy="7" r="3.5" /><path d="M20 8v6M17 11h6" /></svg>`,
-      },
-      {
-        id: "entrevistas",
-        tone: "metric-navy",
-        count: metrics.upcoming.length,
-        label: "Próximas entrevistas",
-        small: nextLabel,
-        trend: `${padCount(metrics.fichas.length)} fichas`,
-        trendClass: "",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M8 3v4M16 3v4M3 11h18" /></svg>`,
-      },
-      {
-        id: "vencidas",
-        tone: "metric-dark",
-        count: metrics.overdue.length,
-        label: "Pendências vencidas",
-        small: `${metrics.dueSoon.length} próximas do prazo`,
-        trend: metrics.overdue.length ? "Atenção" : "Em dia",
-        trendClass: metrics.overdue.length ? "" : "positive",
-        icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>`,
-      },
-    ];
-    kpis.innerHTML = cards
-      .map(
-        (item) => `
-      <article class="dashboard-metric ${item.tone}" data-gestor-kpi="${item.id}" tabindex="0">
-        <div class="dashboard-metric-top">
-          <span class="dashboard-metric-icon" aria-hidden="true">${item.icon}</span>
-          <span class="metric-trend${item.trendClass ? ` ${item.trendClass}` : ""}">${escapeHtml(item.trend)}</span>
-        </div>
-        <strong>${padCount(item.count)}</strong>
-        <span>${escapeHtml(item.label)}</span>
-        <small>${escapeHtml(item.small)}</small>
-      </article>`,
-      )
-      .join("");
-  }
+  const setMap = (id, value) => {
+    const el = document.querySelector(id);
+    if (el) el.textContent = String(value);
+  };
+  const openStatuses = new Set([
+    "Rascunho",
+    "Enviada",
+    "Em análise",
+    "Aguardando aprovação",
+    "Ajuste solicitado",
+  ]);
+  const solicitacoesN =
+    myGestorHiringRequests().filter((item) => openStatuses.has(item.status)).length +
+    myGestorApprovalRequests().length;
+  setMap("#gestorMapVagasCount", metrics.myJobs.length);
+  setMap("#gestorMapPendenciasCount", metrics.gestorCounts?.total ?? metrics.pendencies.length);
+  setMap("#gestorMapSolicitacoesCount", solicitacoesN);
+  setMap("#gestorMapEntrevistasCount", metrics.upcoming.length);
+  setMap("#gestorMapFichasCount", metrics.fichas.length);
+  setMap("#gestorMapCandidatosCount", metrics.myCandidates.length);
+  setMap("#gestorMapAnalisesCount", metrics.pendingAnalyses.length);
 
   if (secondary) {
     secondary.innerHTML = [
@@ -22874,10 +23034,17 @@ function renderGestorPortal() {
   syncGestorNavCounts();
 
   const filter = gestorViewState.homeFilter || "overview";
-  const isVagasHub = filter === "vagas" || filter === "abertas" || filter === "solicitacoes";
+  const isRecrutamentoHub =
+    filter === "vagas" ||
+    filter === "abertas" ||
+    filter === "solicitacoes" ||
+    filter === "analises";
   if (filter === "solicitacoes") {
     gestorViewState.homeFilter = "vagas";
     gestorViewState.vagasHubTab = "solicitacoes";
+  }
+  if (filter === "analises") {
+    gestorViewState.vagasHubTab = "pendencias";
   }
   const showOverview = filter === "overview";
   const overview = document.querySelector("#gestorOverview");
@@ -22901,7 +23068,7 @@ function renderGestorPortal() {
   if (summaryLine && filter !== "analises") summaryLine.hidden = true;
   const listPanelEarly = document.querySelector("#gestorListPanel");
   if (listPanelEarly && filter !== "analises" && filter !== "entrevistas") {
-    listPanelEarly.classList.remove("is-pendencias-flush");
+    listPanelEarly.classList.remove("is-pendencias-flush", "pendencias-page");
   }
 
   const stats = document.querySelector("#gestorStats");
@@ -22911,24 +23078,46 @@ function renderGestorPortal() {
   const newReqBtn = document.querySelector("#gestorNewRequestBtn");
   const formPanel = document.querySelector("#gestorRequestFormPanel");
   const listPanel = document.querySelector("#gestorListPanel");
-  if (hubTabs) hubTabs.hidden = !isVagasHub;
-  if (newReqBtn) newReqBtn.hidden = !isVagasHub;
-  if (isVagasHub) {
-    const tab = gestorViewState.vagasHubTab || "vagas";
+  const activeHubTab =
+    filter === "analises"
+      ? "pendencias"
+      : gestorViewState.vagasHubTab === "solicitacoes"
+        ? "solicitacoes"
+        : "vagas";
+  const isVagasOrRequests = activeHubTab === "vagas" || activeHubTab === "solicitacoes";
+  if (hubTabs) hubTabs.hidden = !isRecrutamentoHub;
+  const vagasToolbar = document.querySelector("#gestorVagasToolbar");
+  const showVagasSearch =
+    filter === "abertas" || (isRecrutamentoHub && activeHubTab === "vagas");
+  if (vagasToolbar) vagasToolbar.hidden = !showVagasSearch;
+  const vagasSearchInput = document.querySelector("#gestorVagasSearch");
+  if (vagasSearchInput && document.activeElement !== vagasSearchInput) {
+    vagasSearchInput.value = gestorViewState.vagasSearchQuery || "";
+  }
+  if (newReqBtn) newReqBtn.hidden = !(isRecrutamentoHub && isVagasOrRequests);
+  if (isRecrutamentoHub) {
     hubTabs?.querySelectorAll("[data-gestor-vagas-tab]").forEach((btn) => {
-      const selected = btn.dataset.gestorVagasTab === tab;
+      const selected = btn.dataset.gestorVagasTab === activeHubTab;
       btn.setAttribute("aria-selected", String(selected));
     });
   }
 
   const titles = {
     candidatos: ["RECRUTAMENTO", "Candidatos", "Candidatos das vagas sob sua responsabilidade."],
-    vagas: ["RECRUTAMENTO", "Minhas vagas", "Vagas em andamento e solicitações ao RH."],
-    abertas: ["RECRUTAMENTO", "Minhas vagas", "Vagas em andamento e solicitações ao RH."],
+    vagas: ["RECRUTAMENTO", "Minhas vagas", "Vagas sob sua responsabilidade."],
+    abertas: ["RECRUTAMENTO", "Minhas vagas", "Vagas abertas sob sua responsabilidade."],
+    solicitacoes: ["RECRUTAMENTO", "Solicitações", "Pedidos de vaga e aprovações."],
     analises: ["RECRUTAMENTO", "Pendências", "Tudo que depende da sua ação no recrutamento."],
-    entrevistas: ["RECRUTAMENTO", "Minhas entrevistas", "Suas entrevistas no recrutamento."],
+    entrevistas: ["SELEÇÃO", "Minhas entrevistas", "Suas entrevistas no processo seletivo."],
   };
-  const titleKey = isVagasHub ? "vagas" : filter;
+  const titleKey =
+    filter === "analises"
+      ? "analises"
+      : activeHubTab === "solicitacoes"
+        ? "solicitacoes"
+        : isRecrutamentoHub
+          ? "vagas"
+          : filter;
   const [eyebrow, panelTitle, panelNote] = titles[titleKey] || titles.vagas;
   const eyebrowEl = document.querySelector("#gestorListEyebrow");
   const titleEl = document.querySelector("#gestorHomePanelTitle");
@@ -22944,7 +23133,7 @@ function renderGestorPortal() {
     listBack.hidden = !showListBack;
   }
 
-  if (isVagasHub && gestorRequestFormState.open && gestorRequestFormState.id) {
+  if (isRecrutamentoHub && activeHubTab === "solicitacoes" && gestorRequestFormState.open && gestorRequestFormState.id) {
     if (listPanel) listPanel.hidden = true;
     if (formPanel) formPanel.hidden = false;
     const current = hiringRequests.find((row) => row.id === gestorRequestFormState.id);
@@ -22959,7 +23148,7 @@ function renderGestorPortal() {
   if (!list) return;
 
   const inboxBar = document.querySelector("#gestorRequestInboxBar");
-  const onRequests = isVagasHub && (gestorViewState.vagasHubTab || "vagas") === "solicitacoes";
+  const onRequests = isRecrutamentoHub && activeHubTab === "solicitacoes";
   if (inboxBar && !onRequests) inboxBar.hidden = true;
 
   if (onRequests) {
@@ -23000,7 +23189,17 @@ function renderGestorPortal() {
     return;
   }
 
-  const jobsToShow = filter === "abertas" ? openJobs : myJobs;
+  const jobsToShowRaw = filter === "abertas" ? openJobs : myJobs;
+  const vagasQuery = normalize((gestorViewState.vagasSearchQuery || "").trim());
+  const jobsToShow = vagasQuery
+    ? jobsToShowRaw.filter((job) =>
+        normalize(
+          [job.title, job.area, job.status, job.workModel, job.location]
+            .filter(Boolean)
+            .join(" "),
+        ).includes(vagasQuery),
+      )
+    : jobsToShowRaw;
   list.className = "gestor-list";
   list.innerHTML = jobsToShow.length
     ? jobsToShow
@@ -23017,7 +23216,13 @@ function renderGestorPortal() {
             </article>`;
         })
         .join("")
-    : `<div class="empty-state"><h3>Nenhuma vaga</h3><p>Não há vagas neste filtro.</p></div>`;
+    : `<div class="empty-state"><h3>${
+        vagasQuery ? "Nenhuma vaga encontrada" : "Nenhuma vaga"
+      }</h3><p>${
+        vagasQuery
+          ? "Tente outro termo ou limpe a busca."
+          : "Não há vagas neste filtro."
+      }</p></div>`;
 }
 
 function runGestorOverviewAction(action, dataset = {}) {
@@ -23190,66 +23395,82 @@ function formatGestorPendDueLabel(item) {
   return br;
 }
 
-function renderGestorPendenciasTypeFilters(itemsInBucket) {
-  const result = renderPendenciasTypeFilterHost({
-    host: document.querySelector("#gestorPendenciasTypeFilters"),
-    bar: document.querySelector("#gestorPendenciasTypeBar"),
-    itemsInBucket,
-    activeId: gestorViewState.pendenciasTypeGroup || "all",
-    dataAttr: "data-gestor-pend-type",
-    labelFn: gestorPendingTypeLabel,
-    moreBtnId: "gestorPendenciasMoreTypesBtn",
-    moreMenuId: "gestorPendenciasMoreTypesMenu",
-    orderedTypes: Object.keys(GESTOR_PENDING_TYPE_META),
+function syncGestorPendenciasBucketSelect(counts) {
+  const select = document.querySelector("#gestorPendenciasBucketSelect");
+  if (!select) return;
+  const labels = {
+    all: "Todas",
+    overdue: "Atrasadas",
+    today: "Para hoje",
+    soon: "Próximas",
+  };
+  const values = {
+    all: counts.total ?? 0,
+    overdue: counts.overdue ?? 0,
+    today: counts.today ?? 0,
+    soon: counts.soon ?? 0,
+  };
+  Array.from(select.options).forEach((opt) => {
+    const key = opt.value;
+    opt.textContent = `${labels[key] || key} (${values[key] ?? 0})`;
   });
-  gestorViewState.pendenciasTypeGroup = result.activeId;
+  select.value = gestorViewState.pendenciasBucket || "all";
+}
+
+function syncGestorPendenciasTypeMenu(itemsInBucket) {
+  renderPendenciasTypeMenu({
+    menu: document.querySelector("#gestorPendenciasTypeMenu"),
+    button: document.querySelector("#gestorPendenciasFilterBtn"),
+    countEl: document.querySelector("#gestorPendenciasFilterCount"),
+    itemsInBucket,
+    activeType: gestorViewState.pendenciasTypeGroup || "all",
+    orderedTypes: Object.keys(GESTOR_PENDING_TYPE_META),
+    labelFn: gestorPendingTypeLabel,
+    dataAttr: "data-gestor-pend-type",
+    open: Boolean(gestorViewState.pendenciasFiltersOpen),
+  });
 }
 
 function renderGestorPendenciasHub() {
   const hub = document.querySelector("#gestorPendenciasHub");
-  const buckets = document.querySelector("#gestorPendenciasBuckets");
   const listPanel = document.querySelector("#gestorListPanel");
   const list = document.querySelector("#gestorHomePanelList");
   const summaryLine = document.querySelector("#gestorPendenciasSummaryLine");
   if (!list) return;
 
   if (hub) hub.hidden = false;
-  if (listPanel) listPanel.classList.add("is-pendencias-flush");
+  if (listPanel) listPanel.classList.add("is-pendencias-flush", "pendencias-page");
+  if (summaryLine) summaryLine.hidden = true;
 
   const all = buildGestorPendencies();
   const counts = countGestorPendencies(all);
   const bucket = gestorViewState.pendenciasBucket || "all";
-
-  const setCount = (id, n) => {
-    const el = document.querySelector(id);
-    if (el) el.textContent = String(n);
-  };
-  setCount("#gestorPendCountAll", counts.total);
-  setCount("#gestorPendCountOverdue", counts.overdue);
-  setCount("#gestorPendCountToday", counts.today);
-  setCount("#gestorPendCountSoon", counts.soon);
-
-  if (summaryLine) {
-    summaryLine.hidden = false;
-    summaryLine.textContent = counts.total
-      ? `${counts.overdue} atrasadas · ${counts.today} para hoje · ${counts.soon} próximas · ${counts.total} no total`
-      : "Nenhuma pendência no momento.";
-  }
-
-  if (buckets) {
-    buckets.querySelectorAll("[data-gestor-pend-bucket]").forEach((btn) => {
-      const selected = btn.dataset.gestorPendBucket === bucket;
-      btn.setAttribute("aria-selected", String(selected));
-    });
-  }
+  const search = document.querySelector("#gestorPendenciasSearch");
+  if (search) search.value = gestorViewState.pendenciasSearchQuery || "";
 
   let filtered = gestorPendenciesByBucket(bucket, all);
-  renderGestorPendenciasTypeFilters(filtered);
+  syncGestorPendenciasBucketSelect(counts);
+  syncGestorPendenciasTypeMenu(filtered);
+
   const activeType = gestorViewState.pendenciasTypeGroup || "all";
   if (activeType !== "all") {
     filtered = filtered.filter((item) => item.type === activeType);
   }
-  const filterActive = activeType !== "all" || bucket !== "all";
+
+  const q = normalize((gestorViewState.pendenciasSearchQuery || "").trim());
+  if (q) {
+    filtered = filtered.filter((item) => {
+      const hay = normalize(
+        [item.title, item.subjectLabel, item.origin, gestorPendingTypeLabel(item.type)]
+          .filter(Boolean)
+          .join(" "),
+      );
+      return hay.includes(q);
+    });
+  }
+
+  const filterActive =
+    activeType !== "all" || bucket !== "all" || Boolean(q);
 
   list.className = "pendencias-list";
   list.innerHTML = filtered.length
@@ -23260,23 +23481,13 @@ function renderGestorPendenciasHub() {
           const urgent = overdue ? " is-overdue" : dueSoon ? " is-duesoon" : "";
           const dueChipClass = overdue ? "test-chip is-error" : dueSoon ? "test-chip is-warning" : "test-chip";
           const desc = [item.subjectLabel, item.origin].filter(Boolean).join(" · ") || "—";
-          const secondary = (item.secondaryActions || [])
-            .map(
-              (action) =>
-                `<button type="button" class="secondary-button" data-gestor-pend-action="${escapeHtml(
-                  action,
-                )}" data-gestor-pend-id="${escapeHtml(item.id)}">${escapeHtml(gestorPendingActionLabel(action))}</button>`,
-            )
-            .join("");
           return `<article class="pendencias-card${urgent}" data-gestor-pend-id="${escapeHtml(item.id)}" tabindex="0">
             <div class="pendencias-card-main">
               <strong class="pendencias-card-title">${escapeHtml(item.title)}</strong>
               <p class="pendencias-card-desc">${escapeHtml(desc)}</p>
-              <div class="test-meta pendencias-card-meta">
-                <span class="test-chip">${escapeHtml(gestorPendingTypeLabel(item.type))}</span>
-                <span class="test-chip">${escapeHtml(currentManagerName || "Você")}</span>
-                <span class="${dueChipClass}">${escapeHtml(formatGestorPendDueLabel(item))}</span>
-              </div>
+            </div>
+            <div class="test-meta pendencias-card-meta">
+              <span class="${dueChipClass}">${escapeHtml(formatGestorPendDueLabel(item))}</span>
             </div>
             <div class="pendencias-card-actions test-card-actions">
               <button type="button" class="primary-button" data-gestor-pend-action="${escapeHtml(
@@ -23284,7 +23495,6 @@ function renderGestorPendenciasHub() {
               )}" data-gestor-pend-id="${escapeHtml(item.id)}">${escapeHtml(
                 gestorPendingActionLabel(item.primaryAction),
               )}</button>
-              ${secondary}
             </div>
           </article>`;
         })
@@ -23308,7 +23518,7 @@ function renderGestorEntrevistasHub() {
   if (!list) return;
 
   if (hub) hub.hidden = false;
-  if (listPanel) listPanel.classList.add("is-pendencias-flush");
+  if (listPanel) listPanel.classList.add("is-pendencias-flush", "pendencias-page");
 
   const all = myGestorInterviews();
   const counts = countGestorInterviewBuckets(all);
@@ -23410,6 +23620,7 @@ function runGestorQuickAction(action) {
   }
   if (action === "pendencias") {
     gestorViewState.homeFilter = "analises";
+    gestorViewState.vagasHubTab = "pendencias";
     renderGestorPortal();
     syncGestorSidebarChrome();
   }
@@ -23544,6 +23755,25 @@ function handleGoTarget(target) {
       });
       return;
     }
+    if (page === "recrutamento") {
+      goToPage("recrutamento", {
+        recrutamentoTab: target.dataset.recrutamentoTab || "pipeline",
+      });
+      return;
+    }
+    if (page === "selecao") {
+      const tab = target.dataset.selecaoTab || "instrumentos";
+      if (tab === "entrevistas") {
+        goToPage("entrevistas", { selecaoTab: "entrevistas" });
+      } else if (tab === "resultados") {
+        goToPage("resultados", { selecaoTab: "resultados" });
+      } else if (tab === "relatorio") {
+        goToPage("painel", { selecaoTab: "relatorio" });
+      } else {
+        goToPage("selecao", { selecaoTab: "instrumentos" });
+      }
+      return;
+    }
     goToPage(page, {
       resultTab: target.dataset.resultTab,
       talentTab: target.dataset.talentTab,
@@ -23611,6 +23841,7 @@ document.querySelector("#hubChromeSelecao")?.addEventListener("click", (event) =
   if (!tab) return;
   if (tab === "entrevistas") goToPage("entrevistas", { selecaoTab: "entrevistas" });
   else if (tab === "resultados") goToPage("resultados", { selecaoTab: "resultados" });
+  else if (tab === "relatorio") goToPage("painel", { selecaoTab: "relatorio" });
   else goToPage("selecao", { selecaoTab: "instrumentos" });
 });
 
@@ -23645,30 +23876,25 @@ document.querySelectorAll(".dashboard-new-job").forEach((button) => {
   button.addEventListener("click", openNewJobPage);
 });
 
-document.querySelector("#dashboardMatchList").addEventListener("click", (event) => {
-  const match = event.target.closest("[data-dashboard-candidate]");
-  if (!match) return;
-  goToPage("pipeline", { candidateId: Number(match.dataset.dashboardCandidate) });
-});
-
-document.querySelector("#dashboardMatchList").addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  const match = event.target.closest("[data-dashboard-candidate]");
-  if (!match) return;
-  event.preventDefault();
-  goToPage("pipeline", { candidateId: Number(match.dataset.dashboardCandidate) });
-});
-
-document.querySelector("#dashboardFunnel").addEventListener("click", (event) => {
-  const step = event.target.closest("[data-funnel-stage]");
-  if (!step) return;
-  selectedFunnelStage = step.dataset.funnelStage;
-  document.querySelectorAll("[data-funnel-stage]").forEach((item) => {
-    const selected = item.dataset.funnelStage === selectedFunnelStage;
-    item.classList.toggle("active", selected);
-    item.setAttribute("aria-pressed", String(selected));
-  });
-  goToPage("pipeline");
+document.querySelector("#dashboardPage")?.addEventListener("click", (event) => {
+  const pend = event.target.closest("[data-pendencia-id]");
+  if (pend) {
+    goToPage("pendencias");
+    return;
+  }
+  const openIv = event.target.closest("[data-open-interview]");
+  if (openIv) {
+    const interview = (interviews || []).find(
+      (item) => String(item.id) === String(openIv.dataset.openInterview),
+    );
+    if (interview && typeof openInterviewDetail === "function") {
+      openInterviewDetail(interview);
+    } else {
+      goToPage("entrevistas", {
+        interviewId: Number(openIv.dataset.openInterview) || undefined,
+      });
+    }
+  }
 });
 
 document.querySelector("#jobBoardBack").addEventListener("click", () => {
@@ -23964,10 +24190,6 @@ on("#interviewConflictDialog", "click", (event) => {
   if (event.target.id === "interviewConflictDialog") event.currentTarget.close();
 });
 
-document.querySelector("#closeContactDialog").addEventListener("click", () => {
-  contactDialog.close();
-});
-
 document.querySelector("#cancelContact").addEventListener("click", () => {
   contactDialog.close();
 });
@@ -24014,6 +24236,23 @@ document.querySelector("#offerActions")?.addEventListener("click", (event) => {
 });
 
 document.querySelector("#offerActionsMore")?.addEventListener("click", (event) => {
+  if (event.target.closest("#offerMoreActionsBtn")) {
+    event.stopPropagation();
+    const menu = document.querySelector("#offerMoreActionsMenu");
+    const trigger = document.querySelector("#offerMoreActionsBtn");
+    if (!menu || !trigger) return;
+    const opening = menu.hidden;
+    if (!opening) {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      resetCandidateMoreMenuPlacement(menu);
+      return;
+    }
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    placeCandidateMoreMenu(menu, trigger);
+    return;
+  }
   const button = event.target.closest("[data-offer-action]");
   if (!button) return;
   const candidate = candidates.find((item) => item.id === selectedCandidateId);
@@ -25822,17 +26061,24 @@ on("#gestorPage", "click", (event) => {
     startNewGestorHiringRequest();
     return;
   }
-  const gestorMoreTypes = event.target.closest("#gestorPendenciasMoreTypesBtn");
-  if (gestorMoreTypes) {
-    event.preventDefault();
-    event.stopPropagation();
-    togglePendenciasMoreMenu("gestorPendenciasMoreTypesBtn", "gestorPendenciasMoreTypesMenu");
-    return;
-  }
   if (event.target.closest("#gestorPendenciasClearFilter")) {
     gestorViewState.pendenciasTypeGroup = "all";
     gestorViewState.pendenciasBucket = "all";
-    closePendenciasMoreMenus();
+    gestorViewState.pendenciasSearchQuery = "";
+    gestorViewState.pendenciasFiltersOpen = false;
+    if (gestorViewState.homeFilter === "analises") renderGestorPortal();
+    return;
+  }
+  if (event.target.closest("#gestorPendenciasFilterBtn")) {
+    event.stopPropagation();
+    gestorViewState.pendenciasFiltersOpen = !gestorViewState.pendenciasFiltersOpen;
+    if (gestorViewState.homeFilter === "analises") renderGestorPortal();
+    return;
+  }
+  const gestorType = event.target.closest("[data-gestor-pend-type]");
+  if (gestorType) {
+    gestorViewState.pendenciasTypeGroup = gestorType.dataset.gestorPendType || "all";
+    gestorViewState.pendenciasFiltersOpen = false;
     if (gestorViewState.homeFilter === "analises") renderGestorPortal();
     return;
   }
@@ -25864,26 +26110,19 @@ on("#gestorPage", "click", (event) => {
     if (item) runGestorPendenciaAction(item, item.primaryAction);
     return;
   }
-  const pendType = event.target.closest("[data-gestor-pend-type]");
-  if (pendType) {
-    gestorViewState.pendenciasTypeGroup = pendType.dataset.gestorPendType || "all";
-    closePendenciasMoreMenus();
-    if (gestorViewState.homeFilter === "analises") renderGestorPortal();
-    return;
-  }
-  const pendBucket = event.target.closest("[data-gestor-pend-bucket]");
-  if (pendBucket) {
-    gestorViewState.pendenciasBucket = pendBucket.dataset.gestorPendBucket || "all";
-    gestorViewState.pendenciasTypeGroup = "all";
-    closePendenciasMoreMenus();
-    if (gestorViewState.homeFilter === "analises") renderGestorPortal();
-    return;
-  }
-  if (!event.target.closest(".pendencias-more-wrap")) closePendenciasMoreMenus();
   const vagasTab = event.target.closest("[data-gestor-vagas-tab]");
   if (vagasTab) {
-    gestorViewState.homeFilter = "vagas";
-    gestorViewState.vagasHubTab = vagasTab.dataset.gestorVagasTab || "vagas";
+    const tab = vagasTab.dataset.gestorVagasTab || "vagas";
+    if (tab === "pendencias") {
+      gestorViewState.homeFilter = "analises";
+      gestorViewState.vagasHubTab = "pendencias";
+    } else if (tab === "solicitacoes") {
+      gestorViewState.homeFilter = "vagas";
+      gestorViewState.vagasHubTab = "solicitacoes";
+    } else {
+      gestorViewState.homeFilter = "vagas";
+      gestorViewState.vagasHubTab = "vagas";
+    }
     closeGestorRequestForm();
     renderGestorPortal();
     syncGestorSidebarChrome();
@@ -26235,35 +26474,24 @@ renderSheetTemplates();
 syncPendenciasNavCount();
 
 document.querySelector("#pendenciasPage")?.addEventListener("click", (event) => {
-  const moreBtn = event.target.closest("#pendenciasMoreTypesBtn");
-  if (moreBtn) {
-    event.preventDefault();
+  if (event.target.closest("#pendenciasFilterBtn")) {
     event.stopPropagation();
-    togglePendenciasMoreMenu("pendenciasMoreTypesBtn", "pendenciasMoreTypesMenu");
-    return;
-  }
-  const bucketBtn = event.target.closest("[data-pendencias-bucket]");
-  if (bucketBtn) {
-    pendenciasBucket = bucketBtn.dataset.pendenciasBucket;
-    pendenciasTypeFilter = "all";
-    closePendenciasMoreMenus();
+    pendenciasFiltersOpen = !pendenciasFiltersOpen;
     renderPendenciasPage();
     return;
   }
   const typeBtn = event.target.closest("[data-pendencias-type]");
   if (typeBtn) {
     pendenciasTypeFilter = typeBtn.dataset.pendenciasType || "all";
-    closePendenciasMoreMenus();
+    pendenciasFiltersOpen = false;
     renderPendenciasPage();
     return;
   }
   if (event.target.closest("#pendenciasClearFilter")) {
     pendenciasTypeFilter = "all";
-    closePendenciasMoreMenus();
     renderPendenciasPage();
     return;
   }
-  if (!event.target.closest(".pendencias-more-wrap")) closePendenciasMoreMenus();
   const actionBtn = event.target.closest("[data-pendencias-action]");
   if (actionBtn) {
     const item = findPendingItemById(actionBtn.dataset.pendenciasId);
@@ -26272,6 +26500,83 @@ document.querySelector("#pendenciasPage")?.addEventListener("click", (event) => 
       return;
     }
     runPendenciaAction(actionBtn.dataset.pendenciasAction, item);
+  }
+});
+
+document.querySelector("#pendenciasBucketSelect")?.addEventListener("change", (event) => {
+  pendenciasBucket = event.target.value || "mine";
+  pendenciasTypeFilter = "all";
+  pendenciasFiltersOpen = false;
+  renderPendenciasPage();
+});
+
+document.querySelector("#pendenciasSearch")?.addEventListener("input", (event) => {
+  pendenciasSearchQuery = event.target.value || "";
+  renderPendenciasPage();
+});
+
+document.querySelector("#gestorPendenciasBucketSelect")?.addEventListener("change", (event) => {
+  gestorViewState.pendenciasBucket = event.target.value || "all";
+  gestorViewState.pendenciasTypeGroup = "all";
+  gestorViewState.pendenciasFiltersOpen = false;
+  if (gestorViewState.homeFilter === "analises") renderGestorPortal();
+});
+
+document.addEventListener("click", (event) => {
+  const inRh = event.target.closest("#pendenciasFilterBtn, #pendenciasTypeMenu, .pendencias-filter-anchor");
+  const inGestor = event.target.closest(
+    "#gestorPendenciasFilterBtn, #gestorPendenciasTypeMenu, .pendencias-filter-anchor",
+  );
+  if (!inRh && pendenciasFiltersOpen) {
+    pendenciasFiltersOpen = false;
+    const menu = document.querySelector("#pendenciasTypeMenu");
+    const btn = document.querySelector("#pendenciasFilterBtn");
+    if (menu) menu.hidden = true;
+    if (btn) {
+      btn.setAttribute("aria-expanded", "false");
+      btn.classList.toggle("is-active", pendenciasTypeFilter !== "all");
+    }
+  }
+  if (!inGestor && gestorViewState.pendenciasFiltersOpen) {
+    gestorViewState.pendenciasFiltersOpen = false;
+    const menu = document.querySelector("#gestorPendenciasTypeMenu");
+    const btn = document.querySelector("#gestorPendenciasFilterBtn");
+    if (menu) menu.hidden = true;
+    if (btn) {
+      btn.setAttribute("aria-expanded", "false");
+      btn.classList.toggle(
+        "is-active",
+        (gestorViewState.pendenciasTypeGroup || "all") !== "all",
+      );
+    }
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (pendenciasFiltersOpen) {
+    pendenciasFiltersOpen = false;
+    renderPendenciasPage();
+  }
+  if (gestorViewState.pendenciasFiltersOpen) {
+    gestorViewState.pendenciasFiltersOpen = false;
+    if (gestorViewState.homeFilter === "analises") renderGestorPortal();
+  }
+});
+
+document.querySelector("#gestorPendenciasSearch")?.addEventListener("input", (event) => {
+  gestorViewState.pendenciasSearchQuery = event.target.value || "";
+  if (gestorViewState.homeFilter === "analises") renderGestorPortal();
+});
+
+document.querySelector("#gestorVagasSearch")?.addEventListener("input", (event) => {
+  gestorViewState.vagasSearchQuery = event.target.value || "";
+  if (
+    gestorViewState.homeFilter === "vagas" ||
+    gestorViewState.homeFilter === "abertas" ||
+    gestorViewState.homeFilter === "solicitacoes"
+  ) {
+    renderGestorPortal();
   }
 });
 
@@ -26345,6 +26650,7 @@ on("#candidateTalentBank", "click", () => {
 /* ===== Candidate portal ===== */
 const candidatePortal = document.querySelector("#candidatePortal");
 const candidateSidebarToggle = document.querySelector("#candidateSidebarToggle");
+const candidateMenuButton = document.querySelector("#candidateMenuButton");
 const candidatePortalUser = {
   name: "Levi Luz Sousa",
   email: "leviluzbr@gmail.com",
@@ -26488,72 +26794,172 @@ function refuseCandidateInterview(id, reason) {
 }
 
 function renderCandidateInterviews() {
-  const body = document.querySelector("#candidateInterviewsBody");
+  renderCandidateSelecao();
+}
+
+function renderCandidateSelecaoInterviewRow(item) {
+  const overdue = interviewIsOverdue(item);
+  const canConfirm = item.status === "Aguardando confirmação";
+  const canReschedule = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
+  const canRefuse = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
+  const link = item.meetingLink || item.link || "";
+  const when = formatCandidateInterviewDate(item.at);
+  const meta = [item.modality || "Entrevista", item.status, overdue ? "Atrasada" : ""]
+    .filter(Boolean)
+    .join(" · ");
+  return `
+    <article class="candidate-selecao-item">
+      <div class="candidate-selecao-item-main">
+        <span class="candidate-selecao-kind">Entrevista</span>
+        <strong>${escapeHtml(when)}</strong>
+        <span>${escapeHtml(meta)}</span>
+        ${item.candidateInstructions ? `<span class="candidate-selecao-note">${escapeHtml(item.candidateInstructions)}</span>` : ""}
+      </div>
+      <div class="candidate-selecao-item-actions">
+        ${canConfirm ? `<button class="primary-button" type="button" data-candidate-interview-confirm="${item.id}">Confirmar</button>` : ""}
+        ${canReschedule ? `<button class="secondary-button" type="button" data-candidate-interview-reschedule="${item.id}">Reagendar</button>` : ""}
+        ${canRefuse ? `<button class="secondary-button" type="button" data-candidate-interview-refuse="${item.id}">Recusar</button>` : ""}
+        ${link ? `<a class="secondary-button" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Abrir link</a>` : ""}
+      </div>
+    </article>`;
+}
+
+function renderCandidateSelecaoFitRow(item) {
+  const done = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+  const isDone = done.has(item.status);
+  const inProgress = item.status === "Em andamento";
+  const questionCount = (item.model?.questionIds || []).length;
+  const meta = [
+    questionCount ? `${questionCount} perguntas` : "Fit Cultural",
+    item.dueAt ? `prazo ${formatShortDate(String(item.dueAt).slice(0, 10))}` : "",
+    item.status,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  return `
+    <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
+      <div class="candidate-selecao-item-main">
+        <span class="candidate-selecao-kind">Fit Cultural</span>
+        <strong>${escapeHtml(item.model?.name || "Fit Cultural")}</strong>
+        <span>${escapeHtml(meta)}${item.adherencePct != null ? ` · ${item.adherencePct}%` : ""}</span>
+      </div>
+      <div class="candidate-selecao-item-actions">
+        ${
+          isDone
+            ? ""
+            : `<button class="primary-button" type="button" data-candidate-fit-id="${item.fitAssignmentId}">${inProgress ? "Continuar" : "Iniciar"}</button>`
+        }
+      </div>
+    </article>`;
+}
+
+function renderCandidateSelecaoTestRow(item) {
+  const done = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+  const isDone = done.has(item.status);
+  const testId = item.test?.id;
+  const assignmentId = item.assignmentId || item.jobId;
+  const inProgress = item.status === "Em andamento" || candidateTestsInProgress.has(assignmentId);
+  const meta = [
+    testTypeLabel(item.test?.type || "technical"),
+    item.dueAt ? `prazo ${formatShortDate(String(item.dueAt).slice(0, 10))}` : "",
+    item.status,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  return `
+    <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
+      <div class="candidate-selecao-item-main">
+        <span class="candidate-selecao-kind">Teste</span>
+        <strong>${escapeHtml(item.test?.title || "Teste técnico")}</strong>
+        <span>${escapeHtml(meta)}</span>
+      </div>
+      <div class="candidate-selecao-item-actions">
+        ${
+          isDone
+            ? ""
+            : `<button class="primary-button" type="button" data-candidate-test-id="${testId}" data-candidate-test-job="${assignmentId}" data-candidate-assignment-id="${item.assignmentId || ""}">${inProgress ? "Continuar" : "Iniciar"}</button>`
+        }
+      </div>
+    </article>`;
+}
+
+function renderCandidateSelecao() {
+  const body = document.querySelector("#candidateSelecaoBody");
   if (!body) return;
-  const items = getCandidateInterviewItems();
-  const renderCard = (item) => {
-    const overdue = interviewIsOverdue(item);
-    const canConfirm = item.status === "Aguardando confirmação";
-    const canReschedule = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
-    const canRefuse = interviewIsActive(item) && item.status !== "Recusada pelo candidato";
-    const link = item.meetingLink || item.link || "";
-    return `
-      <article class="candidate-journey-card candidate-interview-card">
-        <span class="candidate-journey-icon"><svg class="ui-icon"><use href="${iconSpriteBase}#i-calendar"></use></svg></span>
-        <div class="candidate-journey-copy">
-          <span class="panel-kicker">${escapeHtml(item.modality || "ENTREVISTA")}</span>
-          <h2>${escapeHtml(item.format || item.modality || "Entrevista")}</h2>
-          <p>${formatCandidateInterviewDate(item.at)}</p>
-          ${item.candidateInstructions ? `<p>${escapeHtml(item.candidateInstructions)}</p>` : ""}
-          ${overdue ? `<p class="interview-wait">Atenção: horário já passou sem resultado no RH.</p>` : ""}
-          <div class="candidate-interview-actions">
-            ${
-              canConfirm
-                ? `<button class="primary-button candidate-journey-action" type="button" data-candidate-interview-confirm="${item.id}">Confirmar</button>`
-                : ""
-            }
-            ${
-              canReschedule
-                ? `<button class="secondary-button candidate-journey-action" type="button" data-candidate-interview-reschedule="${item.id}">Solicitar reagendamento</button>`
-                : ""
-            }
-            ${
-              canRefuse
-                ? `<button class="secondary-button candidate-journey-action" type="button" data-candidate-interview-refuse="${item.id}">Recusar</button>`
-                : ""
-            }
-            ${
-              link
-                ? `<a class="secondary-button candidate-journey-action" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Abrir link</a>`
-                : ""
-            }
-          </div>
-        </div>
-        <div class="candidate-interview-status-wrap">
-          ${overdue ? `<span class="interview-overdue-badge">Atrasada</span>` : ""}
-          <span class="candidate-journey-status is-${normalize(item.status).replace(/\s+/g, "-")}">${escapeHtml(item.status)}</span>
-        </div>
-      </article>
-    `;
+  const done = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+  const byVacancy = new Map();
+  const ensure = (vacancy) => {
+    const key = vacancy || "Processo seletivo";
+    if (!byVacancy.has(key)) byVacancy.set(key, { active: [], history: [] });
+    return byVacancy.get(key);
   };
-  const groups = groupCandidateItemsByVacancy(items, (item) => item.title || item.vacancy || "Entrevista");
+
+  getCandidateInterviewItems().forEach((item) => {
+    const bucket = ensure(item.title || item.vacancy || "Entrevista");
+    if (interviewIsActive(item)) bucket.active.push({ kind: "interview", item });
+    else bucket.history.push({ kind: "interview", item });
+  });
+  getCandidateTestItems().forEach((item) => {
+    const bucket = ensure(item.title || "Vaga");
+    const entry = { kind: "test", item };
+    if (done.has(item.status)) bucket.history.push(entry);
+    else bucket.active.push(entry);
+  });
+  getCandidateFitItems().forEach((item) => {
+    const bucket = ensure(item.title || "Vaga");
+    const entry = { kind: "fit", item };
+    if (done.has(item.status)) bucket.history.push(entry);
+    else bucket.active.push(entry);
+  });
+
+  const groups = [...byVacancy.entries()].sort((a, b) => {
+    const activeDiff = b[1].active.length - a[1].active.length;
+    if (activeDiff) return activeDiff;
+    return String(a[0]).localeCompare(String(b[0]), "pt-BR");
+  });
+
+  const renderEntry = (entry) => {
+    if (entry.kind === "interview") return renderCandidateSelecaoInterviewRow(entry.item);
+    if (entry.kind === "fit") return renderCandidateSelecaoFitRow(entry.item);
+    return renderCandidateSelecaoTestRow(entry.item);
+  };
+
   body.innerHTML = groups.length
     ? groups
-        .map(
-          ([vacancy, groupItems]) => `
-      <section class="candidate-vacancy-group">
-        <header class="candidate-vacancy-group-head">
+        .map(([vacancy, bucket]) => {
+          const actionCount = bucket.active.length;
+          const historyCount = bucket.history.length;
+          return `
+      <section class="candidate-selecao-vacancy">
+        <header class="candidate-selecao-vacancy-head">
           <div>
             <span class="panel-kicker">VAGA</span>
-            <h3>${escapeHtml(vacancy)}</h3>
+            <h2>${escapeHtml(vacancy)}</h2>
           </div>
-          <span class="candidate-journey-section-count">${groupItems.length}</span>
+          <span class="candidate-selecao-vacancy-count">${actionCount ? `${actionCount} ação${actionCount === 1 ? "" : "ões"}` : "Em dia"}</span>
         </header>
-        <div class="candidate-vacancy-group-cards">${groupItems.map(renderCard).join("")}</div>
-      </section>`,
-        )
+        <div class="candidate-selecao-items">
+          ${
+            bucket.active.length
+              ? bucket.active.map(renderEntry).join("")
+              : `<p class="candidate-empty">Nenhuma ação pendente nesta vaga.</p>`
+          }
+        </div>
+        ${
+          historyCount
+            ? `<details class="candidate-selecao-history">
+                <summary>Histórico (${historyCount})</summary>
+                <div class="candidate-selecao-items is-history">${bucket.history.map(renderEntry).join("")}</div>
+              </details>`
+            : ""
+        }
+      </section>`;
+        })
         .join("")
-    : `<article class="candidate-panel candidate-empty-panel"><h2>Nenhuma entrevista agendada</h2><p>Quando o RH marcar uma conversa, os detalhes aparecerão aqui.</p></article>`;
+    : `<article class="candidate-panel candidate-empty-panel">
+        <h2>Nada em seleção ainda</h2>
+        <p>Quando houver entrevistas ou avaliações, elas aparecem agrupadas por vaga.</p>
+      </article>`;
 }
 
 function getCandidateFitItems() {
@@ -26825,21 +27231,83 @@ function getCandidatePortalActionMap() {
 
 function candidateActionMapMarkup(items, { emptyText = "Nenhuma pendência no momento." } = {}) {
   if (!items.length) {
-    return `<p class="candidate-empty">${escapeHtml(emptyText)}</p>`;
+    return `<p class="panel-note">${escapeHtml(emptyText)}</p>`;
   }
-  return `<ul class="candidate-home-pendency-list candidate-action-map">${items
-    .map(
-      (item) => `
-        <li>
-          <div class="candidate-action-map-copy">
-            <span class="candidate-action-map-vacancy">${escapeHtml(item.vacancy)}</span>
+  return items
+    .map((item) => {
+      const tone =
+        item.action === "offer" || item.action === "pre-admission"
+          ? "mint"
+          : item.action === "interviews"
+            ? "navy"
+            : item.action === "tests"
+              ? "mint"
+              : "navy";
+      const typeLabel =
+        item.action === "offer"
+          ? "Proposta"
+          : item.action === "pre-admission"
+            ? "Pré-admissão"
+            : item.action === "interviews"
+              ? "Entrevista"
+              : item.action === "tests"
+                ? "Avaliação"
+                : item.action === "profile"
+                  ? "Perfil"
+                  : "Ação";
+      const meta = [item.vacancy, item.text].filter(Boolean).join(" · ");
+      return `<button type="button" class="dash-pend-row" data-candidate-next-action="${escapeHtml(item.action)}">
+          <div class="dash-pend-main">
             <strong>${escapeHtml(item.title)}</strong>
-            <span>${escapeHtml(item.text)}</span>
+            <span class="dash-pend-meta">${escapeHtml(meta)}</span>
           </div>
-          <button type="button" class="secondary-button pread-mini-btn" data-candidate-next-action="${escapeHtml(item.action)}">${escapeHtml(item.label)}</button>
-        </li>`,
-    )
-    .join("")}</ul>`;
+          <span class="dash-pend-type tone-${tone}">${escapeHtml(typeLabel)}</span>
+        </button>`;
+    })
+    .join("");
+}
+
+function getCandidateHomeHistoryItems() {
+  const items = [];
+  (candidatePortalUser.applications || []).forEach((app) => {
+    items.push({
+      at: app.appliedAt || "",
+      title: app.title || "Candidatura",
+      meta: `Candidatura · ${candidateVisibleStage(app.stage)}`,
+      appJobId: app.jobId,
+    });
+  });
+  getCandidateInterviewItems().forEach((item) => {
+    items.push({
+      at: (item.at || "").slice(0, 10),
+      title: item.title || item.vacancy || "Entrevista",
+      meta: `Entrevista · ${item.status || "Agendada"}`,
+      action: "interviews",
+    });
+  });
+  getCandidateTestItems()
+    .filter((item) => ["Concluído", "Avaliado"].includes(item.status))
+    .forEach((item) => {
+      items.push({
+        at: (item.dueAt || "").slice(0, 10),
+        title: item.test?.title || "Teste técnico",
+        meta: `Avaliação · ${item.title || "Vaga"}`,
+        action: "interviews",
+      });
+    });
+  getCandidateFitItems()
+    .filter((item) => item.status === "Concluído")
+    .forEach((item) => {
+      items.push({
+        at: (item.dueAt || "").slice(0, 10),
+        title: item.model?.name || "Fit Cultural",
+        meta: `Fit · ${item.title || "Vaga"}`,
+        action: "interviews",
+      });
+    });
+  return items
+    .sort((a, b) => String(b.at || "").localeCompare(String(a.at || "")))
+    .slice(0, 8);
 }
 
 function candidateVacancyPickerCard({
@@ -26876,24 +27344,37 @@ function candidateVacancyPickerCard({
 function syncCandidateOfferPreAdNav() {
   const offerNav = document.querySelector("#candidateOfferNav");
   const preNav = document.querySelector("#candidatePreAdmissionNav");
-  const hasOffer = candidatePortalHasActiveOffer();
-  const hasPre = candidatePortalHasActivePreAdmission();
-  if (offerNav) offerNav.hidden = !hasOffer;
-  if (preNav) preNav.hidden = !hasPre;
-  const offerCount = document.querySelector("#candidateOfferNavCount");
-  const preCount = document.querySelector("#candidatePreAdmissionNavCount");
-  if (offerCount) {
-    const count = getPortalOfferListItems().filter((item) =>
-      ["enviada", "visualizada", "vista"].includes(item.status),
-    ).length;
-    offerCount.hidden = !count;
-    offerCount.textContent = String(count || 0);
-  }
-  if (preCount) {
-    const count = getPortalPreAdmissionListItems().length;
-    preCount.hidden = !count;
-    preCount.textContent = String(count || 0);
-  }
+  if (offerNav) offerNav.hidden = true;
+  if (preNav) preNav.hidden = true;
+  const offerCount = getPortalOfferListItems().filter((item) =>
+    ["enviada", "visualizada", "vista"].includes(item.status),
+  ).length;
+  const preCount = getPortalPreAdmissionListItems().length;
+  const doneAssessment = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+  const pendingTests =
+    getCandidateTestItems().filter((item) => !doneAssessment.has(item.status)).length +
+    getCandidateFitItems().filter((item) => !doneAssessment.has(item.status)).length;
+  const activeInterviews = getCandidateInterviewItems().filter((item) => interviewIsActive(item)).length;
+  setCandidateNavCount(document.querySelector("#candidateSelecaoTabCount"), activeInterviews + pendingTests);
+  setCandidateNavCount(document.querySelector("#candidateOfferTabCount"), offerCount);
+  setCandidateNavCount(document.querySelector("#candidatePreAdmissionTabCount"), preCount);
+}
+
+function syncCandidateProcessoHub(view = candidatePortalView) {
+  const hub = document.querySelector("#hubChromeCandidateProcesso");
+  const processoViews = new Set(["interviews", "tests", "offer", "pre-admission", "test-taking"]);
+  if (hub) hub.hidden = !processoViews.has(view);
+  const tab =
+    view === "offer"
+      ? "offer"
+      : view === "pre-admission"
+        ? "pre-admission"
+        : "selecao";
+  document.querySelectorAll("[data-candidate-processo-tab]").forEach((btn) => {
+    const selected = btn.dataset.candidateProcessoTab === tab;
+    btn.setAttribute("aria-selected", selected ? "true" : "false");
+    btn.classList.toggle("is-active", selected);
+  });
 }
 
 function refreshCandidatePortalAfterOfferChange() {
@@ -26932,13 +27413,13 @@ function renderCandidateOffer() {
     selectedPortalOfferId = null;
     body.innerHTML = `
       <header class="candidate-page-intro">
-        <span class="panel-kicker">MINHA JORNADA</span>
+        <span class="panel-kicker">MEU PROCESSO</span>
         <h1>Propostas</h1>
         <p>Quando o RH enviar uma proposta, a vaga aparecerá aqui.</p>
       </header>
       <article class="candidate-panel candidate-empty-panel">
-        <h2>Nenhuma proposta disponível</h2>
-        <p>Acompanhe suas candidaturas enquanto isso.</p>
+        <h2>Ainda não há proposta</h2>
+        <p>Quando o RH enviar os termos, a vaga aparecerá nesta etapa do seu processo.</p>
       </article>`;
     return;
   }
@@ -27035,13 +27516,13 @@ function renderCandidatePreAdmission() {
     selectedPortalPreAdId = null;
     body.innerHTML = `
       <header class="candidate-page-intro">
-        <span class="panel-kicker">MINHA JORNADA</span>
+        <span class="panel-kicker">MEU PROCESSO</span>
         <h1>Pré-admissão</h1>
         <p>Quando houver checklist ativa, a vaga aparecerá aqui.</p>
       </header>
       <article class="candidate-panel candidate-empty-panel">
-        <h2>Nenhuma pré-admissão em andamento</h2>
-        <p>Os documentos solicitados pelo RH vão aparecer por vaga.</p>
+        <h2>Ainda não há pré-admissão</h2>
+        <p>Esta etapa fica disponível assim que o RH liberar a checklist de documentos.</p>
       </article>`;
     return;
   }
@@ -27050,7 +27531,7 @@ function renderCandidatePreAdmission() {
     selectedPortalPreAdId = null;
     body.innerHTML = `
       <header class="candidate-page-intro">
-        <span class="panel-kicker">MINHA JORNADA</span>
+        <span class="panel-kicker">MEU PROCESSO</span>
         <h1>Pré-admissão</h1>
         <p>${items.length === 1 ? "Confirme a vaga para enviar os documentos." : "Escolha a vaga para enviar os documentos da checklist."}</p>
       </header>
@@ -27182,77 +27663,49 @@ function submitPortalPreAdDocument(itemId, fileName) {
 }
 
 function renderCandidateHome() {
+  syncPortalHomeWelcome({
+    eyebrowId: "#candidateHomeWelcomeEyebrow",
+    nameId: "#candidateHomeWelcomeName",
+    fullName: candidatePortalUser.name,
+  });
   const apps = candidatePortalUser.applications;
-  const profile = getCandidateProfileCompletion();
   const interviews = getCandidateInterviewItems().filter((item) => interviewIsActive(item));
-  const pendingTests = getCandidateTestItems().filter((item) => item.status !== "Concluído");
-  const nextInterview = [...interviews].sort((a, b) => new Date(a.at || "2999-01-01") - new Date(b.at || "2999-01-01"))[0];
-  const nextTest = pendingTests[0];
-  const pendingCount = getCandidatePortalActionMap().length;
+  const mapItems = getCandidatePortalActionMap();
+  const pendingCount = mapItems.length;
   const matchAverage = getCandidateHomeMatchAverage(apps);
-  const welcome = document.querySelector("#candidateHomeWelcome");
-  const stats = document.querySelector("#candidateHomeStats");
-  const actionsHost = document.querySelector("#candidateHomeActions");
   const pendenciesHost = document.querySelector("#candidateHomePendencies");
+  const pendenciesCount = document.querySelector("#candidateHomePendenciasCount");
   const journey = document.querySelector("#candidateHomeJourneyList");
-  const homeInterviews = document.querySelector("#candidateHomeInterviews");
-  const homeTests = document.querySelector("#candidateHomeTests");
+  const recent = document.querySelector("#candidateHomeRecentList");
   void matchAverage;
-  if (welcome) {
-    welcome.innerHTML = `
-      <div class="candidate-home-welcome-copy">
-        <span class="panel-kicker">BEM-VINDO DE VOLTA</span>
-        <h1>Olá, ${escapeHtml(candidatePortalUser.name.split(" ")[0])}!</h1>
-        <p>Acompanhe candidaturas, entrevistas, testes e o que falta fazer.</p>
-        <div class="candidate-home-progress">
-          <div><span>Perfil</span><strong>${profile}%</strong></div>
-          <div class="candidate-profile-completion-bar" aria-hidden="true"><span style="width: ${profile}%"></span></div>
-        </div>
-          <button class="${profile < 80 ? "primary-button" : "secondary-button"} candidate-home-welcome-action" type="button" data-candidate-next-action="${profile < 80 ? "profile" : "apps"}">${profile < 80 ? "Atualizar perfil" : "Ver candidaturas"}</button>
-      </div>
-    `;
-  }
-  if (stats) {
-    stats.innerHTML = `
-      <article class="dashboard-metric metric-navy candidate-dashboard-metric" data-candidate-next-action="apps" tabindex="0">
-        <div class="dashboard-metric-top"><span class="metric-trend">Status</span></div>
-        <strong>${apps.filter((app) => isCandidateAppActive(app.stage)).length}</strong>
-        <span>Candidaturas ativas</span>
-        <small>${apps.length} no total</small>
-      </article>
-      <article class="dashboard-metric metric-green candidate-dashboard-metric" data-candidate-next-action="interviews" tabindex="0">
-        <div class="dashboard-metric-top"><span class="metric-trend">Agenda</span></div>
-        <strong>${nextInterview?.at ? formatShortDate(nextInterview.at.split("T")[0]) : "—"}</strong>
-        <span>Próxima entrevista</span>
-        <small>${nextInterview ? formatCandidateInterviewDate(nextInterview.at) : "Nenhuma agendada"}</small>
-      </article>
-      <article class="dashboard-metric metric-mint candidate-dashboard-metric" data-candidate-next-action="tests" tabindex="0">
-        <div class="dashboard-metric-top"><span class="metric-trend">${pendingCount ? "Atenção" : "Em dia"}</span></div>
-        <strong>${pendingCount}</strong>
-        <span>Pendências</span>
-        <small>${pendingCount ? `${pendingCount} ação(ões) por vaga` : "Nada pendente"}</small>
-      </article>
-    `;
-  }
-  if (actionsHost) {
-    const mapItems = getCandidatePortalActionMap();
-    const primary = mapItems[0];
-    actionsHost.innerHTML = primary
-      ? `<div class="candidate-home-primary-action">
-          <span class="candidate-action-map-vacancy">${escapeHtml(primary.vacancy)}</span>
-          <strong>${escapeHtml(primary.title)}</strong>
-          <p>${escapeHtml(primary.text)}</p>
-          <button type="button" class="primary-button" data-candidate-next-action="${escapeHtml(primary.action)}">${escapeHtml(primary.label)}</button>
-          ${
-            mapItems.length > 1
-              ? `<p class="candidate-section-note">+${mapItems.length - 1} outra${mapItems.length === 2 ? "" : "s"} na lista de pendências ao lado.</p>`
-              : ""
-          }
-        </div>`
-      : `<p class="candidate-empty">Tudo em dia. Nenhuma ação pendente neste momento.</p>`;
-  }
+
+  const doneAssessment = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
+  const selecaoN =
+    interviews.length +
+    getCandidateTestItems().filter((item) => !doneAssessment.has(item.status)).length +
+    getCandidateFitItems().filter((item) => !doneAssessment.has(item.status)).length;
+  const propostaN = getPortalOfferListItems().filter((item) =>
+    ["enviada", "visualizada", "vista"].includes(item.status),
+  ).length;
+  const preadN = getPortalPreAdmissionListItems().length;
+  const vagasN = jobs.filter((job) => jobIsVisibleInPortal(job)).length;
+  const ativasN = apps.filter((app) => isCandidateAppActive(app.stage)).length;
+  const setMap = (id, value) => {
+    const el = document.querySelector(id);
+    if (el) el.textContent = String(value);
+  };
+  setMap("#candidateMapVagasCount", vagasN);
+  setMap("#candidateMapCandidaturasCount", apps.length);
+  setMap("#candidateMapSelecaoCount", selecaoN);
+  setMap("#candidateMapPropostaCount", propostaN);
+  setMap("#candidateMapPreadCount", preadN);
+  setMap("#candidateMapPendenciasCount", pendingCount);
+  setMap("#candidateMapAtivasCount", ativasN);
+  if (pendenciesCount) pendenciesCount.textContent = String(pendingCount);
   if (pendenciesHost) {
-    pendenciesHost.innerHTML = candidateActionMapMarkup(getCandidatePortalActionMap());
+    pendenciesHost.innerHTML = candidateActionMapMarkup(mapItems, {
+      emptyText: "Nada na fila no momento. Bom sinal.",
+    });
   }
   if (journey) {
     journey.innerHTML = apps.length
@@ -27271,32 +27724,26 @@ function renderCandidateHome() {
           .join("")
       : `<p class="candidate-empty">Candidate-se a uma vaga para ver o status aqui.</p>`;
   }
-  if (homeInterviews) {
-    homeInterviews.innerHTML = nextInterview
-      ? `<article class="candidate-home-agenda-item">
-          <div>
-            <span class="candidate-action-map-vacancy">${escapeHtml(nextInterview.title)}</span>
-            <strong>${escapeHtml(nextInterview.modality || "Entrevista")}</strong>
-            <span>${formatCandidateInterviewDate(nextInterview.at)}</span>
-          </div>
-          <button class="secondary-button" type="button" data-candidate-next-action="interviews">Detalhes</button>
-        </article>`
-      : `<p class="candidate-empty">Sem entrevistas próximas.</p>`;
-  }
-  if (homeTests) {
-    const pendingFit = getCandidateFitItems().filter((item) => item.status !== "Concluído");
-    const nextFit = pendingFit[0];
-    const focus = nextTest || nextFit;
-    homeTests.innerHTML = focus
-      ? `<article class="candidate-home-agenda-item">
-          <div>
-            <span class="candidate-action-map-vacancy">${escapeHtml(focus.title || "Vaga")}</span>
-            <strong>${escapeHtml(nextTest ? nextTest.test?.title || "Teste" : nextFit.model?.name || "Fit Cultural")}</strong>
-            <span>${escapeHtml(focus.status)}</span>
-          </div>
-          <button class="secondary-button" type="button" data-candidate-next-action="tests">${focus.status === "Em andamento" ? "Continuar" : "Iniciar"}</button>
-        </article>`
-      : `<p class="candidate-empty">Nenhuma avaliação pendente.</p>`;
+  if (recent) {
+    const historyItems = getCandidateHomeHistoryItems();
+    recent.innerHTML = historyItems.length
+      ? historyItems
+          .map((item) => {
+            const appAttr =
+              item.appJobId != null ? ` data-candidate-home-app="${item.appJobId}"` : "";
+            const actionAttr = item.action
+              ? ` data-candidate-next-action="${escapeHtml(item.action)}"`
+              : "";
+            return `<button class="candidate-home-recent-item" type="button"${appAttr}${actionAttr}>
+              <div>
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.meta)}</span>
+              </div>
+              <span>${item.at ? formatShortDate(item.at) : "—"}</span>
+            </button>`;
+          })
+          .join("")
+      : `<p class="candidate-empty">Sem movimentações recentes.</p>`;
   }
 }
 
@@ -27578,163 +28025,7 @@ function renderCandidateTestTaking() {
 }
 
 function renderCandidateTests() {
-  const body = document.querySelector("#candidateTestsBody");
-  if (!body) return;
-  const items = getCandidateTestItems();
-  const fitItems = getCandidateFitItems();
-  const done = new Set(["Concluído", "Avaliado", "Cancelado", "Expirado"]);
-  const pendingItems = items.filter((item) => !done.has(item.status));
-  const completedItems = items.filter((item) => item.status === "Concluído" || item.status === "Avaliado");
-  const pendingFit = fitItems.filter((item) => !done.has(item.status));
-  const completedFit = fitItems.filter((item) => item.status === "Concluído");
-  const pendingFitGroups = groupCandidateItemsByVacancy(
-    pendingFit.map((item) => ({ kind: "fit", vacancy: item.title || "Vaga", item })),
-    (entry) => entry.vacancy,
-  );
-  const pendingTestGroups = groupCandidateItemsByVacancy(
-    pendingItems.map((item) => ({ kind: "test", vacancy: item.title || "Vaga", item })),
-    (entry) => entry.vacancy,
-  );
-  const completedAll = [
-    ...completedItems.map((item) => ({ kind: "test", vacancy: item.title || "Vaga", item })),
-    ...completedFit.map((item) => ({ kind: "fit", vacancy: item.title || "Vaga", item })),
-  ];
-  const historyGroups = groupCandidateItemsByVacancy(completedAll, (entry) => entry.vacancy);
-
-  const renderPendingCard = (entry) => {
-    if (entry.kind === "fit") {
-      const item = entry.item;
-      const inProgress = item.status === "Em andamento";
-      const questionCount = (item.model?.questionIds || []).length;
-      return `
-      <article class="candidate-journey-card candidate-test-card">
-        <span class="candidate-journey-icon is-fit"><svg class="ui-icon"><use href="${iconSpriteBase}#i-users"></use></svg></span>
-        <div class="candidate-journey-copy">
-          <span class="panel-kicker">FIT CULTURAL</span>
-          <h2>${escapeHtml(item.model?.name || "Fit Cultural")}</h2>
-          <p>${questionCount ? `${questionCount} perguntas` : "Avaliação de perfil cultural"}</p>
-          <div class="candidate-test-card-meta">
-            <span>Prazo: ${formatShortDate((item.dueAt || "").slice(0, 10))}</span>
-          </div>
-          <div class="candidate-test-card-actions">
-            <button class="primary-button candidate-journey-action candidate-test-start" type="button" data-candidate-fit-id="${item.fitAssignmentId}">${inProgress ? "Continuar Fit Cultural" : "Iniciar Fit Cultural"}</button>
-          </div>
-        </div>
-        <span class="candidate-journey-status ${fitStatusClass(item.status)}">${escapeHtml(item.status)}</span>
-      </article>`;
-    }
-    const item = entry.item;
-    const testId = item.test?.id;
-    const assignmentId = item.assignmentId || item.jobId;
-    const inProgress = item.status === "Em andamento" || candidateTestsInProgress.has(assignmentId);
-    return `
-      <article class="candidate-journey-card candidate-test-card">
-        <span class="candidate-journey-icon"><svg class="ui-icon"><use href="${iconSpriteBase}#i-clipboard"></use></svg></span>
-        <div class="candidate-journey-copy">
-          <span class="panel-kicker">${escapeHtml(testTypeLabel(item.test?.type || "technical").toUpperCase())}</span>
-          <h2>${escapeHtml(item.test?.title || "Teste")}</h2>
-          <p>${escapeHtml(item.test?.description || "Avaliação vinculada à candidatura")}</p>
-          <div class="candidate-test-card-meta">
-            <span>Prazo sugerido: ${formatShortDate((item.dueAt || "").slice(0, 10))}</span>
-          </div>
-          <div class="candidate-test-card-actions">
-            <button class="primary-button candidate-journey-action candidate-test-start" type="button" data-candidate-test-id="${testId}" data-candidate-test-job="${assignmentId}" data-candidate-assignment-id="${item.assignmentId || ""}">${inProgress ? "Continuar teste" : "Iniciar teste"}</button>
-          </div>
-        </div>
-        <span class="candidate-journey-status ${fitStatusClass(item.status)}">${escapeHtml(item.status)}</span>
-      </article>`;
-  };
-
-  const renderVacancyGroups = (groups, emptyTitle, emptyText) =>
-    groups.length
-      ? groups
-          .map(
-            ([vacancy, entries]) => `
-      <section class="candidate-vacancy-group">
-        <header class="candidate-vacancy-group-head">
-          <div>
-            <span class="panel-kicker">VAGA</span>
-            <h3>${escapeHtml(vacancy)}</h3>
-          </div>
-          <span class="candidate-journey-section-count">${entries.length}</span>
-        </header>
-        <div class="candidate-vacancy-group-cards">${entries.map(renderPendingCard).join("")}</div>
-      </section>`,
-          )
-          .join("")
-      : `<article class="candidate-panel candidate-empty-panel"><h2>${escapeHtml(emptyTitle)}</h2><p>${escapeHtml(emptyText)}</p></article>`;
-
-  const historyMarkup = historyGroups.length
-    ? historyGroups
-        .map(
-          ([vacancy, entries]) => `
-      <section class="candidate-vacancy-group is-history">
-        <header class="candidate-vacancy-group-head">
-          <div>
-            <span class="panel-kicker">VAGA</span>
-            <h3>${escapeHtml(vacancy)}</h3>
-          </div>
-        </header>
-        ${entries
-          .map((entry) => {
-            if (entry.kind === "fit") {
-              const item = entry.item;
-              return `<article class="candidate-journey-history-item">
-                <div><strong>${escapeHtml(item.model?.name || "Fit Cultural")}</strong><span>Fit Cultural</span></div>
-                <span>${item.adherencePct != null ? `${item.adherencePct}%` : escapeHtml(item.status)}</span>
-              </article>`;
-            }
-            const item = entry.item;
-            return `<article class="candidate-journey-history-item">
-              <div><strong>${escapeHtml(item.test?.title || "Teste")}</strong><span>${escapeHtml(testTypeLabel(item.test?.type || "technical"))}</span></div>
-              <span>${escapeHtml(item.status)}</span>
-            </article>`;
-          })
-          .join("")}
-      </section>`,
-        )
-        .join("")
-    : `<article class="candidate-panel candidate-empty-panel"><h2>Sem histórico</h2><p>Os testes e Fits concluídos aparecerão aqui.</p></article>`;
-
-  body.innerHTML = `
-    <section class="candidate-journey-section candidate-assessment-block">
-      <div class="candidate-journey-section-head">
-        <div>
-          <span class="panel-kicker">FIT CULTURAL</span>
-          <h2>Perfil e cultura</h2>
-        </div>
-        <span class="candidate-journey-section-count">${pendingFit.length}</span>
-      </div>
-      ${renderVacancyGroups(
-        pendingFitGroups,
-        "Nenhum Fit pendente",
-        "Quando o RH enviar um Fit Cultural, ele aparecerá aqui por vaga.",
-      )}
-    </section>
-    <section class="candidate-journey-section candidate-assessment-block">
-      <div class="candidate-journey-section-head">
-        <div>
-          <span class="panel-kicker">TESTES TÉCNICOS</span>
-          <h2>Avaliações por vaga</h2>
-        </div>
-        <span class="candidate-journey-section-count">${pendingItems.length}</span>
-      </div>
-      ${renderVacancyGroups(
-        pendingTestGroups,
-        "Nenhum teste pendente",
-        "Se uma vaga solicitar teste técnico, ele aparecerá nesta área.",
-      )}
-    </section>
-    <section class="candidate-journey-history">
-      <div class="candidate-journey-section-head">
-        <div>
-          <span class="panel-kicker">ACOMPANHAMENTO</span>
-          <h2>Histórico de avaliações</h2>
-        </div>
-      </div>
-      ${historyMarkup}
-    </section>
-  `;
+  renderCandidateSelecao();
 }
 
 let candidateActiveFitId = null;
@@ -28018,15 +28309,25 @@ function updateCandidateSidebarUser() {
   setCandidateNavCount(document.querySelector("#candidateAppsNavCount"), candidatePortalUser.applications.length);
   setCandidateNavCount(document.querySelector("#candidateInterviewsNavCount"), activeInterviews);
   setCandidateNavCount(document.querySelector("#candidateTestsNavCount"), pendingTests);
+  const offerPending = getPortalOfferListItems().filter((item) =>
+    ["enviada", "visualizada", "vista"].includes(item.status),
+  ).length;
+  const prePending = getPortalPreAdmissionListItems().length;
+  setCandidateNavCount(
+    document.querySelector("#candidateProcessoNavCount"),
+    activeInterviews + pendingTests + offerPending + prePending,
+  );
   const jobsCount = document.querySelector("#candidateJobsNavCount");
   if (jobsCount) {
     jobsCount.textContent = String(jobs.filter((job) => jobIsVisibleInPortal(job)).length);
     jobsCount.hidden = false;
   }
+  syncCandidateOfferPreAdNav();
 }
 
 function setCandidatePortalView(view, options = {}) {
-  if (view === "processo") view = "interviews";
+  if (view === "processo" || view === "selecao") view = "interviews";
+  if (view === "tests") view = "interviews";
   if (candidatePortalView === "test-taking" && view !== "test-taking") {
     persistCandidateTakingProgress({ quiet: true });
   }
@@ -28048,13 +28349,13 @@ function setCandidatePortalView(view, options = {}) {
     profile: ["Perfil profissional", "Mantenha seus dados atualizados para as candidaturas."],
     apps: ["Minhas candidaturas", "Acompanhe o andamento dos processos seletivos."],
     "app-detail": ["Detalhe da candidatura", "Status, etapa e próximos passos."],
-    interviews: ["Entrevistas", "Consulte seus próximos encontros e os detalhes de cada entrevista."],
-    tests: ["Avaliações", "Testes técnicos e Fit Cultural por vaga."],
+    interviews: ["Seleção", "Entrevistas e avaliações no mesmo fluxo."],
+    tests: ["Seleção", "Entrevistas e avaliações no mesmo fluxo."],
     "test-taking": ["Teste técnico", "Responda às questões da avaliação com atenção."],
     apply: ["Confirmar candidatura", "Revise seus dados e anexe o currículo antes de enviar."],
     "apply-success": ["Candidatura enviada", "Seu processo já está em andamento."],
-    offer: ["Propostas", "Escolha a vaga para abrir a proposta."],
-    "pre-admission": ["Pré-admissão", "Escolha a vaga para enviar os documentos."],
+    offer: ["Proposta", "Acompanhe os termos mesmo antes de receber uma oferta."],
+    "pre-admission": ["Pré-admissão", "Documentos e checklist quando a etapa for liberada."],
   };
   if (view === "test-taking" && candidateActiveFitId) {
     titles["test-taking"] = ["Fit Cultural", "Responda às perguntas do perfil cultural com atenção."];
@@ -28113,8 +28414,10 @@ function setCandidatePortalView(view, options = {}) {
   document.querySelector("#candidateAppsView").hidden = view !== "apps";
   const appDetailView = document.querySelector("#candidateAppDetailView");
   if (appDetailView) appDetailView.hidden = view !== "app-detail";
-  document.querySelector("#candidateInterviewsView").hidden = view !== "interviews";
-  document.querySelector("#candidateTestsView").hidden = view !== "tests";
+  const selecaoOpen = view === "interviews" || view === "tests";
+  document.querySelector("#candidateInterviewsView").hidden = !selecaoOpen;
+  const testsView = document.querySelector("#candidateTestsView");
+  if (testsView) testsView.hidden = true;
   document.querySelector("#candidateTestTakingView").hidden = view !== "test-taking";
   const offerView = document.querySelector("#candidateOfferView");
   if (offerView) offerView.hidden = view !== "offer";
@@ -28126,20 +28429,23 @@ function setCandidatePortalView(view, options = {}) {
   }
   document.querySelectorAll("[data-candidate-nav]").forEach((btn) => {
     const key = btn.dataset.candidateNav;
-    const processKeys = new Set(["apps", "app-detail", "interviews", "tests", "test-taking", "offer", "pre-admission"]);
-    const navKey =
+    const processoKeys = new Set(["interviews", "tests", "test-taking", "offer", "pre-admission"]);
+    let navKey =
       view === "detail" || view === "apply" || view === "apply-success"
         ? "jobs"
         : view === "app-detail"
           ? "apps"
-          : view === "test-taking"
-            ? "tests"
+          : processoKeys.has(view)
+            ? "processo"
             : view;
     let active = navKey === key;
-    if (key === "processo" && processKeys.has(view)) active = true;
-    if (processKeys.has(key) && key !== "processo") active = false;
+    if (key === "processo" && processoKeys.has(view)) active = true;
+    if ((key === "interviews" || key === "tests" || key === "offer" || key === "pre-admission" || key === "apps") && btn.hidden) {
+      active = false;
+    }
     btn.classList.toggle("active", active);
   });
+  syncCandidateProcessoHub(view);
   if (view === "jobs") {
     updateCandidateFilterButton();
     renderCandidateJobList();
@@ -28151,8 +28457,9 @@ function setCandidatePortalView(view, options = {}) {
   if (view === "profile") fillCandidateProfileForm();
   if (view === "apps") renderCandidateApps();
   if (view === "app-detail") renderCandidateAppDetail();
-  if (view === "interviews") renderCandidateInterviews();
-  if (view === "tests") renderCandidateTests();
+  if (selecaoOpen) {
+    renderCandidateSelecao();
+  }
   if (view === "offer") renderCandidateOffer();
   if (view === "pre-admission") renderCandidatePreAdmission();
   if (view === "test-taking") {
@@ -28486,22 +28793,28 @@ function fillCandidateProfileForm() {
   document.querySelector("#candidateEducation").value = candidatePortalUser.education || "";
   const contactEmail = document.querySelector("#candidateContactEmail");
   if (contactEmail) contactEmail.value = candidatePortalUser.email || "";
-  const contactPhone = document.querySelector("#candidateContactPhoneMirror");
-  if (contactPhone) contactPhone.value = candidatePortalUser.phone || "";
   const resumeLabel = document.querySelector("#candidateResumeLabel");
   if (resumeLabel) {
     resumeLabel.textContent = candidatePortalUser.resumeFileName || "Nenhum currículo anexado.";
   }
   const attachmentList = document.querySelector("#candidateAttachmentList");
   if (attachmentList) {
-    attachmentList.innerHTML = candidatePortalAttachments.length
+    const hasAttachments = candidatePortalAttachments.length > 0;
+    attachmentList.innerHTML = hasAttachments
       ? candidatePortalAttachments
           .map(
             (item) =>
               `<li><strong>${escapeHtml(item.name)}</strong><span class="muted">Anexo do perfil</span></li>`,
           )
           .join("")
-      : `<li class="muted">Nenhum anexo adicional.</li>`;
+      : "";
+    attachmentList.hidden = !hasAttachments;
+    const body = attachmentList.closest(".candidate-profile-doc-body");
+    if (body) {
+      /* Keep the slot for column alignment; hide only the list chrome when empty. */
+      body.hidden = false;
+      body.classList.toggle("is-empty", !hasAttachments);
+    }
   }
   renderCandidateSkillPicker();
   updateCandidateProfileCompletion();
@@ -28636,7 +28949,7 @@ function candidateNextActionsMarkup() {
         </div>
         <strong>${profile.percent}% do perfil</strong>
       </div>
-      ${candidateActionMapMarkup(items)}
+      ${`<div class="dash-pend-list candidate-next-actions-list">${candidateActionMapMarkup(items)}</div>`}
     </section>
   `;
 }
@@ -28798,13 +29111,18 @@ function parseCandidatePortalHash(hash = window.location.hash) {
     "apps",
     "interviews",
     "tests",
+    "processo",
+    "selecao",
     "profile",
     "offer",
     "pre-admission",
     "apply",
     "apply-success",
   ]);
-  if (allowed.has(seg)) return { view: seg };
+  if (allowed.has(seg)) {
+    if (seg === "processo" || seg === "selecao" || seg === "tests") return { view: "interviews" };
+    return { view: seg };
+  }
   return { view: "home" };
 }
 
@@ -29213,6 +29531,7 @@ on("#profileOpenCandidatePortal", "click", () => {
 });
 on("#exitCandidatePortal", "click", closeCandidatePortal);
 candidateSidebarToggle.addEventListener("click", toggleCandidateSidebar);
+candidateMenuButton?.addEventListener("click", toggleCandidateSidebar);
 if (window.localStorage.getItem("portal-candidato-sidebar") === "collapsed") {
   setCandidateSidebarCollapsed(true);
 }
@@ -29231,6 +29550,14 @@ on("#candidateProfilePopover", "click", (event) => {
 document.querySelectorAll("[data-candidate-nav]").forEach((button) => {
   button.addEventListener("click", () => setCandidatePortalView(button.dataset.candidateNav));
 });
+document.querySelectorAll("[data-candidate-processo-tab]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const tab = button.dataset.candidateProcessoTab;
+    if (tab === "offer") setCandidatePortalView("offer");
+    else if (tab === "pre-admission") setCandidatePortalView("pre-admission");
+    else setCandidatePortalView("interviews");
+  });
+});
 on("#candidateJobSearch", "input", () => renderCandidateJobList());
 on("#candidateFiltersForm", "submit", (event) => {
   event.preventDefault();
@@ -29246,6 +29573,12 @@ document.querySelector("#candidateFiltersDialog")?.addEventListener("cancel", ()
 });
 document.querySelector("#candidateFiltersDialog")?.addEventListener("close", updateCandidateFilterButton);
 function handleCandidateNextAction(event) {
+  const scrollTarget = event.target.closest("[data-candidate-scroll]");
+  if (scrollTarget) {
+    const el = document.getElementById(scrollTarget.dataset.candidateScroll);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  }
   const nextAction = event.target.closest("[data-candidate-next-action]");
   if (nextAction) {
     const view = nextAction.dataset.candidateNextAction;
@@ -29268,7 +29601,6 @@ function handleCandidateNextAction(event) {
   }
   return false;
 }
-on("#candidateHomeActions", "click", handleCandidateNextAction);
 on("#candidateHomeView", "click", (event) => {
   if (handleCandidateNextAction(event)) return;
   const appItem = event.target.closest("[data-candidate-home-app]");
@@ -29286,7 +29618,7 @@ on("#candidateHomeJourneyList", "click", (event) => {
   if (!item) return;
   setCandidatePortalView("app-detail", { appJobId: Number(item.dataset.candidateHomeApp) });
 });
-on("#candidateInterviewsBody", "click", (event) => {
+on("#candidateSelecaoBody", "click", (event) => {
   const jobButton = event.target.closest("[data-candidate-journey-job]");
   if (jobButton) {
     setCandidatePortalView("detail", { jobId: Number(jobButton.dataset.candidateJourneyJob) });
@@ -29295,39 +29627,24 @@ on("#candidateInterviewsBody", "click", (event) => {
   const confirmButton = event.target.closest("[data-candidate-interview-confirm]");
   if (confirmButton) {
     confirmCandidateInterview(Number(confirmButton.dataset.candidateInterviewConfirm));
-    renderCandidateInterviews();
+    renderCandidateSelecao();
     return;
   }
   const refuseButton = event.target.closest("[data-candidate-interview-refuse]");
   if (refuseButton) {
     const reason = window.prompt("Motivo da recusa (opcional):") || "";
     refuseCandidateInterview(Number(refuseButton.dataset.candidateInterviewRefuse), reason);
-    renderCandidateInterviews();
+    renderCandidateSelecao();
     return;
   }
   const rescheduleButton = event.target.closest("[data-candidate-interview-reschedule]");
-  if (!rescheduleButton) return;
-  const item = interviews.find(
-    (entry) => entry.id === Number(rescheduleButton.dataset.candidateInterviewReschedule),
-  );
-  if (item) openCandidateRescheduleDialog(item);
-});
-on("#candidateRescheduleForm", "submit", (event) => {
-  event.preventDefault();
-  const reason = document.querySelector("#candidateRescheduleReason")?.value.trim();
-  const message = document.querySelector("#candidateRescheduleMessage")?.value.trim() || "";
-  if (!pendingPortalRescheduleInterviewId || !reason) return;
-  requestCandidateReschedule(pendingPortalRescheduleInterviewId, reason, message);
-  pendingPortalRescheduleInterviewId = null;
-  document.querySelector("#candidateRescheduleDialog")?.close();
-});
-on("#closeCandidateReschedule", "click", () =>
-  document.querySelector("#candidateRescheduleDialog")?.close(),
-);
-on("#dismissCandidateReschedule", "click", () =>
-  document.querySelector("#candidateRescheduleDialog")?.close(),
-);
-on("#candidateTestsBody", "click", (event) => {
+  if (rescheduleButton) {
+    const item = interviews.find(
+      (entry) => entry.id === Number(rescheduleButton.dataset.candidateInterviewReschedule),
+    );
+    if (item) openCandidateRescheduleDialog(item);
+    return;
+  }
   const fitButton = event.target.closest("[data-candidate-fit-id]");
   if (fitButton) {
     const fitId = Number(fitButton.dataset.candidateFitId);
@@ -29348,6 +29665,21 @@ on("#candidateTestsBody", "click", (event) => {
     Number(testButton.dataset.candidateAssignmentId) || null,
   );
 });
+on("#candidateRescheduleForm", "submit", (event) => {
+  event.preventDefault();
+  const reason = document.querySelector("#candidateRescheduleReason")?.value.trim();
+  const message = document.querySelector("#candidateRescheduleMessage")?.value.trim() || "";
+  if (!pendingPortalRescheduleInterviewId || !reason) return;
+  requestCandidateReschedule(pendingPortalRescheduleInterviewId, reason, message);
+  pendingPortalRescheduleInterviewId = null;
+  document.querySelector("#candidateRescheduleDialog")?.close();
+});
+on("#closeCandidateReschedule", "click", () =>
+  document.querySelector("#candidateRescheduleDialog")?.close(),
+);
+on("#dismissCandidateReschedule", "click", () =>
+  document.querySelector("#candidateRescheduleDialog")?.close(),
+);
 on("#closeCandidateTestDialog", "click", () => {
   document.querySelector("#candidateTestDialog")?.close();
 });

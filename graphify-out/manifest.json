@@ -1,8 +1,8 @@
 {
   "app.js": {
-    "mtime": 1789496319.1982572,
-    "seen": 1789501149.7987869,
-    "ast_hash": "964ea4d67d64a532f5be85f10f693565",
+    "mtime": 1789606474.9780772,
+    "seen": 1789606619.6778047,
+    "ast_hash": "2aabe543853cecb8b443a55a466c7c17",
     "semantic_hash": ""
   },
   "docs/design-system/01-fundamentos.md": {
@@ -84,15 +84,15 @@
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-03-onda-1-vagas-status-portal-design.md": {
-    "mtime": 1789495499.9054022,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.142573,
+    "seen": 1789595402.0651772,
     "ast_hash": "6367af3249320698ea656d4fd8398d21",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1789501124.4302962,
-    "seen": 1789501149.7987869,
-    "ast_hash": "5c6ba2e8e1d0b8531ec0924e68fc9ed1",
+    "mtime": 1789606526.19619,
+    "seen": 1789606619.6778047,
+    "ast_hash": "50762b7aac7ff73a0a3002d30d47e529",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-03-fichas-entrevista.md": {
@@ -312,9 +312,9 @@
     "semantic_hash": ""
   },
   "_gf_done.txt": {
-    "mtime": 1789354445.7662477,
-    "seen": 1789355428.8807085,
-    "ast_hash": "fca23bb22f8c1421d6040f2ef0df3eb0",
+    "mtime": 1789589483.9351354,
+    "seen": 1789594339.6343875,
+    "ast_hash": "1d786f435716886e969eae2cf1dec91f",
     "semantic_hash": ""
   },
   "_gf_explain.txt": {
@@ -366,105 +366,129 @@
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/progress.md": {
-    "mtime": 1789501098.8366024,
-    "seen": 1789501149.7987869,
-    "ast_hash": "547990ec9f51d22048d21d0e30d539ee",
+    "mtime": 1789587664.3836029,
+    "seen": 1789589483.8106475,
+    "ast_hash": "703aef69bce4eff0644004952bbd163b",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-1-brief.md": {
-    "mtime": 1789500448.3094287,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3574445,
+    "seen": 1789589483.8106475,
     "ast_hash": "5271feb26a46868dafbedd7ab5fd959b",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-1-report.md": {
-    "mtime": 1789500643.3843606,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.077704,
+    "seen": 1789595402.0651772,
     "ast_hash": "d7049f6d29c6962b73262a6aeb1132fc",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-1-rereview.md": {
-    "mtime": 1789500683.0401552,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.142573,
+    "seen": 1789595402.0651772,
     "ast_hash": "d773fe31ba8757ec1eddeec7aeb07e5c",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-1-review.md": {
-    "mtime": 1789500587.7446885,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.045179,
+    "seen": 1789595402.0651772,
     "ast_hash": "9408cfc55e6ca713a4fd096962ede409",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-2-brief.md": {
-    "mtime": 1789500708.4135997,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3585804,
+    "seen": 1789589483.8106475,
     "ast_hash": "8a7f3fa77b75a6dc1c4dc4cf8bbbd879",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-2-report.md": {
-    "mtime": 1789500809.6708567,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.0633333,
+    "seen": 1789595402.0651772,
     "ast_hash": "28fb1e928427db6c30c3293591b0868c",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-2-review.md": {
-    "mtime": 1789500859.3819697,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.142573,
+    "seen": 1789595402.0651772,
     "ast_hash": "e1e126f85d7431120659cbd41007a954",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-3-brief.md": {
-    "mtime": 1789500877.5424602,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3585804,
+    "seen": 1789589483.8106475,
     "ast_hash": "2a527f8ae699eda470d312cf23c5bc36",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-3-report.md": {
-    "mtime": 1789500906.1994822,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.0633333,
+    "seen": 1789595402.0651772,
     "ast_hash": "02e6314fe2483d13050f7ec1ec004909",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-3-review.md": {
-    "mtime": 1789500941.7348244,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.077704,
+    "seen": 1789595402.0651772,
     "ast_hash": "d414545075c7812e93e5dd41fd01ceb7",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-4-brief.md": {
-    "mtime": 1789500953.7349517,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3474865,
+    "seen": 1789589483.8106475,
     "ast_hash": "5b352f68270d7bf8b90bf55c4f293d24",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-4-report.md": {
-    "mtime": 1789501040.6690304,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.077704,
+    "seen": 1789595402.0651772,
     "ast_hash": "874454cf5c837223943cf846eb6a0491",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-4-review.md": {
-    "mtime": 1789501081.8983243,
-    "seen": 1789501149.7987869,
+    "mtime": 1789594558.142573,
+    "seen": 1789595402.0651772,
     "ast_hash": "6711ab08ef32596fb11350c162790bdc",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-5-brief.md": {
-    "mtime": 1789501098.1477845,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3836029,
+    "seen": 1789589483.8106475,
     "ast_hash": "e0dd2a0e9781be27d7925558af35ef10",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-15-workspace-continuo-layout.md": {
-    "mtime": 1789500277.740995,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3574445,
+    "seen": 1789589483.8106475,
     "ast_hash": "38704c92a73eb236154ff8e318afd278",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-15-workspace-continuo-layout-design.md": {
-    "mtime": 1789500156.3043575,
-    "seen": 1789501149.7987869,
+    "mtime": 1789587664.3836029,
+    "seen": 1789589483.8106475,
     "ast_hash": "6af7c5729bb3bd0903c2bd98963688ca",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/2026-09-15-workspace-continuo-layout/final-review.md": {
+    "mtime": 1789594558.077704,
+    "seen": 1789595402.0651772,
+    "ast_hash": "f028be75671519347a625b846d74c35e",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-5-report.md": {
+    "mtime": 1789594558.078706,
+    "seen": 1789595402.0651772,
+    "ast_hash": "3a503ba09197bcac96e8b2eb71cc8a46",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/2026-09-15-workspace-continuo-layout/task-5-review.md": {
+    "mtime": 1789594558.045179,
+    "seen": 1789595402.0651772,
+    "ast_hash": "18bfb91cf2145f641ec89bc0a05e29db",
+    "semantic_hash": ""
+  },
+  "_syntax_check.txt": {
+    "mtime": 1789593939.4097128,
+    "seen": 1789594339.6343875,
+    "ast_hash": "7a0d1fb2ffeec068ffb1e602908b3e63",
     "semantic_hash": ""
   }
 }
