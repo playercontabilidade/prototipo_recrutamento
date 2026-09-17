@@ -19359,6 +19359,14 @@ document.addEventListener("click", (event) => {
   if (target) target.click();
 });
 
+document.addEventListener("click", (event) => {
+  const closer = event.target.closest("[data-close-dialog]");
+  if (!closer) return;
+  event.preventDefault();
+  const dialog = document.querySelector(`#${closer.dataset.closeDialog}`);
+  if (dialog && typeof dialog.close === "function") dialog.close();
+});
+
 let uiEscapeArmed = false;
 document.addEventListener(
   "keydown",

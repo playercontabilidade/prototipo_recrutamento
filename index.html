@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <link rel="stylesheet" href="./styles.css?v=nav-hubs-460" />
+    <link rel="stylesheet" href="./styles.css?v=nav-hubs-463" />
   </head>
   <body>
     <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
@@ -556,7 +556,8 @@
                 <h2 id="analyticsDrillTitle">—</h2>
                 <p id="analyticsDrillMeta" class="panel-note"></p>
               </div>
-            </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsDrill">×</button>
+        </header>
             <div class="analytics-drill-tabs" id="analyticsDrillTabs" hidden role="tablist">
               <button type="button" class="is-active" data-drill-tab="candidate" role="tab">Candidatos</button>
               <button type="button" data-drill-tab="job" role="tab">Vagas</button>
@@ -565,9 +566,6 @@
               <div id="analyticsDrillList" class="analytics-drill-list"></div>
               <p id="analyticsDrillEmpty" class="candidate-empty" hidden>Nenhum registro neste recorte.</p>
             </div>
-            <footer class="dialog-actions">
-              <button class="secondary-button" type="button" id="closeAnalyticsDrill">Fechar</button>
-            </footer>
           </div>
         </dialog>
 
@@ -1091,12 +1089,9 @@
                 <h2 id="talentDrawerTitle">—</h2>
                 <p id="talentDrawerMeta" class="panel-note"></p>
               </div>
-              <button class="icon-button" type="button" id="closeTalentDrawerIcon" aria-label="Fechar" data-close-proxy="#closeTalentDrawer">×</button>
+              <button class="icon-button" type="button" id="closeTalentDrawer" aria-label="Fechar">×</button>
             </header>
             <div id="talentDrawerBody" class="talent-drawer-body talent-modal-body"></div>
-            <footer class="dialog-actions talent-modal-footer">
-              <button class="secondary-button" type="button" id="closeTalentDrawer">Fechar</button>
-            </footer>
           </div>
         </dialog>
 
@@ -2419,6 +2414,7 @@
             </button>
             <span><small>Tempo no processo</small><strong id="candidateProcessTime">—</strong></span>
           </div>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeCandidateDialog">×</button>
         </header>
 
         <div class="candidate-actions" aria-label="Ações do candidato">
@@ -2618,9 +2614,6 @@
             </section>
           </div>
         </div>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="button" id="closeCandidateDialog">Fechar</button>
-        </footer>
       </div>
     </dialog>
 
@@ -2632,6 +2625,7 @@
             <h2 id="entityName">Pessoa candidata</h2>
             <p id="entitySubtitle">Vaga</p>
           </div>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeEntityDialog">×</button>
         </header>
         <div class="entity-actions" id="entityActions" aria-label="Ações do perfil"></div>
         <div class="entity-body" id="entityModalBody">
@@ -2661,9 +2655,6 @@
             </div>
           </aside>
         </div>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="button" id="closeEntityDialog">Fechar</button>
-        </footer>
       </div>
     </dialog>
 
@@ -2679,6 +2670,7 @@
               <span class="interview-detail-status" id="detailInterviewStatus">Agendada</span>
             </div>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeInterviewDetail">×</button>
         </header>
 
         <div class="interview-detail-body">
@@ -2787,7 +2779,6 @@
                 </div>
               </div>
             </div>
-            <button class="secondary-button" type="button" id="closeInterviewDetail">Fechar</button>
           </div>
         </footer>
       </div>
@@ -2803,6 +2794,7 @@
             </div>
             <div class="conduct-header-actions">
               <button type="button" class="secondary-button" id="conductShowHistory">Histórico</button>
+              <button class="icon-button" aria-label="Fechar" type="button" id="conductCloseBtn">×</button>
             </div>
           </header>
           <div class="conduct-layout">
@@ -2865,7 +2857,6 @@
           </div>
           <footer class="conduct-footer">
             <button type="button" class="secondary-button" id="conductSaveDraft">Salvar rascunho</button>
-            <button type="button" class="secondary-button" id="conductCloseBtn">Fechar</button>
             <button type="button" class="primary-button" id="conductFinishBtn">Finalizar entrevista</button>
           </footer>
         </div>
@@ -2878,6 +2869,7 @@
             </div>
             <div class="conduct-header-actions">
               <button type="button" class="secondary-button" id="conductFinishBack">Voltar às perguntas</button>
+              <button class="icon-button" type="button" id="conductFinishCloseBtn" aria-label="Fechar">×</button>
             </div>
           </header>
           <div class="conduct-finish-form">
@@ -2912,7 +2904,6 @@
             </fieldset>
           </div>
           <footer class="dialog-actions conduct-footer">
-            <button type="button" class="secondary-button" id="conductFinishCloseBtn">Fechar</button>
             <button type="button" class="primary-button" id="conductFinishConfirm">Confirmar finalização</button>
           </footer>
         </div>
@@ -2927,11 +2918,11 @@
             <h2 id="conductReviewTitle">Respostas da entrevista</h2>
             <p class="panel-note" id="conductReviewMeta"></p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeConductReviewDialog" data-close-conduct-review>×</button>
         </header>
         <div class="conduct-review-summary" id="conductReviewSummary"></div>
         <div class="conduct-review-list" id="conductReviewList"></div>
         <footer class="interview-detail-footer conduct-review-footer">
-          <button class="secondary-button" type="button" id="closeConductReviewDialog" data-close-conduct-review>Fechar</button>
           <div class="interview-detail-toolbar">
             <div class="candidate-more-wrap interview-more-wrap">
               <button
@@ -2972,6 +2963,7 @@
               <span class="assignment-meta-chip" id="assignmentDetailResult">Resultado —</span>
             </div>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAssignmentDetail">×</button>
         </header>
 
         <div class="interview-detail-body assignment-detail-body">
@@ -3004,7 +2996,6 @@
 
         <footer class="interview-detail-footer assignment-detail-footer">
           <div class="interview-detail-toolbar" id="assignmentDetailActions"></div>
-          <button class="secondary-button" type="button" id="closeAssignmentDetail">Fechar</button>
         </footer>
       </div>
     </dialog>
@@ -3021,6 +3012,7 @@
               <span class="assignment-meta-chip" id="fitDetailAdherence">Aderência —</span>
             </div>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeFitDetail">×</button>
         </header>
         <div class="interview-detail-body assignment-detail-body">
           <section class="interview-detail-metrics" aria-label="Resumo do envio">
@@ -3039,7 +3031,6 @@
         </div>
         <footer class="interview-detail-footer">
           <div class="interview-detail-toolbar" id="fitDetailActions"></div>
-          <button class="secondary-button" type="button" id="closeFitDetail">Fechar</button>
         </footer>
       </div>
     </dialog>
@@ -3051,13 +3042,8 @@
             <h2>Comparar candidatos</h2>
             <p class="panel-note" id="fitCompareSubtitle">Aderência lado a lado</p>
           </div>
-        </header>
-        <div class="assignment-table-wrap">
-          <table class="assignment-table" id="fitCompareTable"></table>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitCompareDialog">×</button>
         </div>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="submit" value="close">Fechar</button>
-        </footer>
       </form>
     </dialog>
 
@@ -3068,6 +3054,7 @@
             <h2 id="scorecardEditorTitle">Novo scorecard</h2>
             <p class="panel-note">Defina pesos dos 6 blocos do Score Geral (soma 100%).</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scorecardEditorDialog">×</button>
         </header>
         <div class="scorecard-editor-body">
           <div class="scorecard-editor-top">
@@ -3098,6 +3085,7 @@
             <h2 id="scoreEvalDialogTitle">Avaliação</h2>
             <p id="scoreEvalDialogMeta"></p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreEvaluationDialog">×</button>
         </header>
         <div class="interview-detail-body assignment-detail-body">
           <div class="score-eval-summary" id="scoreEvalSummary"></div>
@@ -3116,13 +3104,8 @@
             <h2>Comparar Score Geral</h2>
             <p class="panel-note" id="scoreCompareSubtitle">Composição lado a lado</p>
           </div>
-        </header>
-        <div class="assignment-table-wrap">
-          <table class="assignment-table" id="scoreCompareTable"></table>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreCompareDialog">×</button>
         </div>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="submit" value="close">Fechar</button>
-        </footer>
       </form>
     </dialog>
 
@@ -3133,6 +3116,7 @@
             <h2>Aplicar Fit Cultural</h2>
             <p class="panel-note" id="fitApplyCandidateLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitApplyDialog">×</button>
         </header>
         <label class="form-field">
           <span>Modelo</span>
@@ -3154,9 +3138,7 @@
             <h2>Alterar prazo</h2>
             <p class="panel-note" id="assignmentDueLabel">Teste</p>
           </div>
-        </header>
-        <label class="form-field">
-          <span>Novo prazo</span>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="assignmentDueDialog">×</button>
           <input id="assignmentDueInput" type="datetime-local" required />
         </label>
         <footer class="stack-dialog-actions">
@@ -3173,11 +3155,9 @@
             <h2>Histórico resumido</h2>
             <p class="panel-note" id="conductHistoryCandidate">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductHistoryDialog">×</button>
         </header>
         <ul id="conductHistoryList" class="conduct-history-list"></ul>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="submit" value="close">Fechar</button>
-        </footer>
       </form>
     </dialog>
 
@@ -3188,6 +3168,7 @@
             <h2>Sair da condução?</h2>
             <p class="panel-note">Há um rascunho. Você pode continuar depois pelo detalhe da entrevista.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductExitDialog">×</button>
         </header>
         <footer class="stack-dialog-actions">
           <button value="cancel" class="secondary-button">Continuar conduzindo</button>
@@ -3203,6 +3184,7 @@
             <h2>Perguntas obrigatórias pendentes</h2>
             <p class="panel-note">Responda as perguntas abaixo antes de finalizar.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductPendingDialog">×</button>
         </header>
         <ul id="conductPendingList" class="conduct-pending-list"></ul>
         <footer class="stack-dialog-actions">
@@ -3218,6 +3200,7 @@
             <h2>Cancelar entrevista</h2>
             <p id="interviewCancelLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewCancelDialog">×</button>
         </header>
         <label class="form-field">
           <span>Motivo</span>
@@ -3237,6 +3220,7 @@
             <h2>Pedir reagendamento</h2>
             <p id="candidateRescheduleLabel">Entrevista</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="candidateRescheduleDialog">×</button>
         </header>
         <label class="form-field">
           <span>Motivo</span>
@@ -3266,6 +3250,7 @@
             <h2 id="interviewDialogTitle">Agendar entrevista</h2>
             <p id="interviewCandidateLabel" hidden>Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewDialog">×</button>
         </header>
 
         <label class="form-field" id="interviewCandidateField">
@@ -3374,7 +3359,8 @@
           <h2>Conflito de horário</h2>
           <p id="interviewConflictMessage">Há overlap com outra entrevista ativa.</p>
         </div>
-      </header>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewConflictDialog">×</button>
+        </header>
       <ul id="interviewConflictList" class="interview-conflict-list"></ul>
       <footer class="schedule-footer">
         <button type="button" class="secondary-button" id="cancelInterviewConflict">Voltar</button>
@@ -3385,7 +3371,8 @@
     <dialog class="stack-dialog picker-dialog" id="datePickerDialog">
       <header class="stack-dialog-header">
         <h2>Escolher data</h2>
-      </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeDatePicker">×</button>
+        </header>
       <div class="calendar-heading picker-calendar-heading">
         <button type="button" id="datePickerPrev" aria-label="Mês anterior">‹</button>
         <h2 id="datePickerMonth">Agosto 2026</h2>
@@ -3395,19 +3382,14 @@
         <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
       </div>
       <div class="calendar-grid" id="datePickerGrid"></div>
-      <footer class="dialog-actions">
-        <button class="secondary-button" type="button" id="closeDatePicker">Fechar</button>
-      </footer>
     </dialog>
 
     <dialog class="stack-dialog picker-dialog" id="timePickerDialog">
       <header class="stack-dialog-header">
         <h2>Escolher horário</h2>
-      </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTimePicker">×</button>
+        </header>
       <div class="time-slot-grid" id="timeSlotGrid"></div>
-      <footer class="dialog-actions">
-        <button class="secondary-button" type="button" id="closeTimePicker">Fechar</button>
-      </footer>
     </dialog>
 
     <dialog class="stack-dialog contact-dialog" id="contactDialog">
@@ -3418,6 +3400,7 @@
             <p id="contactCandidateLabel">Candidato</p>
             <p class="contact-email" id="contactCandidateEmail">email@exemplo.com</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelContact">×</button>
         </header>
 
         <div class="contact-channels" role="tablist" aria-label="Canal de contato">
@@ -3454,7 +3437,8 @@
           </div>
           <p id="offerDialogMeta" class="offer-dialog-meta"></p>
         </div>
-      </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeOfferDialog">×</button>
+        </header>
 
       <div class="offer-dialog-body">
         <div class="offer-summary" id="offerSummary"></div>
@@ -3482,9 +3466,6 @@
         <div class="offer-history" id="offerHistory"></div>
         <div class="offer-versions" id="offerVersions"></div>
       </div>
-      <footer class="dialog-actions">
-        <button class="secondary-button" type="button" id="closeOfferDialog">Fechar</button>
-      </footer>
     </dialog>
 
     <dialog class="stack-dialog offer-form-dialog" id="offerFormDialog">
@@ -3494,6 +3475,7 @@
             <h2 id="offerFormTitle">Nova proposta</h2>
             <p id="offerFormMeta" class="offer-dialog-meta"></p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferForm">×</button>
         </header>
 
         <div class="offer-form-body">
@@ -3566,6 +3548,7 @@
       <form id="offerRefuseForm">
         <header class="stack-dialog-header">
           <h2>Registrar recusa</h2>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferRefuse">×</button>
         </header>
         <p id="offerRefuseCandidateLabel" class="panel-note"></p>
         <label class="form-field">
@@ -3585,6 +3568,10 @@
 
     <dialog class="job-dialog manager-dialog" id="managerDialog">
       <div class="dialog-heading">
+        <header class="stack-dialog-header dialog-close-only-header">
+          <div></div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerDialog">×</button>
+        </header>
         <div>
           <span class="eyebrow">RESPONSÁVEL</span>
           <h2>Atribuir gestor</h2>
@@ -3592,25 +3579,30 @@
         </div>
       </div>
       <div class="manager-list" id="managerList"></div>
-      <footer class="dialog-actions">
-        <button class="secondary-button" type="button" id="closeManagerDialog">Fechar</button>
-      </footer>
     </dialog>
 
     <dialog class="settings-form-dialog" id="departmentFormDialog">
-      <form id="departmentForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="departmentFormTitle">Novo departamento</h2></div></header><label class="form-field"><span>Nome</span><input id="departmentNameInput" required /></label><label class="form-field"><span>Descrição</span><textarea id="departmentDescriptionInput" rows="3"></textarea></label><label class="test-switch"><input id="departmentActiveInput" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="departmentFormDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="departmentForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="departmentFormTitle">Novo departamento</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="departmentFormDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Nome</span><input id="departmentNameInput" required /></label><label class="form-field"><span>Descrição</span><textarea id="departmentDescriptionInput" rows="3"></textarea></label><label class="test-switch"><input id="departmentActiveInput" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="departmentFormDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsManagerDialog">
-      <form id="settingsManagerForm"><header><div><span class="eyebrow">ACESSO AO PORTAL</span><h2 id="settingsManagerFormTitle">Novo responsável</h2></div></header><label class="form-field"><span>Nome completo</span><input id="settingsManagerName" required /></label><label class="form-field"><span>E-mail corporativo</span><input id="settingsManagerEmail" type="email" required /><small class="field-hint">Usado para acesso e reenvio das credenciais</small></label><label class="form-field"><span>Telefone</span><input id="settingsManagerPhone" /></label><label class="form-field"><span>Empresa</span><select id="settingsManagerCompany" required></select></label><label class="form-field"><span>Departamento</span><select id="settingsManagerDepartment" required></select></label><label class="form-field"><span>Cargo ou função</span><input id="settingsManagerRole" placeholder="Ex.: Analista de RH" /></label><label class="test-switch"><input id="settingsManagerPortalAccess" type="checkbox" checked /><span class="test-switch-track"></span>Acesso ao portal</label><label class="test-switch"><input id="settingsManagerActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsManagerDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="settingsManagerForm"><header><div><span class="eyebrow">ACESSO AO PORTAL</span><h2 id="settingsManagerFormTitle">Novo responsável</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsManagerDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Nome completo</span><input id="settingsManagerName" required /></label><label class="form-field"><span>E-mail corporativo</span><input id="settingsManagerEmail" type="email" required /><small class="field-hint">Usado para acesso e reenvio das credenciais</small></label><label class="form-field"><span>Telefone</span><input id="settingsManagerPhone" /></label><label class="form-field"><span>Empresa</span><select id="settingsManagerCompany" required></select></label><label class="form-field"><span>Departamento</span><select id="settingsManagerDepartment" required></select></label><label class="form-field"><span>Cargo ou função</span><input id="settingsManagerRole" placeholder="Ex.: Analista de RH" /></label><label class="test-switch"><input id="settingsManagerPortalAccess" type="checkbox" checked /><span class="test-switch-track"></span>Acesso ao portal</label><label class="test-switch"><input id="settingsManagerActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsManagerDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsRoleDialog">
-      <form id="settingsRoleForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRoleFormTitle">Novo cargo</h2></div></header><label class="form-field"><span>Nome</span><input id="settingsRoleName" required /></label><label class="form-field"><span>Departamento</span><select id="settingsRoleDepartment" required></select></label><label class="form-field"><span>Descrição</span><textarea id="settingsRoleDescription" rows="4"></textarea></label><label class="test-switch"><input id="settingsRoleActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRoleDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="settingsRoleForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRoleFormTitle">Novo cargo</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsRoleDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Nome</span><input id="settingsRoleName" required /></label><label class="form-field"><span>Departamento</span><select id="settingsRoleDepartment" required></select></label><label class="form-field"><span>Descrição</span><textarea id="settingsRoleDescription" rows="4"></textarea></label><label class="test-switch"><input id="settingsRoleActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRoleDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog company-form-dialog" id="settingsCompanyDialog">
-      <form id="settingsCompanyForm"><header><div><span class="eyebrow">EMPRESAS</span><h2 id="settingsCompanyFormTitle">Nova empresa</h2></div></header>
+      <form id="settingsCompanyForm"><header><div><span class="eyebrow">EMPRESAS</span><h2 id="settingsCompanyFormTitle">Nova empresa</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsCompanyDialog" aria-label="Fechar">×</button>
+        </header>
         <label class="form-field"><span>Nome da empresa</span><input id="settingsCompanyName" required /></label>
         <label class="form-field"><span>Localização padrão</span><input id="settingsCompanyLocation" required /></label>
         <label class="form-field"><span>Sobre a empresa</span><textarea id="settingsCompanyAbout" rows="4"></textarea></label>
@@ -3633,6 +3625,7 @@
       <div class="analysis-dialog-content">
         <header>
           <div><span class="eyebrow">PARECER DO GESTOR</span><h2 id="analysisCandidateName">Candidato</h2><p id="analysisCandidateRole">Vaga</p></div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerAnalysis">×</button>
         </header>
         <div class="analysis-detail-grid">
           <div><span>Departamento</span><strong id="analysisDepartment"></strong></div>
@@ -3642,7 +3635,7 @@
         </div>
         <section class="analysis-opinion"><h3>Parecer</h3><p id="analysisOpinion"></p></section>
         <label class="form-field"><span>Observação do RH</span><textarea id="analysisRhNote" rows="3" placeholder="Registre uma observação para a decisão..."></textarea></label>
-        <footer class="dialog-actions"><button class="danger-button analysis-reject" type="button" data-analysis-decision="rejected">Reprovar</button><button class="primary-button" type="button" data-analysis-decision="approved">Aprovar análise</button><button class="secondary-button" type="button" id="closeManagerAnalysis">Fechar</button></footer>
+        <footer class="dialog-actions"><button class="danger-button analysis-reject" type="button" data-analysis-decision="rejected">Reprovar</button><button class="primary-button" type="button" data-analysis-decision="approved">Aprovar análise</button></footer>
       </div>
     </dialog>
 
@@ -3662,6 +3655,7 @@
             <div class="candidate-dossier-tags" id="gestorCandHeaderChips"></div>
           </div>
           <div class="candidate-dossier-metrics" id="gestorCandMetrics" aria-label="Resumo do processo"></div>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeGestorCandidatePanel">×</button>
         </header>
         <p id="gestorCandAnalysisBanner" class="gestor-analysis-pending" hidden></p>
         <div class="candidate-actions" aria-label="Ações do gestor">
@@ -3675,9 +3669,6 @@
           </nav>
           <div class="candidate-dossier-content" id="gestorAnalysisContent"></div>
         </div>
-        <footer class="dialog-actions">
-          <button class="secondary-button" type="button" id="closeGestorCandidatePanel">Fechar</button>
-        </footer>
       </div>
     </dialog>
 
@@ -3689,6 +3680,7 @@
             <h2 id="gestorCandidateDecisionTitle">Decisão</h2>
             <p id="gestorCandidateDecisionSubtitle">Registre a decisão desta análise.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorCandidateDecisionCancel">×</button>
         </header>
         <div class="talent-edit-fields" id="gestorCandidateDecisionFields"></div>
         <footer class="dialog-actions">
@@ -3706,6 +3698,7 @@
             <h2>Solicitar entrevista</h2>
             <p id="gestorInterviewRequestSubtitle">Pedido ao RH para agendar com o candidato.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorInterviewRequestCancel">×</button>
         </header>
         <div class="talent-edit-fields gestor-interview-request-fields">
           <label class="form-field">
@@ -3771,6 +3764,7 @@
             <h2>Solicitação de entrevista</h2>
             <p id="rhInterviewRequestSubtitle">Analise o pedido do gestor e proponha um horário.</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="rhInterviewRequestClose">×</button>
         </header>
         <div class="talent-edit-fields" id="rhInterviewRequestSummary"></div>
         <div class="talent-edit-fields">
@@ -3797,7 +3791,6 @@
         </div>
         <footer class="dialog-actions">
           <button class="secondary-button" type="button" id="rhInterviewRequestCancelBtn">Cancelar solicitação</button>
-          <button class="secondary-button" type="button" id="rhInterviewRequestClose">Fechar</button>
           <button class="primary-button" type="submit">Propor horário</button>
         </footer>
       </form>
@@ -3811,11 +3804,11 @@
             <h2 id="gestorIrConfirmTitle">Acompanhar solicitação</h2>
             <p id="gestorIrConfirmSubtitle">Detalhes do pedido ao RH.</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="gestorIrConfirmClose">×</button>
         </header>
         <div class="talent-edit-fields" id="gestorIrConfirmBody"></div>
         <footer class="dialog-actions">
           <button class="secondary-button" type="button" id="gestorIrConfirmCancelReq">Cancelar solicitação</button>
-          <button class="secondary-button" type="button" id="gestorIrConfirmClose">Fechar</button>
           <button class="primary-button" type="submit" id="gestorIrConfirmSubmit" hidden>Confirmar horário</button>
         </footer>
       </form>
@@ -3825,11 +3818,11 @@
       <div class="test-preview-content">
         <header>
           <div><span class="eyebrow">PRÉVIA DO TESTE</span><h2 id="testPreviewTitle">Teste técnico</h2><p id="testPreviewMeta"></p></div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTestPreview">×</button>
         </header>
         <div class="test-preview-score" id="testPreviewScore" hidden></div>
         <div class="test-preview-body" id="testPreviewBody"></div>
         <footer>
-          <button class="secondary-button" type="button" id="closeTestPreview">Fechar</button>
           <button class="primary-button" type="button" id="editFromPreview">Editar teste</button>
         </footer>
       </div>
@@ -3842,37 +3835,51 @@
             <span class="eyebrow">PRÉVIA DA FICHA</span>
             <h2 id="sheetPreviewTitle">Ficha</h2>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeSheetPreview">×</button>
         </header>
         <div class="sheet-preview-body" id="sheetPreviewBody"></div>
         <footer>
-          <button class="secondary-button" type="button" id="closeSheetPreview">Fechar</button>
           <button class="primary-button" type="button" id="editFromSheetPreview">Editar ficha</button>
         </footer>
       </div>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsBenefitDialog">
-      <form id="settingsBenefitForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsBenefitFormTitle">Novo benefício</h2></div></header><label class="form-field"><span>Nome</span><input id="settingsBenefitName" required /></label><label class="form-field"><span>Descrição</span><textarea id="settingsBenefitDescription" rows="4" placeholder="Explique o que o benefício oferece"></textarea></label><label class="test-switch"><input id="settingsBenefitActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsBenefitDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="settingsBenefitForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsBenefitFormTitle">Novo benefício</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsBenefitDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Nome</span><input id="settingsBenefitName" required /></label><label class="form-field"><span>Descrição</span><textarea id="settingsBenefitDescription" rows="4" placeholder="Explique o que o benefício oferece"></textarea></label><label class="test-switch"><input id="settingsBenefitActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsBenefitDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsStageDialog">
-      <form id="settingsStageForm"><header><div><span class="eyebrow">PIPELINE</span><h2>Nova etapa</h2></div></header><label class="form-field"><span>Código</span><input id="settingsStageCode" required maxlength="32" placeholder="Ex.: ENTREVISTA_TECNICA" /><small class="field-hint">Use um código único. Não pode ser TRIAGEM, PROPOSTA ou outro código já cadastrado.</small></label><label class="form-field"><span>Nome exibido</span><input id="settingsStageName" required maxlength="60" placeholder="Ex.: Entrevista técnica" /><small class="field-hint">Colunas organizacionais não alteram o status nem enviam e-mail ao candidato.</small></label><label class="test-switch"><input id="settingsStageActive" type="checkbox" checked /><span class="test-switch-track"></span><span><strong>Ativa</strong><small>Desmarque para ocultar a coluna do kanban</small></span></label><p class="form-error" id="settingsStageError" role="alert" hidden></p><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsStageDialog">Cancelar</button><button class="primary-button" type="submit">Criar etapa</button></footer></form>
+      <form id="settingsStageForm"><header><div><span class="eyebrow">PIPELINE</span><h2>Nova etapa</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsStageDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Código</span><input id="settingsStageCode" required maxlength="32" placeholder="Ex.: ENTREVISTA_TECNICA" /><small class="field-hint">Use um código único. Não pode ser TRIAGEM, PROPOSTA ou outro código já cadastrado.</small></label><label class="form-field"><span>Nome exibido</span><input id="settingsStageName" required maxlength="60" placeholder="Ex.: Entrevista técnica" /><small class="field-hint">Colunas organizacionais não alteram o status nem enviam e-mail ao candidato.</small></label><label class="test-switch"><input id="settingsStageActive" type="checkbox" checked /><span class="test-switch-track"></span><span><strong>Ativa</strong><small>Desmarque para ocultar a coluna do kanban</small></span></label><p class="form-error" id="settingsStageError" role="alert" hidden></p><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsStageDialog">Cancelar</button><button class="primary-button" type="submit">Criar etapa</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog settings-alert-dialog" id="stageCandidatesDialog">
-      <div class="settings-alert-content"><header><div><span class="eyebrow">ATENÇÃO</span><h2>Coluna com candidaturas</h2></div></header><p>Existem candidaturas nesta coluna. Mova os cards antes de ocultar.</p><footer><button class="primary-button" type="button" data-close-settings-dialog="stageCandidatesDialog">Entendi</button></footer></div>
+      <div class="settings-alert-content"><header><div><span class="eyebrow">ATENÇÃO</span><h2>Coluna com candidaturas</h2></div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="stageCandidatesDialog">×</button>
+        </header><p>Existem candidaturas nesta coluna. Mova os cards antes de ocultar.</p><footer><button class="primary-button" type="button" data-close-settings-dialog="stageCandidatesDialog">Entendi</button></footer></div>
     </dialog>
 
     <dialog class="settings-form-dialog email-template-dialog" id="settingsEmailDialog">
-      <form id="settingsEmailForm"><header><div><span class="eyebrow" id="settingsEmailCode">CÓDIGO</span><h2 id="settingsEmailFormTitle">Editar modelo</h2></div></header><label class="form-field"><span>Nome</span><input id="settingsEmailName" required /></label><label class="form-field"><span>Assunto</span><input id="settingsEmailSubject" required /></label><label class="form-field"><span>Corpo</span><textarea id="settingsEmailBody" rows="10" required></textarea><small class="field-hint">Use {{candidateName}}, {{jobTitle}}, {{siteUrl}}, {{applicationsLink}}, entre outras variáveis.</small></label><label class="test-switch"><input id="settingsEmailActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsEmailDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="settingsEmailForm"><header><div><span class="eyebrow" id="settingsEmailCode">CÓDIGO</span><h2 id="settingsEmailFormTitle">Editar modelo</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsEmailDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Nome</span><input id="settingsEmailName" required /></label><label class="form-field"><span>Assunto</span><input id="settingsEmailSubject" required /></label><label class="form-field"><span>Corpo</span><textarea id="settingsEmailBody" rows="10" required></textarea><small class="field-hint">Use {{candidateName}}, {{jobTitle}}, {{siteUrl}}, {{applicationsLink}}, entre outras variáveis.</small></label><label class="test-switch"><input id="settingsEmailActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsEmailDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog rejection-form-dialog" id="settingsRejectionDialog">
-      <form id="settingsRejectionForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRejectionFormTitle">Nova justificativa</h2></div></header><label class="form-field"><span>Mensagem</span><textarea id="settingsRejectionMessage" rows="8" required placeholder="Escreva a justificativa apresentada ao candidato"></textarea></label><label class="test-switch"><input id="settingsRejectionActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRejectionDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
+      <form id="settingsRejectionForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRejectionFormTitle">Nova justificativa</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsRejectionDialog" aria-label="Fechar">×</button>
+        </header><label class="form-field"><span>Mensagem</span><textarea id="settingsRejectionMessage" rows="8" required placeholder="Escreva a justificativa apresentada ao candidato"></textarea></label><label class="test-switch"><input id="settingsRejectionActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRejectionDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="job-dialog" id="jobDialog">
       <form method="dialog" id="jobForm">
+        <header class="stack-dialog-header dialog-close-only-header">
+          <div></div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDialog">×</button>
+        </header>
         <div class="dialog-heading">
           <div>
             <span class="eyebrow">NOVA OPORTUNIDADE</span>
@@ -3928,6 +3935,7 @@
             <h2 id="jobDetailTitle">Vaga</h2>
             <p id="jobDetailSubtitle">Detalhes</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeJobDetailDialog">×</button>
         </header>
 
         <div class="job-detail-body">
@@ -3999,10 +4007,6 @@
             </section>
           </div>
         </div>
-
-        <footer class="dialog-actions job-detail-footer">
-          <button class="secondary-button" type="button" id="closeJobDetailDialog">Fechar</button>
-        </footer>
       </div>
     </dialog>
 
@@ -4015,6 +4019,7 @@
             <p id="jobStatusDialogLabel">Vaga</p>
             <p class="field-hint" id="jobStatusDialogHint" hidden></p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="jobStatusDialog">×</button>
         </header>
         <label class="form-field" id="jobStatusReasonField">
           <span id="jobStatusReasonLabel">Motivo</span>
@@ -4039,6 +4044,7 @@
             <h2>Mover candidato</h2>
             <p id="moveStageCandidateLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelMoveStage">×</button>
         </header>
         <label class="form-field">
           <span>Nova etapa</span>
@@ -4084,6 +4090,7 @@
             <h2 id="pipelineActionTitle">Ação</h2>
             <p id="pipelineActionCandidateLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPipelineAction">×</button>
         </header>
         <label class="form-field" id="pipelineActionFieldWrap">
           <span id="pipelineActionFieldLabel">Valor</span>
@@ -4112,6 +4119,7 @@
             <h2 id="hiringRequestDecisionTitle">Decisão</h2>
             <p id="hiringRequestDecisionSubtitle">Registre a decisão desta etapa.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#hiringRequestDecisionCancel">×</button>
         </header>
         <div class="talent-edit-fields" id="hiringRequestDecisionFields"></div>
         <footer class="dialog-actions">
@@ -4129,6 +4137,7 @@
             <h2 id="talentEditTitle">Editar</h2>
             <p id="talentEditSubtitle">Atualize o registro do talento.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#talentEditCancel">×</button>
         </header>
         <div id="talentEditFields" class="talent-edit-fields"></div>
         <footer class="dialog-actions">
@@ -4146,6 +4155,7 @@
             <h2>Filtros avançados</h2>
             <p>Refine a busca para reaproveitar candidatos com mais precisão.</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTalentFiltersDialog">×</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4209,7 +4219,6 @@
           </label>
           <div class="pipeline-filter-actions candidate-filter-actions">
             <button class="secondary-button" type="button" id="talentFiltersClear">Limpar</button>
-            <button class="secondary-button" type="button" id="closeTalentFiltersDialog">Fechar</button>
             <button class="primary-button" type="submit">Aplicar</button>
           </div>
         </div>
@@ -4224,6 +4233,7 @@
             <h2>Filtros avançados</h2>
             <p>Refine o recorte dos indicadores sem sobrecarregar o painel.</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsFiltersDialog">×</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4301,7 +4311,6 @@
         <footer class="dialog-actions candidate-filter-actions">
           <button class="secondary-button" type="button" id="analyticsFiltersClear">Limpar</button>
           <button class="primary-button" type="submit">Aplicar</button>
-          <button class="secondary-button" type="button" id="closeAnalyticsFiltersDialog">Fechar</button>
         </footer>
       </form>
     </dialog>
@@ -4314,6 +4323,7 @@
             <h2>Filtros avançados</h2>
             <p>Refine a lista de candidatos sem sobrecarregar o quadro.</p>
           </div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closePipelineFiltersDialog">×</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4398,7 +4408,6 @@
         <footer class="dialog-actions candidate-filter-actions">
           <button class="secondary-button" type="button" id="pipelineFiltersClear">Limpar</button>
           <button class="primary-button" type="submit">Aplicar</button>
-          <button class="secondary-button" type="button" id="closePipelineFiltersDialog">Fechar</button>
         </footer>
       </form>
     </dialog>
@@ -4410,6 +4419,7 @@
             <h2>Dispensar candidato</h2>
             <p id="dismissCandidateLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDismiss">×</button>
         </header>
         <label class="form-field">
           <span>Motivo da dispensa</span>
@@ -4435,6 +4445,7 @@
             <h2>Bloquear candidato</h2>
             <p id="blockCandidateLabel">Candidato</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBlock">×</button>
         </header>
         <label class="form-field">
           <span>Motivo do bloqueio</span>
@@ -4465,6 +4476,7 @@
             <h2>LGPD e retenção</h2>
             <p>Defina o prazo padrão de retenção de dados pessoais.</p>
           </div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelLgpd">×</button>
         </header>
         <label class="form-field">
           <span>Dias de retenção</span>
@@ -4484,7 +4496,8 @@
           <h2>Escolher horário</h2>
           <p id="bookingCandidateLabel">Disponibilidade da entrevista</p>
         </div>
-      </header>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBooking">×</button>
+        </header>
       <div class="booking-slots" id="bookingSlotGrid"></div>
       <div class="dialog-actions">
         <button class="secondary-button" type="button" id="cancelBooking">Cancelar</button>
@@ -4949,7 +4962,8 @@
             <div>
               <h2>Filtros</h2>
             </div>
-          </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateFiltersDialog">×</button>
+        </header>
           <label class="form-field">
             <span>Tipo de contratação</span>
             <select id="candidateFilterContract" name="contract">
@@ -4990,7 +5004,6 @@
           <footer class="dialog-actions candidate-filter-actions">
             <button class="secondary-button" type="button" id="candidateFiltersClear">Limpar</button>
             <button class="primary-button" type="submit">Aplicar</button>
-            <button class="secondary-button" type="button" id="closeCandidateFiltersDialog">Fechar</button>
           </footer>
         </form>
       </dialog>
@@ -5003,7 +5016,8 @@
               <h2>Candidatura concluída</h2>
               <p id="candidateApplicationSuccessCopy">Sua candidatura foi enviada com sucesso.</p>
             </div>
-          </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateApplicationSuccess">×</button>
+        </header>
           <div class="candidate-success-content">
             <div class="candidate-apply-success-icon" aria-hidden="true">
               <svg class="ui-icon"><use href="#i-check-circle" /></svg>
@@ -5029,7 +5043,6 @@
           </div>
           <footer class="dialog-actions">
             <button class="primary-button" type="button" id="candidateApplicationSuccessContinue">Ver minhas candidaturas</button>
-            <button class="secondary-button" type="button" id="closeCandidateApplicationSuccess">Fechar</button>
           </footer>
         </form>
       </dialog>
@@ -5042,7 +5055,8 @@
               <h2 id="candidateTestDialogTitle">Teste técnico</h2>
               <p id="candidateTestDialogDescription">Confira os detalhes antes de começar.</p>
             </div>
-          </header>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateTestDialog">×</button>
+        </header>
           <div class="candidate-test-dialog-content">
             <div class="candidate-test-dialog-meta">
               <div><span>Questões</span><strong id="candidateTestDialogQuestions">0</strong></div>
@@ -5054,7 +5068,6 @@
           <footer class="dialog-actions">
             <button class="secondary-button" type="button" id="cancelCandidateTest">Agora não</button>
             <button class="primary-button" type="button" id="candidateTestStart">Iniciar teste</button>
-            <button class="secondary-button" type="button" id="closeCandidateTestDialog">Fechar</button>
           </footer>
         </form>
       </dialog>
@@ -5069,6 +5082,6 @@
       </div>
     </div>
 
-    <script src="./app.js?v=nav-hubs-460"></script>
+    <script src="./app.js?v=nav-hubs-461"></script>
   </body>
 </html>

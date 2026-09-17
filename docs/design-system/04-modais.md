@@ -98,8 +98,10 @@ dialog.close();
 | Rótulo | Quando |
 |--------|--------|
 | **Cancelar** | Abandonar formulário / edição sem salvar |
-| **Fechar** | Sair de modal só de leitura / detalhe |
-| **×** | Escondido quando o footer já tem Cancelar ou Fechar |
+| **×** | Sempre no canto superior direito do header (`icon-button`, `aria-label="Fechar"`) |
+| **Fechar (footer)** | Não usar — substituído pelo × do header |
+
+Proxies: `[data-close-proxy="#id"]` e `[data-close-dialog="dialogId"]` para reutilizar listeners existentes.
 
 ## Três padrões de abas
 
