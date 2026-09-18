@@ -71,7 +71,7 @@ Dois famílias principais. **Não misturar** estruturas entre elas.
 - Largura `640px`
 - Header: nome à esquerda, **badge status + ×** à direita (mesma linha)
 - Seções: `.interview-detail-section` com título uppercase
-- Ações no footer: primário + secundários em linha
+- Footer: **⋮** à esquerda (mais ações); secundários + **primário** à direita. Sair só com × do header.
 
 ## D) `candidate-filter-dialog` — filtros candidato
 
@@ -102,6 +102,19 @@ dialog.close();
 | **Fechar (footer)** | Não usar — substituído pelo × do header |
 
 Proxies: `[data-close-proxy="#id"]` e `[data-close-dialog="dialogId"]` para reutilizar listeners existentes.
+
+## Footer de detalhe + menu ⋮
+
+Padrão nos modais de detalhe (entrevista, ficha, teste, fit, score, candidato, vaga, proposta):
+
+- **⋮** à esquerda do footer/toolbar
+- Ações secundárias + **primário** à direita
+- Direção do menu (`placeCandidateMoreMenu`), pelos quadrantes do dialog:
+  - Inferior esquerdo → **direita + cima**
+  - Inferior direito → **esquerda + cima**
+  - Superior esquerdo → **direita + baixo**
+  - Superior direito → **esquerda + baixo**
+  - Se não couber, fallback para o lado oposto.
 
 ## Três padrões de abas
 
