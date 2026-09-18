@@ -21028,7 +21028,6 @@ function pinWorkspaceChrome() {
     return;
   }
 
-  shell.classList.remove("is-sidebar-collapsed");
   sb.classList.remove("open");
   const pin = (el, props) => {
     Object.entries(props).forEach(([key, value]) => el.style.setProperty(key, value, "important"));
@@ -21045,10 +21044,6 @@ function pinWorkspaceChrome() {
     position: "relative",
     inset: "auto",
     transform: "none",
-    flex: "0 0 248px",
-    width: "248px",
-    "min-width": "248px",
-    "max-width": "248px",
     height: "100%",
     "overflow-x": "hidden",
     "overflow-y": "auto",

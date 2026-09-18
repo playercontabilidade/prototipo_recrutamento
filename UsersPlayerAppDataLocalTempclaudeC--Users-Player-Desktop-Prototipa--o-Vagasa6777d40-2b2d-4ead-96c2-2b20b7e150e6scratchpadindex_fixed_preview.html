@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -157,7 +157,7 @@
           aria-expanded="false"
           aria-controls="sidebar"
         >
-          <span aria-hidden="true">☰</span>
+          <span aria-hidden="true">â˜°</span>
         </button>
         <div class="app-bar-brand">
           <div>
@@ -237,7 +237,7 @@
           <div class="sidebar-nav-head-top">
             <p class="nav-kicker">Navegação</p>
             <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Fechar menu">
-              <span aria-hidden="true">×</span>
+              <span aria-hidden="true">Ã—</span>
             </button>
           </div>
           <div class="sidebar-areas-row">
@@ -250,9 +250,14 @@
               aria-expanded="true"
               aria-controls="sidebar"
             >
-              <span aria-hidden="true">‹</span>
+              <span aria-hidden="true">â€¹</span>
             </button>
           </div>
+        </div>
+
+        <div class="workspace-role-switch" role="group" aria-label="Ver como">
+          <button type="button" class="is-active" data-workspace-role="rh" aria-pressed="true">RH</button>
+          <button type="button" data-workspace-role="gestor" aria-pressed="false">Gestor</button>
         </div>
 
         <nav class="main-nav" aria-label="Navegação principal">
@@ -262,7 +267,7 @@
               <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-home" /></svg></span>
               <span class="nav-label">Início</span>
             </a>
-            <a href="#gestor-pendencias" class="nav-item" data-page="gestor" data-gestor-nav="recrutamento" title="Recrutamento — vagas, pendências e solicitações">
+            <a href="#gestor-pendencias" class="nav-item" data-page="gestor" data-gestor-nav="recrutamento" title="Recrutamento â€” vagas, pendências e solicitações">
               <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
               <span class="nav-label">Recrutamento</span>
               <span class="nav-count" id="gestorPendenciasNavCount">0</span>
@@ -388,7 +393,7 @@
             >
               <div class="home-area-card-head">
                 <h2>Recrutamento</h2>
-                <span class="home-area-open">Abrir →</span>
+                <span class="home-area-open">Abrir â†’</span>
               </div>
               <p class="home-area-pulse" id="homeMapRecrutamentoPulse">Pipeline · Pendências · Talentos</p>
               <div class="home-area-stats" aria-label="Pulso de recrutamento">
@@ -405,7 +410,7 @@
             >
               <div class="home-area-card-head">
                 <h2>Seleção</h2>
-                <span class="home-area-open">Abrir →</span>
+                <span class="home-area-open">Abrir â†’</span>
               </div>
               <p class="home-area-pulse" id="homeMapSelecaoPulse">Entrevistas · Instrumentos</p>
               <div class="home-area-stats" aria-label="Pulso de seleção">
@@ -421,7 +426,7 @@
             >
               <div class="home-area-card-head">
                 <h2>Contratação</h2>
-                <span class="home-area-open">Abrir →</span>
+                <span class="home-area-open">Abrir â†’</span>
               </div>
               <p class="home-area-pulse" id="homeMapContratacaoPulse">Pré-admissão · Encerrados</p>
               <div class="home-area-stats" aria-label="Pulso de contratação">
@@ -440,7 +445,7 @@
                 </div>
                 <div class="home-hoje-actions">
                   <span class="home-hoje-count"><strong id="dashPendenciasHojeCount">0</strong> na fila</span>
-                  <button type="button" class="dash-history-link" data-go-page="pendencias">Ver todas →</button>
+                  <button type="button" class="dash-history-link" data-go-page="pendencias">Ver todas â†’</button>
                 </div>
               </div>
               <div class="dash-pend-list" id="dashPendenciasHojeList"></div>
@@ -477,10 +482,10 @@
                 </article>
               </div>
               <div class="dashboard-note" id="dashDayNote">
-                <span aria-hidden="true">✦</span>
+                <span aria-hidden="true">âœ¦</span>
                 <div>
                   <strong>Seu dia</strong>
-                  <p id="dashDayNoteText">Carregando resumo do dia…</p>
+                  <p id="dashDayNoteText">Carregando resumo do diaâ€¦</p>
                 </div>
               </div>
             </section>
@@ -493,7 +498,7 @@
                   <h2>Vagas que pedem atenção</h2>
                   <p class="panel-note">SLA, poucos candidatos ou aguardando aprovação</p>
                 </div>
-                <button type="button" data-go-page="jobs">Ver todas →</button>
+                <button type="button" data-go-page="jobs">Ver todas â†’</button>
               </header>
               <div class="dashboard-job-list" id="dashboardJobList"></div>
             </section>
@@ -504,7 +509,7 @@
                   <h2>Currículos novos</h2>
                   <p class="panel-note">Sem vaga · aguardando triagem</p>
                 </div>
-                <button type="button" class="dash-history-link" data-go-page="talentos">Ver talentos →</button>
+                <button type="button" class="dash-history-link" data-go-page="talentos">Ver talentos â†’</button>
               </div>
               <div class="dash-pend-list" id="dashCurriculosList"></div>
             </section>
@@ -514,7 +519,7 @@
         <section class="dashboard-page analytics-page" id="painelPage" hidden>
           <header class="dashboard-welcome analytics-welcome">
             <div>
-              <span class="eyebrow">SELEÇÃO</span>
+              <span class="eyebrow">SELEÃ‡ÃƒO</span>
               <h1>Relatório geral</h1>
               <p id="analyticsSubtitle">Cards e indicadores estratégicos do processo.</p>
             </div>
@@ -566,10 +571,10 @@
             <header class="analytics-drill-header">
               <div>
                 <p class="eyebrow" id="analyticsDrillEyebrow">Indicador</p>
-                <h2 id="analyticsDrillTitle">—</h2>
+                <h2 id="analyticsDrillTitle">â€”</h2>
                 <p id="analyticsDrillMeta" class="panel-note"></p>
               </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsDrill">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsDrill">Ã—</button>
         </header>
             <div class="analytics-drill-tabs" id="analyticsDrillTabs" hidden role="tablist">
               <button type="button" class="is-active" data-drill-tab="candidate" role="tab">Candidatos</button>
@@ -590,35 +595,35 @@
           <div id="settingsHomeView">
             <header class="dashboard-welcome"><div><h1>Configurações</h1><p>Gerencie os catálogos e padrões usados no recrutamento.</p></div></header>
             <section class="settings-panel"><header class="dashboard-panel-heading"><div><h2>Catálogos e padrões do sistema</h2><p class="panel-note">Mantenha os dados reutilizados nas vagas e nos processos seletivos.</p></div></header><div class="settings-catalog-grid" id="settingsCatalogGrid">
-              <button type="button" data-settings-view="departments" data-settings-audience="both"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-layout" /></svg></span><span><strong>Departamentos</strong><small>Estrutura, gestores e cargos</small></span><b>›</b></button>
-              <button type="button" data-settings-view="companies" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Empresas</strong><small>Dados e unidades cadastradas</small></span><b>›</b></button>
-              <button type="button" data-settings-view="managers" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Responsáveis RH</strong><small>Acessos e responsabilidades</small></span><b>›</b></button>
-              <button type="button" data-settings-view="roles" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Cargos</strong><small>Funções do seu departamento</small></span><b>›</b></button>
-              <button type="button" data-settings-view="gestorPerms" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Permissões do gestor</strong><small>Reprovar, aprovar e agendar</small></span><b>›</b></button>
-              <button type="button" data-settings-view="benefits" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Benefícios</strong><small>Catálogo para novas vagas</small></span><b>›</b></button>
-              <button type="button" data-settings-view="stages" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-columns" /></svg></span><span><strong>Etapas do pipeline</strong><small>Fluxos do processo seletivo</small></span><b>›</b></button>
-              <button type="button" data-settings-view="emails" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-mail" /></svg></span><span><strong>Modelos de e-mail</strong><small>Mensagens reutilizáveis</small></span><b>›</b></button>
-              <button type="button" data-settings-view="rejections" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-message" /></svg></span><span><strong>Justificativas de rejeição</strong><small>Motivos padronizados</small></span><b>›</b></button>
-              <button type="button" id="openLgpdSettings" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>LGPD e retenção</strong><small>Consentimento e anonimização</small></span><b>›</b></button>
+              <button type="button" data-settings-view="departments" data-settings-audience="both"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-layout" /></svg></span><span><strong>Departamentos</strong><small>Estrutura, gestores e cargos</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="companies" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Empresas</strong><small>Dados e unidades cadastradas</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="managers" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Responsáveis RH</strong><small>Acessos e responsabilidades</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="roles" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Cargos</strong><small>Funções do seu departamento</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="gestorPerms" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Permissões do gestor</strong><small>Reprovar, aprovar e agendar</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="benefits" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Benefícios</strong><small>Catálogo para novas vagas</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="stages" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-columns" /></svg></span><span><strong>Etapas do pipeline</strong><small>Fluxos do processo seletivo</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="emails" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-mail" /></svg></span><span><strong>Modelos de e-mail</strong><small>Mensagens reutilizáveis</small></span><b>â€º</b></button>
+              <button type="button" data-settings-view="rejections" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-message" /></svg></span><span><strong>Justificativas de rejeição</strong><small>Motivos padronizados</small></span><b>â€º</b></button>
+              <button type="button" id="openLgpdSettings" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>LGPD e retenção</strong><small>Consentimento e anonimização</small></span><b>â€º</b></button>
             </div></section>
           </div>
 
           <div id="settingsDepartmentsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Departamentos</h1><p>Organize a estrutura usada nas vagas e nos responsáveis.</p></div></div><button class="primary-button" id="newDepartmentButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo departamento</button></header>
-            <div class="settings-shortcuts"><button type="button" data-settings-view="managers"><svg class="ui-icon"><use href="#i-users" /></svg><span><strong>Gestores de departamento</strong><small>Cadastre e gerencie os gestores vinculados.</small></span><b>›</b></button><button type="button" data-settings-view="roles"><svg class="ui-icon"><use href="#i-briefcase" /></svg><span><strong>Cargos</strong><small>Gerencie os cargos e associe-os aos departamentos.</small></span><b>›</b></button></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Departamentos</h1><p>Organize a estrutura usada nas vagas e nos responsáveis.</p></div></div><button class="primary-button" id="newDepartmentButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo departamento</button></header>
+            <div class="settings-shortcuts"><button type="button" data-settings-view="managers"><svg class="ui-icon"><use href="#i-users" /></svg><span><strong>Gestores de departamento</strong><small>Cadastre e gerencie os gestores vinculados.</small></span><b>â€º</b></button><button type="button" data-settings-view="roles"><svg class="ui-icon"><use href="#i-briefcase" /></svg><span><strong>Cargos</strong><small>Gerencie os cargos e associe-os aos departamentos.</small></span><b>â€º</b></button></div>
             <div class="settings-list" id="departmentList"></div>
           </div>
 
           <div id="settingsManagersView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Responsáveis RH</h1><p>Pessoas com acesso ao portal e responsabilidade pelos processos.</p></div></div><button class="primary-button" id="newManagerButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo responsável</button></header><div class="settings-list" id="settingsManagerList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Responsáveis RH</h1><p>Pessoas com acesso ao portal e responsabilidade pelos processos.</p></div></div><button class="primary-button" id="newManagerButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo responsável</button></header><div class="settings-list" id="settingsManagerList"></div>
           </div>
 
           <div id="settingsRolesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-view="departments"><span aria-hidden="true">←</span> Voltar</button><div><h1>Cargos</h1><p>Funções disponíveis para cadastro de vagas.</p></div></div><button class="primary-button" id="newRoleButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo cargo</button></header><div class="settings-list" id="settingsRoleList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-view="departments"><span aria-hidden="true">â†</span> Voltar</button><div><h1>Cargos</h1><p>Funções disponíveis para cadastro de vagas.</p></div></div><button class="primary-button" id="newRoleButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo cargo</button></header><div class="settings-list" id="settingsRoleList"></div>
           </div>
 
           <div id="settingsCompaniesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Empresas</h1><p>Identidade, localização e benefícios usados nas vagas.</p></div></div><button class="primary-button" id="newCompanyButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova empresa</button></header><div class="settings-list" id="settingsCompanyList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Empresas</h1><p>Identidade, localização e benefícios usados nas vagas.</p></div></div><button class="primary-button" id="newCompanyButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova empresa</button></header><div class="settings-list" id="settingsCompanyList"></div>
           </div>
 
           <div id="settingsScreeningsView" hidden>
@@ -629,25 +634,25 @@
           </div>
 
           <div id="settingsBenefitsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Benefícios</h1><p>Itens reutilizados na apresentação e criação das vagas.</p></div></div><button class="primary-button" id="newBenefitButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo benefício</button></header><div class="settings-list" id="settingsBenefitList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Benefícios</h1><p>Itens reutilizados na apresentação e criação das vagas.</p></div></div><button class="primary-button" id="newBenefitButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo benefício</button></header><div class="settings-list" id="settingsBenefitList"></div>
           </div>
 
           <div id="settingsStagesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Etapas do pipeline</h1><p>Organize as colunas e a sequência do processo seletivo.</p></div></div><button class="primary-button" id="newStageButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova etapa</button></header><div class="settings-list pipeline-stage-list" id="settingsStageList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Etapas do pipeline</h1><p>Organize as colunas e a sequência do processo seletivo.</p></div></div><button class="primary-button" id="newStageButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova etapa</button></header><div class="settings-list pipeline-stage-list" id="settingsStageList"></div>
           </div>
 
           <div id="settingsEmailsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Modelos de e-mail</h1><p>Personalize as mensagens automáticas enviadas pelo portal.</p></div></div></header><div class="settings-list email-template-list" id="settingsEmailList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Modelos de e-mail</h1><p>Personalize as mensagens automáticas enviadas pelo portal.</p></div></div></header><div class="settings-list email-template-list" id="settingsEmailList"></div>
           </div>
 
           <div id="settingsRejectionsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Justificativas de rejeição</h1><p>Padronize os retornos utilizados na reprovação de candidaturas.</p></div></div><button class="primary-button" id="newRejectionButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova justificativa</button></header><div class="settings-list" id="settingsRejectionList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button><div><h1>Justificativas de rejeição</h1><p>Padronize os retornos utilizados na reprovação de candidaturas.</p></div></div><button class="primary-button" id="newRejectionButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova justificativa</button></header><div class="settings-list" id="settingsRejectionList"></div>
           </div>
 
           <div id="settingsGestorPermsView" hidden>
             <header class="dashboard-welcome settings-subheading">
               <div class="new-job-heading-copy">
-                <button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button>
+                <button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">â†</span> Voltar</button>
                 <div>
                   <h1>Permissões do gestor</h1>
                   <p>Controles das ações disponíveis no portal do gestor.</p>
@@ -696,7 +701,7 @@
         <section class="dashboard-page design-system-page" id="designSystemPage" hidden>
           <header class="dashboard-welcome">
             <div>
-              <span class="eyebrow">FUNDAÇÃO VISUAL</span>
+              <span class="eyebrow">FUNDAÃ‡ÃƒO VISUAL</span>
               <h1>Design System</h1>
               <p>Princípios, elementos e componentes que mantêm o Portal RH consistente.</p>
             </div>
@@ -744,7 +749,7 @@
 
             <section class="ds-section ds-wide" id="ds-surfaces">
               <header><span>06</span><div><h2>Superfícies</h2><p>Cards e painéis para agrupar informações relacionadas.</p></div></header>
-              <div class="ds-surface-grid"><article class="ds-demo-card"><span class="talent-avatar">LS</span><div><strong>Lucas José da Silva</strong><p>Desenvolvedor(a) Full Stack</p></div><span class="result-badge is-hired">Contratado</span></article><article class="ds-demo-panel"><span class="eyebrow">PADRÃO DE MODAL</span><h3>Detalhe do candidato</h3><p>Cabeçalho, ações, conteúdo e atividade em uma superfície elevada.</p></article></div>
+              <div class="ds-surface-grid"><article class="ds-demo-card"><span class="talent-avatar">LS</span><div><strong>Lucas José da Silva</strong><p>Desenvolvedor(a) Full Stack</p></div><span class="result-badge is-hired">Contratado</span></article><article class="ds-demo-panel"><span class="eyebrow">PADRÃƒO DE MODAL</span><h3>Detalhe do candidato</h3><p>Cabeçalho, ações, conteúdo e atividade em uma superfície elevada.</p></article></div>
             </section>
           </div>
         </section>
@@ -776,7 +781,7 @@
           <header class="dashboard-welcome job-board-heading" id="jobBoardHeading" hidden>
               <div class="job-board-title">
               <div>
-              <button class="page-back-link" type="button" id="jobBoardBack"><span aria-hidden="true">←</span> Voltar para vagas</button>
+              <button class="page-back-link" type="button" id="jobBoardBack"><span aria-hidden="true">â†</span> Voltar para vagas</button>
               <h1>Candidatos da vaga</h1>
               <p id="jobBoardSubtitle">Vaga</p>
               </div>
@@ -926,8 +931,8 @@
                 <span id="resultCount">4 oportunidades encontradas</span>
               </div>
               <div class="view-toggle" aria-label="Modo de visualização">
-                <button class="active" type="button" data-view="list" aria-label="Visualizar em lista">☷</button>
-                <button type="button" data-view="grid" aria-label="Visualizar em grade">▦</button>
+                <button class="active" type="button" data-view="list" aria-label="Visualizar em lista">â˜·</button>
+                <button type="button" data-view="grid" aria-label="Visualizar em grade">â–¦</button>
               </div>
             </div>
 
@@ -974,7 +979,7 @@
         <section class="dashboard-page new-job-page" id="newJobPage" hidden>
           <header class="dashboard-welcome new-job-heading">
             <div class="new-job-heading-copy">
-              <button class="page-back-link" id="newJobBack" type="button" aria-label="Voltar para vagas"><span aria-hidden="true">←</span> Voltar para vagas</button>
+              <button class="page-back-link" id="newJobBack" type="button" aria-label="Voltar para vagas"><span aria-hidden="true">â†</span> Voltar para vagas</button>
               <div><span class="eyebrow">OPORTUNIDADES</span><h1>Nova vaga</h1><p>Cadastre as informações da oportunidade e configure o processo seletivo.</p></div>
             </div>
             <span class="period-pill" id="newJobProgress">Cadastro da vaga</span>
@@ -1033,7 +1038,7 @@
                 <label class="new-job-field full stage-select-field">
                   <span>Etapas do processo</span>
                   <div class="stage-select-grid" id="newJobStagesList" role="group" aria-label="Etapas disponíveis do pipeline"></div>
-                  <small>Selecione as etapas ativas cadastradas em Configurações → Etapas do pipeline.</small>
+                  <small>Selecione as etapas ativas cadastradas em Configurações â†’ Etapas do pipeline.</small>
                 </label>
                 <input type="hidden" id="newJobStages" value="" />
                 <label class="new-job-field full"><span>Sobre a empresa</span><textarea id="newJobAbout" rows="5"></textarea></label>
@@ -1149,10 +1154,10 @@
             <header class="talent-modal-header stack-dialog-header">
               <div class="talent-modal-identity">
                 <p class="eyebrow" id="talentDrawerEyebrow">Banco de talentos</p>
-                <h2 id="talentDrawerTitle">—</h2>
+                <h2 id="talentDrawerTitle">â€”</h2>
                 <p id="talentDrawerMeta" class="panel-note"></p>
               </div>
-              <button class="icon-button" type="button" id="closeTalentDrawer" aria-label="Fechar">×</button>
+              <button class="icon-button" type="button" id="closeTalentDrawer" aria-label="Fechar">Ã—</button>
             </header>
             <div id="talentDrawerBody" class="talent-drawer-body talent-modal-body"></div>
           </div>
@@ -1235,14 +1240,14 @@
                 <p class="panel-note" id="preAdmissaoDetailMeta"></p>
               </div>
               <div class="pread-detail-actions" id="preAdmissaoDetailActions"></div>
-              <button class="icon-button" type="button" aria-label="Fechar" id="closePreAdmissaoDialog">×</button>
+              <button class="icon-button" type="button" aria-label="Fechar" id="closePreAdmissaoDialog">Ã—</button>
             </header>
             <div class="offer-form-body pread-dialog-body">
               <div class="pread-summary" id="preAdmissaoSummary" aria-label="Resumo da pré-admissão"></div>
               <div class="pread-section">
                 <header class="pread-section-head">
                   <h3>Checklist documental</h3>
-                  <p class="panel-note">Uma linha por documento — status e ações à direita.</p>
+                  <p class="panel-note">Uma linha por documento â€” status e ações à direita.</p>
                 </header>
                 <div class="pread-checklist-wrap">
                   <table class="pread-checklist" aria-label="Checklist documental">
@@ -1351,7 +1356,7 @@
                 <article class="home-area-card" data-gestor-quick="vagas" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Recrutamento</h2>
-                    <span class="home-area-open">Abrir →</span>
+                    <span class="home-area-open">Abrir â†’</span>
                   </div>
                   <p class="home-area-pulse">Vagas · Pendências · Solicitações</p>
                   <div class="home-area-stats" aria-label="Pulso de recrutamento">
@@ -1363,7 +1368,7 @@
                 <article class="home-area-card" data-gestor-quick="agenda" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Entrevistas</h2>
-                    <span class="home-area-open">Abrir →</span>
+                    <span class="home-area-open">Abrir â†’</span>
                   </div>
                   <p class="home-area-pulse">Agenda · Fichas</p>
                   <div class="home-area-stats" aria-label="Pulso de entrevistas">
@@ -1374,7 +1379,7 @@
                 <article class="home-area-card" data-gestor-quick="candidatos" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Candidatos</h2>
-                    <span class="home-area-open">Abrir →</span>
+                    <span class="home-area-open">Abrir â†’</span>
                   </div>
                   <p class="home-area-pulse">Em processo · Análises</p>
                   <div class="home-area-stats" aria-label="Pulso de candidatos">
@@ -1413,7 +1418,7 @@
                       <h2>Vagas que pedem atenção</h2>
                       <p class="panel-note">SLA atrasado, poucos candidatos, pausada ou aguardando aprovação</p>
                     </div>
-                    <button type="button" data-gestor-quick="vagas">Ver todas <span>→</span></button>
+                    <button type="button" data-gestor-quick="vagas">Ver todas <span>â†’</span></button>
                   </header>
                   <div class="dashboard-job-list" id="gestorMyJobsSummary"></div>
                 </section>
@@ -1437,7 +1442,7 @@
               <header class="dashboard-welcome gestor-list-hero">
                 <div class="gestor-list-heading">
                   <button type="button" class="page-back-link" id="gestorListBack" hidden>
-                    <span aria-hidden="true">←</span> Voltar para o início
+                    <span aria-hidden="true">â†</span> Voltar para o início
                   </button>
                   <span class="eyebrow" id="gestorListEyebrow">GESTOR</span>
                   <h1 id="gestorHomePanelTitle">Minhas vagas</h1>
@@ -1569,9 +1574,9 @@
                       <span>Período</span>
                       <select id="gestorRequestFilterPeriod">
                         <option value="all">Todos</option>
-                        <option value="7">Últimos 7 dias</option>
-                        <option value="30">Últimos 30 dias</option>
-                        <option value="90">Últimos 90 dias</option>
+                        <option value="7">Ãšltimos 7 dias</option>
+                        <option value="30">Ãšltimos 30 dias</option>
+                        <option value="90">Ãšltimos 90 dias</option>
                       </select>
                     </label>
                   </div>
@@ -1588,7 +1593,7 @@
                     <p class="panel-note" id="gestorRequestFormNote">Preencha os dados para o RH analisar.</p>
                   </div>
                   <button type="button" class="page-back-link" id="gestorRequestFormClose">
-                    <span aria-hidden="true">←</span> Voltar para a lista
+                    <span aria-hidden="true">â†</span> Voltar para a lista
                   </button>
                 </header>
                 <div id="gestorRequestAdjustBanner" class="gestor-request-adjust" hidden></div>
@@ -1671,7 +1676,7 @@
             <header class="gestor-job-header">
               <div class="gestor-job-heading">
                 <button type="button" class="page-back-link" id="gestorJobBack">
-                  <span aria-hidden="true">←</span> Voltar para o portal
+                  <span aria-hidden="true">â†</span> Voltar para o portal
                 </button>
                 <h1 id="gestorJobTitle">Vaga</h1>
                 <p id="gestorJobMeta" class="panel-note"></p>
@@ -1739,7 +1744,7 @@
             <h3>Nenhum instrumento disponível</h3>
             <p>Cadastre testes, fit cultural ou fichas para começar.</p>
           </div>
-          <p class="selecao-hub-back-note muted" id="selecaoHubNote">Nas páginas de cada instrumento, use ← Voltar para retornar a este hub.</p>
+          <p class="selecao-hub-back-note muted" id="selecaoHubNote">Nas páginas de cada instrumento, use â† Voltar para retornar a este hub.</p>
         </section>
 
         <section class="dashboard-page entrevistas-page" id="entrevistasPage" hidden>
@@ -1788,9 +1793,9 @@
 
             <aside class="dashboard-panel interview-calendar-panel">
               <header class="calendar-heading">
-                <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                <button type="button" id="calendarPrev" aria-label="Mês anterior">â€¹</button>
                 <h2 id="calendarMonth">Agosto 2026</h2>
-                <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+                <button type="button" id="calendarNext" aria-label="Próximo mês">â€º</button>
               </header>
               <div class="calendar-weekdays" aria-hidden="true">
                 <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
@@ -1805,7 +1810,7 @@
           <section class="interview-calendar-view" id="interviewCalendarView">
             <aside class="dashboard-panel interview-calendar-filters">
               <header>
-                <span class="panel-kicker">ORGANIZAÇÃO</span>
+                <span class="panel-kicker">ORGANIZAÃ‡ÃƒO</span>
                 <h2>Filtros</h2>
               </header>
               <div class="calendar-filter-fields">
@@ -1894,8 +1899,8 @@
                 </div>
                 <div class="calendar-heading-actions">
                   <button type="button" id="fullCalendarToday">Hoje</button>
-                  <button type="button" id="fullCalendarPrev" aria-label="Período anterior">‹</button>
-                  <button type="button" id="fullCalendarNext" aria-label="Próximo período">›</button>
+                  <button type="button" id="fullCalendarPrev" aria-label="Período anterior">â€¹</button>
+                  <button type="button" id="fullCalendarNext" aria-label="Próximo período">â€º</button>
                 </div>
               </header>
               <div id="agendaDayView" class="agenda-day-view" hidden></div>
@@ -1928,7 +1933,7 @@
           <div id="testsListView">
             <header class="dashboard-welcome">
               <div>
-                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">←</span> Voltar para instrumentos</button>
+                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">â†</span> Voltar para instrumentos</button>
                 <h1>Testes</h1>
                 <p class="panel-note">Catálogo de modelos e acompanhamento dos envios aos candidatos.</p>
               </div>
@@ -2037,7 +2042,7 @@
             <header class="dashboard-welcome test-editor-welcome">
               <div>
                 <button class="page-back-link" id="testEditorBack" type="button">
-                  <span aria-hidden="true">←</span>
+                  <span aria-hidden="true">â†</span>
                   Voltar aos testes
                 </button>
                 <h1 id="testEditorTitle">Editar teste técnico</h1>
@@ -2116,7 +2121,7 @@
           <div id="fitHubView">
             <header class="dashboard-welcome">
               <div>
-                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">←</span> Voltar para instrumentos</button>
+                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">â†</span> Voltar para instrumentos</button>
                 <h1>Fit Cultural</h1>
                 <p class="panel-note">Perfil da empresa, banco de perguntas, modelos e acompanhamento dos envios.</p>
               </div>
@@ -2227,7 +2232,7 @@
           <div id="fitQuestionEditorView" hidden>
             <header class="dashboard-welcome">
               <div>
-                <button class="page-back-link" id="fitQuestionEditorBack" type="button">← Voltar ao banco</button>
+                <button class="page-back-link" id="fitQuestionEditorBack" type="button">â† Voltar ao banco</button>
                 <h1 id="fitQuestionEditorTitle">Nova pergunta</h1>
               </div>
               <button class="primary-button" id="fitQuestionSaveBtn" type="button">Salvar</button>
@@ -2239,7 +2244,7 @@
                 <label class="form-field"><span>Tipo</span>
                   <select id="fitQuestionType">
                     <option value="likert">Likert</option>
-                    <option value="single">Única</option>
+                    <option value="single">Ãšnica</option>
                     <option value="multiple">Múltipla</option>
                   </select>
                 </label>
@@ -2258,7 +2263,7 @@
           <div id="fitModelEditorView" hidden>
             <header class="dashboard-welcome">
               <div>
-                <button class="page-back-link" id="fitModelEditorBack" type="button">← Voltar aos modelos</button>
+                <button class="page-back-link" id="fitModelEditorBack" type="button">â† Voltar aos modelos</button>
                 <h1 id="fitModelEditorTitle">Novo modelo</h1>
               </div>
               <button class="primary-button" id="fitModelSaveBtn" type="button">Salvar</button>
@@ -2287,7 +2292,7 @@
           <div id="sheetsListView">
             <header class="dashboard-welcome">
               <div>
-                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">←</span> Voltar para instrumentos</button>
+                <button class="page-back-link" type="button" data-go-page="selecao"><span aria-hidden="true">â†</span> Voltar para instrumentos</button>
                 <h1>Fichas de entrevista</h1>
                 <p class="panel-note">Modele roteiros estruturados para RH, técnica e gestores.</p>
               </div>
@@ -2340,7 +2345,7 @@
             <header class="dashboard-welcome test-editor-welcome">
               <div>
                 <button class="page-back-link" id="sheetEditorBack" type="button">
-                  <span aria-hidden="true">←</span>
+                  <span aria-hidden="true">â†</span>
                   Voltar às fichas
                 </button>
                 <h1 id="sheetEditorTitle">Editar ficha</h1>
@@ -2428,16 +2433,16 @@
             <div class="candidate-dossier-tags" id="candidateHeaderTags"></div>
           </div>
           <div class="candidate-dossier-metrics" aria-label="Resumo do processo">
-            <span><small>Responsável</small><strong id="candidateOwner">—</strong></span>
+            <span><small>Responsável</small><strong id="candidateOwner">â€”</strong></span>
             <button type="button" class="candidate-dossier-metric" id="candidateScoreMetric" data-dossier-metric="score">
-              <small>Score</small><strong id="candidateScore">—</strong>
+              <small>Score</small><strong id="candidateScore">â€”</strong>
             </button>
             <button type="button" class="candidate-dossier-metric" id="candidateFitMetric" data-dossier-metric="fit">
-              <small>Fit Cultural</small><strong id="candidateFit">—</strong>
+              <small>Fit Cultural</small><strong id="candidateFit">â€”</strong>
             </button>
-            <span><small>Tempo no processo</small><strong id="candidateProcessTime">—</strong></span>
+            <span><small>Tempo no processo</small><strong id="candidateProcessTime">â€”</strong></span>
           </div>
-          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeCandidateDialog">×</button>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeCandidateDialog">Ã—</button>
         </header>
 
         <div class="candidate-actions" aria-label="Ações do candidato">
@@ -2459,7 +2464,7 @@
                 aria-haspopup="menu"
                 aria-controls="candidateMoreActionsMenu"
               >
-                ⋮
+                â‹®
               </button>
               <div class="candidate-more-menu" id="candidateMoreActionsMenu" role="menu" hidden>
                 <div class="candidate-more-section">
@@ -2497,11 +2502,11 @@
                   <dl class="candidate-dossier-data">
                     <div><dt>Nome</dt><dd id="profileName">Candidato</dd></div>
                     <div><dt>E-mail</dt><dd id="candidateEmail">email@exemplo.com</dd></div>
-                    <div><dt>Telefone</dt><dd id="dossierCandidatePhone">—</dd></div>
-                    <div><dt>Localização</dt><dd id="candidateLocation">—</dd></div>
-                    <div><dt>Pretensão</dt><dd id="candidateSalary">—</dd></div>
-                    <div><dt>Disponibilidade</dt><dd id="candidateAvailability">—</dd></div>
-                    <div><dt>Origem</dt><dd id="candidateOrigin">—</dd></div>
+                    <div><dt>Telefone</dt><dd id="dossierCandidatePhone">â€”</dd></div>
+                    <div><dt>Localização</dt><dd id="candidateLocation">â€”</dd></div>
+                    <div><dt>Pretensão</dt><dd id="candidateSalary">â€”</dd></div>
+                    <div><dt>Disponibilidade</dt><dd id="candidateAvailability">â€”</dd></div>
+                    <div><dt>Origem</dt><dd id="candidateOrigin">â€”</dd></div>
                     <div><dt>Banco de talentos</dt><dd><button class="neutral-pill talent-bank-link" id="candidateTalentBank" type="button">Fora do banco</button></dd></div>
                   </dl>
                   <p id="profileContact" hidden></p>
@@ -2532,8 +2537,8 @@
                 <article class="candidate-dossier-card" id="candidateSectionQualifications">
                   <h3>Qualificações</h3>
                   <dl class="candidate-dossier-data">
-                    <div><dt>Formação</dt><dd id="candidateEducationDetail">—</dd></div>
-                    <div><dt>Experiência</dt><dd id="candidateExperienceDetail">—</dd></div>
+                    <div><dt>Formação</dt><dd id="candidateEducationDetail">â€”</dd></div>
+                    <div><dt>Experiência</dt><dd id="candidateExperienceDetail">â€”</dd></div>
                   </dl>
                 </article>
 
@@ -2650,7 +2655,7 @@
             <h2 id="entityName">Pessoa candidata</h2>
             <p id="entitySubtitle">Vaga</p>
           </div>
-          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeEntityDialog">×</button>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeEntityDialog">Ã—</button>
         </header>
         <div class="entity-actions" id="entityActions" aria-label="Ações do perfil"></div>
         <div class="entity-body" id="entityModalBody">
@@ -2695,7 +2700,7 @@
               <span class="interview-detail-status" id="detailInterviewStatus">Agendada</span>
             </div>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeInterviewDetail">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeInterviewDetail">Ã—</button>
         </header>
 
         <div class="interview-detail-body">
@@ -2719,15 +2724,15 @@
             <dl class="interview-detail-data">
               <div>
                 <dt>Entrevistadores</dt>
-                <dd id="detailInterviewInterviewers">—</dd>
+                <dd id="detailInterviewInterviewers">â€”</dd>
               </div>
               <div>
                 <dt id="detailInterviewLocationLabel">Link</dt>
-                <dd id="detailInterviewLocation">—</dd>
+                <dd id="detailInterviewLocation">â€”</dd>
               </div>
               <div>
                 <dt>Ficha</dt>
-                <dd id="detailInterviewSheet">—</dd>
+                <dd id="detailInterviewSheet">â€”</dd>
               </div>
             </dl>
             <div class="interview-detail-aside" id="detailInterviewNotes" hidden></div>
@@ -2761,7 +2766,7 @@
                 aria-haspopup="menu"
                 aria-controls="interviewMoreActionsMenu"
               >
-                ⋮
+                â‹®
               </button>
               <div class="candidate-more-menu" id="interviewMoreActionsMenu" role="menu" hidden>
                 <div class="candidate-more-section">
@@ -2821,7 +2826,7 @@
             </div>
             <div class="conduct-header-actions">
               <button type="button" class="secondary-button" id="conductShowHistory">Histórico</button>
-              <button class="icon-button" aria-label="Fechar" type="button" id="conductCloseBtn">×</button>
+              <button class="icon-button" aria-label="Fechar" type="button" id="conductCloseBtn">Ã—</button>
             </div>
           </header>
           <div class="conduct-layout">
@@ -2895,13 +2900,13 @@
               <p class="panel-note" id="conductFinishCandidate"></p>
             </div>
             <div class="conduct-header-actions">
-              <button class="icon-button" type="button" id="conductFinishCloseBtn" aria-label="Fechar">×</button>
+              <button class="icon-button" type="button" id="conductFinishCloseBtn" aria-label="Fechar">Ã—</button>
             </div>
           </header>
           <div class="conduct-finish-form">
             <div class="conduct-finish-top">
               <label class="form-field conduct-score-field">
-                <span>Nota geral (0–10)</span>
+                <span>Nota geral (0â€“10)</span>
                 <input id="conductScore" type="number" min="0" max="10" step="1" />
               </label>
               <label class="form-field conduct-next-stage-field">
@@ -2945,7 +2950,7 @@
             <h2 id="conductReviewTitle">Respostas da entrevista</h2>
             <p class="panel-note" id="conductReviewMeta"></p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeConductReviewDialog" data-close-conduct-review>×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeConductReviewDialog" data-close-conduct-review>Ã—</button>
         </header>
         <div class="conduct-review-summary" id="conductReviewSummary"></div>
         <div class="conduct-review-list" id="conductReviewList"></div>
@@ -2961,7 +2966,7 @@
                 aria-haspopup="menu"
                 aria-controls="conductReviewMoreMenu"
               >
-                ⋮
+                â‹®
               </button>
               <div class="candidate-more-menu" id="conductReviewMoreMenu" role="menu" hidden>
                 <div class="candidate-more-section">
@@ -2988,26 +2993,26 @@
             <p id="assignmentDetailMeta"></p>
             <div class="interview-detail-badges assignment-detail-badges">
               <span class="assignment-status" id="assignmentDetailStatus">Enviado</span>
-              <span class="assignment-meta-chip" id="assignmentDetailScore">Nota —</span>
-              <span class="assignment-meta-chip" id="assignmentDetailResult">Resultado —</span>
+              <span class="assignment-meta-chip" id="assignmentDetailScore">Nota â€”</span>
+              <span class="assignment-meta-chip" id="assignmentDetailResult">Resultado â€”</span>
             </div>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeAssignmentDetail">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAssignmentDetail">Ã—</button>
         </header>
 
         <div class="interview-detail-body assignment-detail-body">
           <section class="interview-detail-metrics" aria-label="Resumo do envio">
             <div>
               <small>Envio</small>
-              <strong id="assignmentDetailSent">—</strong>
+              <strong id="assignmentDetailSent">â€”</strong>
             </div>
             <div>
               <small>Prazo</small>
-              <strong id="assignmentDetailDue">—</strong>
+              <strong id="assignmentDetailDue">â€”</strong>
             </div>
             <div>
               <small>Link</small>
-              <strong id="assignmentDetailLink" class="assignment-detail-link">—</strong>
+              <strong id="assignmentDetailLink" class="assignment-detail-link">â€”</strong>
             </div>
           </section>
 
@@ -3038,16 +3043,16 @@
             <p id="fitDetailMeta"></p>
             <div class="interview-detail-badges assignment-detail-badges">
               <span class="assignment-status" id="fitDetailStatus">Não iniciado</span>
-              <span class="assignment-meta-chip" id="fitDetailAdherence">Aderência —</span>
+              <span class="assignment-meta-chip" id="fitDetailAdherence">Aderência â€”</span>
             </div>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeFitDetail">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeFitDetail">Ã—</button>
         </header>
         <div class="interview-detail-body assignment-detail-body">
           <section class="interview-detail-metrics" aria-label="Resumo do envio">
-            <div><small>Envio</small><strong id="fitDetailSent">—</strong></div>
-            <div><small>Prazo</small><strong id="fitDetailDue">—</strong></div>
-            <div><small>Link</small><strong id="fitDetailLink" class="assignment-detail-link">—</strong></div>
+            <div><small>Envio</small><strong id="fitDetailSent">â€”</strong></div>
+            <div><small>Prazo</small><strong id="fitDetailDue">â€”</strong></div>
+            <div><small>Link</small><strong id="fitDetailLink" class="assignment-detail-link">â€”</strong></div>
           </section>
           <section class="assignment-detail-section">
             <div class="assignment-detail-tabs" role="tablist">
@@ -3071,7 +3076,7 @@
             <h2>Comparar candidatos</h2>
             <p class="panel-note" id="fitCompareSubtitle">Aderência lado a lado</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitCompareDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitCompareDialog">Ã—</button>
         </header>
         <div class="assignment-table-wrap">
           <table class="assignment-table" id="fitCompareTable"></table>
@@ -3086,7 +3091,7 @@
             <h2 id="scorecardEditorTitle">Novo scorecard</h2>
             <p class="panel-note">Defina pesos dos 6 blocos do Score Geral (soma 100%).</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scorecardEditorDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scorecardEditorDialog">Ã—</button>
         </header>
         <div class="scorecard-editor-body">
           <div class="scorecard-editor-top">
@@ -3116,7 +3121,7 @@
             <h2 id="scoreEvalDialogTitle">Avaliação</h2>
             <p id="scoreEvalDialogMeta"></p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreEvaluationDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreEvaluationDialog">Ã—</button>
         </header>
         <div class="interview-detail-body assignment-detail-body">
           <div class="score-eval-summary" id="scoreEvalSummary"></div>
@@ -3135,7 +3140,7 @@
             <h2>Comparar Score Geral</h2>
             <p class="panel-note" id="scoreCompareSubtitle">Composição lado a lado</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreCompareDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="scoreCompareDialog">Ã—</button>
         </header>
         <div class="assignment-table-wrap">
           <table class="assignment-table" id="scoreCompareTable"></table>
@@ -3150,7 +3155,7 @@
             <h2>Aplicar Fit Cultural</h2>
             <p class="panel-note" id="fitApplyCandidateLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitApplyDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="fitApplyDialog">Ã—</button>
         </header>
         <label class="form-field">
           <span>Modelo</span>
@@ -3172,7 +3177,7 @@
             <h2>Alterar prazo</h2>
             <p class="panel-note" id="assignmentDueLabel">Teste</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="assignmentDueDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="assignmentDueDialog">Ã—</button>
           <input id="assignmentDueInput" type="datetime-local" required />
         </label>
         <footer class="stack-dialog-actions">
@@ -3189,7 +3194,7 @@
             <h2>Histórico resumido</h2>
             <p class="panel-note" id="conductHistoryCandidate">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductHistoryDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductHistoryDialog">Ã—</button>
         </header>
         <ul id="conductHistoryList" class="conduct-history-list"></ul>
       </form>
@@ -3202,7 +3207,7 @@
             <h2>Sair da condução?</h2>
             <p class="panel-note">Há um rascunho. Você pode continuar depois pelo detalhe da entrevista.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductExitDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductExitDialog">Ã—</button>
         </header>
         <footer class="stack-dialog-actions">
           <button value="cancel" class="secondary-button">Continuar conduzindo</button>
@@ -3218,7 +3223,7 @@
             <h2>Perguntas obrigatórias pendentes</h2>
             <p class="panel-note">Responda as perguntas abaixo antes de finalizar.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductPendingDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="conductPendingDialog">Ã—</button>
         </header>
         <ul id="conductPendingList" class="conduct-pending-list"></ul>
         <footer class="stack-dialog-actions">
@@ -3234,7 +3239,7 @@
             <h2>Cancelar entrevista</h2>
             <p id="interviewCancelLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewCancelDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewCancelDialog">Ã—</button>
         </header>
         <label class="form-field">
           <span>Motivo</span>
@@ -3254,7 +3259,7 @@
             <h2>Pedir reagendamento</h2>
             <p id="candidateRescheduleLabel">Entrevista</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="candidateRescheduleDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="candidateRescheduleDialog">Ã—</button>
         </header>
         <label class="form-field">
           <span>Motivo</span>
@@ -3284,7 +3289,7 @@
             <h2 id="interviewDialogTitle">Agendar entrevista</h2>
             <p id="interviewCandidateLabel" hidden>Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewDialog">Ã—</button>
         </header>
 
         <label class="form-field" id="interviewCandidateField">
@@ -3393,7 +3398,7 @@
           <h2>Conflito de horário</h2>
           <p id="interviewConflictMessage">Há overlap com outra entrevista ativa.</p>
         </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewConflictDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="interviewConflictDialog">Ã—</button>
         </header>
       <ul id="interviewConflictList" class="interview-conflict-list"></ul>
       <footer class="schedule-footer">
@@ -3405,12 +3410,12 @@
     <dialog class="stack-dialog picker-dialog" id="datePickerDialog">
       <header class="stack-dialog-header">
         <h2>Escolher data</h2>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeDatePicker">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeDatePicker">Ã—</button>
         </header>
       <div class="calendar-heading picker-calendar-heading">
-        <button type="button" id="datePickerPrev" aria-label="Mês anterior">‹</button>
+        <button type="button" id="datePickerPrev" aria-label="Mês anterior">â€¹</button>
         <h2 id="datePickerMonth">Agosto 2026</h2>
-        <button type="button" id="datePickerNext" aria-label="Próximo mês">›</button>
+        <button type="button" id="datePickerNext" aria-label="Próximo mês">â€º</button>
       </div>
       <div class="calendar-weekdays" aria-hidden="true">
         <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
@@ -3421,7 +3426,7 @@
     <dialog class="stack-dialog picker-dialog" id="timePickerDialog">
       <header class="stack-dialog-header">
         <h2>Escolher horário</h2>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeTimePicker">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTimePicker">Ã—</button>
         </header>
       <div class="time-slot-grid" id="timeSlotGrid"></div>
     </dialog>
@@ -3434,7 +3439,7 @@
             <p id="contactCandidateLabel">Candidato</p>
             <p class="contact-email" id="contactCandidateEmail">email@exemplo.com</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelContact">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelContact">Ã—</button>
         </header>
 
         <div class="contact-channels" role="tablist" aria-label="Canal de contato">
@@ -3442,7 +3447,7 @@
           <button type="button" data-contact-channel="whatsapp" role="tab" aria-selected="false">WhatsApp</button>
         </div>
 
-        <p class="lgpd-warn" id="contactLgpdWarn" hidden>Sem consentimento LGPD — envio sob responsabilidade do RH.</p>
+        <p class="lgpd-warn" id="contactLgpdWarn" hidden>Sem consentimento LGPD â€” envio sob responsabilidade do RH.</p>
 
         <label class="form-field">
           <span>Mensagem</span>
@@ -3471,7 +3476,7 @@
           </div>
           <p id="offerDialogMeta" class="offer-dialog-meta"></p>
         </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeOfferDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeOfferDialog">Ã—</button>
         </header>
 
       <div class="offer-dialog-body">
@@ -3509,7 +3514,7 @@
             <h2 id="offerFormTitle">Nova proposta</h2>
             <p id="offerFormMeta" class="offer-dialog-meta"></p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferForm">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferForm">Ã—</button>
         </header>
 
         <div class="offer-form-body">
@@ -3586,7 +3591,7 @@
             <h2>Sugerir novos termos</h2>
             <p id="portalCounterOfferMeta" class="offer-dialog-meta">Informe salário, modelo e uma mensagem para o RH.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalCounterOffer">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalCounterOffer">Ã—</button>
         </header>
         <div class="offer-form-body">
           <div class="form-grid">
@@ -3619,7 +3624,7 @@
       <form id="portalAcceptOfferForm">
         <header class="stack-dialog-header">
           <h2>Aceitar proposta</h2>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalAcceptOffer">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalAcceptOffer">Ã—</button>
         </header>
         <p id="portalAcceptOfferSummary" class="panel-note"></p>
         <div class="dialog-actions">
@@ -3633,7 +3638,7 @@
       <form id="portalRefuseOfferForm">
         <header class="stack-dialog-header">
           <h2>Recusar proposta</h2>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalRefuseOffer">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPortalRefuseOffer">Ã—</button>
         </header>
         <p class="panel-note">Informe o motivo para o RH acompanhar sua decisão.</p>
         <label class="form-field">
@@ -3655,7 +3660,7 @@
       <form id="offerRefuseForm">
         <header class="stack-dialog-header">
           <h2>Registrar recusa</h2>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferRefuse">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelOfferRefuse">Ã—</button>
         </header>
         <p id="offerRefuseCandidateLabel" class="panel-note"></p>
         <label class="form-field">
@@ -3677,7 +3682,7 @@
       <div class="dialog-heading">
         <header class="stack-dialog-header dialog-close-only-header">
           <div></div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerDialog">Ã—</button>
         </header>
         <div>
           <span class="eyebrow">RESPONSÁVEL</span>
@@ -3690,25 +3695,25 @@
 
     <dialog class="settings-form-dialog" id="departmentFormDialog">
       <form id="departmentForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="departmentFormTitle">Novo departamento</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="departmentFormDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="departmentFormDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Nome</span><input id="departmentNameInput" required /></label><label class="form-field"><span>Descrição</span><textarea id="departmentDescriptionInput" rows="3"></textarea></label><label class="test-switch"><input id="departmentActiveInput" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="departmentFormDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsManagerDialog">
       <form id="settingsManagerForm"><header><div><span class="eyebrow">ACESSO AO PORTAL</span><h2 id="settingsManagerFormTitle">Novo responsável</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsManagerDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsManagerDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Nome completo</span><input id="settingsManagerName" required /></label><label class="form-field"><span>E-mail corporativo</span><input id="settingsManagerEmail" type="email" required /><small class="field-hint">Usado para acesso e reenvio das credenciais</small></label><label class="form-field"><span>Telefone</span><input id="settingsManagerPhone" /></label><label class="form-field"><span>Empresa</span><select id="settingsManagerCompany" required></select></label><label class="form-field"><span>Departamento</span><select id="settingsManagerDepartment" required></select></label><label class="form-field"><span>Cargo ou função</span><input id="settingsManagerRole" placeholder="Ex.: Analista de RH" /></label><label class="test-switch"><input id="settingsManagerPortalAccess" type="checkbox" checked /><span class="test-switch-track"></span>Acesso ao portal</label><label class="test-switch"><input id="settingsManagerActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsManagerDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsRoleDialog">
       <form id="settingsRoleForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRoleFormTitle">Novo cargo</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsRoleDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsRoleDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Nome</span><input id="settingsRoleName" required /></label><label class="form-field"><span>Departamento</span><select id="settingsRoleDepartment" required></select></label><label class="form-field"><span>Descrição</span><textarea id="settingsRoleDescription" rows="4"></textarea></label><label class="test-switch"><input id="settingsRoleActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRoleDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog company-form-dialog" id="settingsCompanyDialog">
       <form id="settingsCompanyForm"><header><div><span class="eyebrow">EMPRESAS</span><h2 id="settingsCompanyFormTitle">Nova empresa</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsCompanyDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsCompanyDialog" aria-label="Fechar">Ã—</button>
         </header>
         <label class="form-field"><span>Nome da empresa</span><input id="settingsCompanyName" required /></label>
         <label class="form-field"><span>Localização padrão</span><input id="settingsCompanyLocation" required /></label>
@@ -3718,7 +3723,7 @@
         <div class="company-logo-field"><input id="settingsCompanyLogoInput" type="file" accept="image/*" hidden /><button class="secondary-button" id="changeCompanyLogo" type="button"><svg class="ui-icon"><use href="#i-file" /></svg>Trocar logo</button><div class="company-logo-preview" id="companyLogoPreview">PC</div></div>
         <label class="form-field"><span>Fluxo de aprovação de solicitações de vaga</span>
           <select id="settingsCompanyHiringFlow">
-            <option value="rh">Gestor → RH</option>
+            <option value="rh">Gestor â†’ RH</option>
           </select>
           <small class="field-hint">O gestor solicita; o RH aprova ou devolve. RH abre vagas com autonomia.</small>
         </label>
@@ -3732,7 +3737,7 @@
       <div class="analysis-dialog-content">
         <header>
           <div><span class="eyebrow">PARECER DO GESTOR</span><h2 id="analysisCandidateName">Candidato</h2><p id="analysisCandidateRole">Vaga</p></div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerAnalysis">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeManagerAnalysis">Ã—</button>
         </header>
         <div class="analysis-detail-grid">
           <div><span>Departamento</span><strong id="analysisDepartment"></strong></div>
@@ -3750,19 +3755,19 @@
       <div class="candidate-modal">
         <header class="candidate-modal-header">
           <div class="candidate-header-top">
-            <span class="candidate-dossier-avatar" id="gestorCandAvatar" aria-hidden="true">—</span>
+            <span class="candidate-dossier-avatar" id="gestorCandAvatar" aria-hidden="true">â€”</span>
             <div class="candidate-identity-copy">
               <h2 id="gestorCandTitle">Candidato</h2>
               <p id="gestorCandMeta">Vaga</p>
             </div>
           </div>
           <div class="candidate-dossier-status">
-            <span class="stage-pill" id="gestorCandStage">—</span>
+            <span class="stage-pill" id="gestorCandStage">â€”</span>
             <span class="role-tag" id="gestorCandProcessLabel">Em processo</span>
             <div class="candidate-dossier-tags" id="gestorCandHeaderChips"></div>
           </div>
           <div class="candidate-dossier-metrics" id="gestorCandMetrics" aria-label="Resumo do processo"></div>
-          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeGestorCandidatePanel">×</button>
+          <button class="icon-button candidate-header-close" aria-label="Fechar" type="button" id="closeGestorCandidatePanel">Ã—</button>
         </header>
         <p id="gestorCandAnalysisBanner" class="gestor-analysis-pending" hidden></p>
         <div class="candidate-actions" aria-label="Ações do gestor">
@@ -3787,7 +3792,7 @@
             <h2 id="gestorCandidateDecisionTitle">Decisão</h2>
             <p id="gestorCandidateDecisionSubtitle">Registre a decisão desta análise.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorCandidateDecisionCancel">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorCandidateDecisionCancel">Ã—</button>
         </header>
         <div class="talent-edit-fields" id="gestorCandidateDecisionFields"></div>
         <footer class="dialog-actions">
@@ -3801,11 +3806,11 @@
       <form id="gestorInterviewRequestForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">SOLICITAÇÃO</span>
+            <span class="eyebrow">SOLICITAÃ‡ÃƒO</span>
             <h2>Solicitar entrevista</h2>
             <p id="gestorInterviewRequestSubtitle">Pedido ao RH para agendar com o candidato.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorInterviewRequestCancel">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#gestorInterviewRequestCancel">Ã—</button>
         </header>
         <div class="talent-edit-fields gestor-interview-request-fields">
           <label class="form-field">
@@ -3867,11 +3872,11 @@
       <form id="rhInterviewRequestForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">PENDÊNCIA RH</span>
+            <span class="eyebrow">PENDÃŠNCIA RH</span>
             <h2>Solicitação de entrevista</h2>
             <p id="rhInterviewRequestSubtitle">Analise o pedido do gestor e proponha um horário.</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="rhInterviewRequestClose">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="rhInterviewRequestClose">Ã—</button>
         </header>
         <div class="talent-edit-fields" id="rhInterviewRequestSummary"></div>
         <div class="talent-edit-fields">
@@ -3907,11 +3912,11 @@
       <form id="gestorInterviewRequestConfirmForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">SOLICITAÇÃO</span>
+            <span class="eyebrow">SOLICITAÃ‡ÃƒO</span>
             <h2 id="gestorIrConfirmTitle">Acompanhar solicitação</h2>
             <p id="gestorIrConfirmSubtitle">Detalhes do pedido ao RH.</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="gestorIrConfirmClose">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="gestorIrConfirmClose">Ã—</button>
         </header>
         <div class="talent-edit-fields" id="gestorIrConfirmBody"></div>
         <footer class="dialog-actions">
@@ -3924,8 +3929,8 @@
     <dialog class="settings-form-dialog test-preview-dialog" id="testPreviewDialog">
       <div class="test-preview-content">
         <header>
-          <div><span class="eyebrow">PRÉVIA DO TESTE</span><h2 id="testPreviewTitle">Teste técnico</h2><p id="testPreviewMeta"></p></div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeTestPreview">×</button>
+          <div><span class="eyebrow">PRÃ‰VIA DO TESTE</span><h2 id="testPreviewTitle">Teste técnico</h2><p id="testPreviewMeta"></p></div>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTestPreview">Ã—</button>
         </header>
         <div class="test-preview-score" id="testPreviewScore" hidden></div>
         <div class="test-preview-body" id="testPreviewBody"></div>
@@ -3939,10 +3944,10 @@
       <div class="test-preview-content sheet-preview-content">
         <header>
           <div>
-            <span class="eyebrow">PRÉVIA DA FICHA</span>
+            <span class="eyebrow">PRÃ‰VIA DA FICHA</span>
             <h2 id="sheetPreviewTitle">Ficha</h2>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeSheetPreview">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeSheetPreview">Ã—</button>
         </header>
         <div class="sheet-preview-body" id="sheetPreviewBody"></div>
         <footer>
@@ -3953,31 +3958,31 @@
 
     <dialog class="settings-form-dialog" id="settingsBenefitDialog">
       <form id="settingsBenefitForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsBenefitFormTitle">Novo benefício</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsBenefitDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsBenefitDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Nome</span><input id="settingsBenefitName" required /></label><label class="form-field"><span>Descrição</span><textarea id="settingsBenefitDescription" rows="4" placeholder="Explique o que o benefício oferece"></textarea></label><label class="test-switch"><input id="settingsBenefitActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsBenefitDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog" id="settingsStageDialog">
       <form id="settingsStageForm"><header><div><span class="eyebrow">PIPELINE</span><h2>Nova etapa</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsStageDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsStageDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Código</span><input id="settingsStageCode" required maxlength="32" placeholder="Ex.: ENTREVISTA_TECNICA" /><small class="field-hint">Use um código único. Não pode ser TRIAGEM, PROPOSTA ou outro código já cadastrado.</small></label><label class="form-field"><span>Nome exibido</span><input id="settingsStageName" required maxlength="60" placeholder="Ex.: Entrevista técnica" /><small class="field-hint">Colunas organizacionais não alteram o status nem enviam e-mail ao candidato.</small></label><label class="test-switch"><input id="settingsStageActive" type="checkbox" checked /><span class="test-switch-track"></span><span><strong>Ativa</strong><small>Desmarque para ocultar a coluna do kanban</small></span></label><p class="form-error" id="settingsStageError" role="alert" hidden></p><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsStageDialog">Cancelar</button><button class="primary-button" type="submit">Criar etapa</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog settings-alert-dialog" id="stageCandidatesDialog">
-      <div class="settings-alert-content"><header><div><span class="eyebrow">ATENÇÃO</span><h2>Coluna com candidaturas</h2></div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="stageCandidatesDialog">×</button>
+      <div class="settings-alert-content"><header><div><span class="eyebrow">ATENÃ‡ÃƒO</span><h2>Coluna com candidaturas</h2></div>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="stageCandidatesDialog">Ã—</button>
         </header><p>Existem candidaturas nesta coluna. Mova os cards antes de ocultar.</p><footer><button class="primary-button" type="button" data-close-settings-dialog="stageCandidatesDialog">Entendi</button></footer></div>
     </dialog>
 
     <dialog class="settings-form-dialog email-template-dialog" id="settingsEmailDialog">
-      <form id="settingsEmailForm"><header><div><span class="eyebrow" id="settingsEmailCode">CÓDIGO</span><h2 id="settingsEmailFormTitle">Editar modelo</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsEmailDialog" aria-label="Fechar">×</button>
+      <form id="settingsEmailForm"><header><div><span class="eyebrow" id="settingsEmailCode">CÃ“DIGO</span><h2 id="settingsEmailFormTitle">Editar modelo</h2></div>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsEmailDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Nome</span><input id="settingsEmailName" required /></label><label class="form-field"><span>Assunto</span><input id="settingsEmailSubject" required /></label><label class="form-field"><span>Corpo</span><textarea id="settingsEmailBody" rows="10" required></textarea><small class="field-hint">Use {{candidateName}}, {{jobTitle}}, {{siteUrl}}, {{applicationsLink}}, entre outras variáveis.</small></label><label class="test-switch"><input id="settingsEmailActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsEmailDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
     <dialog class="settings-form-dialog rejection-form-dialog" id="settingsRejectionDialog">
       <form id="settingsRejectionForm"><header><div><span class="eyebrow">CATÁLOGO</span><h2 id="settingsRejectionFormTitle">Nova justificativa</h2></div>
-          <button class="icon-button" type="button" data-close-settings-dialog="settingsRejectionDialog" aria-label="Fechar">×</button>
+          <button class="icon-button" type="button" data-close-settings-dialog="settingsRejectionDialog" aria-label="Fechar">Ã—</button>
         </header><label class="form-field"><span>Mensagem</span><textarea id="settingsRejectionMessage" rows="8" required placeholder="Escreva a justificativa apresentada ao candidato"></textarea></label><label class="test-switch"><input id="settingsRejectionActive" type="checkbox" checked /><span class="test-switch-track"></span>Ativo</label><footer><button class="secondary-button" type="button" data-close-settings-dialog="settingsRejectionDialog">Cancelar</button><button class="primary-button" type="submit">Salvar</button></footer></form>
     </dialog>
 
@@ -3985,7 +3990,7 @@
       <form method="dialog" id="jobForm">
         <header class="stack-dialog-header dialog-close-only-header">
           <div></div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDialog">Ã—</button>
         </header>
         <div class="dialog-heading">
           <div>
@@ -4042,7 +4047,7 @@
             <h2 id="jobDetailTitle">Vaga</h2>
             <p id="jobDetailSubtitle">Detalhes</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeJobDetailDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeJobDetailDialog">Ã—</button>
         </header>
 
         <div class="job-detail-body">
@@ -4079,7 +4084,7 @@
                 aria-haspopup="menu"
                 aria-controls="jobMoreActionsMenu"
               >
-                ⋮
+                â‹®
               </button>
               <div class="candidate-more-menu job-more-menu" id="jobMoreActionsMenu" role="menu" hidden></div>
             </div>
@@ -4090,12 +4095,12 @@
             <section class="job-detail-section">
               <h3>Resumo</h3>
               <dl class="job-detail-meta">
-                <div><dt>Responsável</dt><dd id="jobDetailManager">—</dd></div>
-                <div><dt>Gestor solicitante</dt><dd id="jobDetailRequester">—</dd></div>
-                <div><dt>Data de abertura</dt><dd id="jobDetailOpenedAt">—</dd></div>
-                <div><dt>Prazo desejado</dt><dd id="jobDetailHireBy">—</dd></div>
+                <div><dt>Responsável</dt><dd id="jobDetailManager">â€”</dd></div>
+                <div><dt>Gestor solicitante</dt><dd id="jobDetailRequester">â€”</dd></div>
+                <div><dt>Data de abertura</dt><dd id="jobDetailOpenedAt">â€”</dd></div>
+                <div><dt>Prazo desejado</dt><dd id="jobDetailHireBy">â€”</dd></div>
               </dl>
-              <p id="jobDetailDescription" class="job-detail-description">—</p>
+              <p id="jobDetailDescription" class="job-detail-description">â€”</p>
               <div class="job-detail-hired" id="jobDetailHiredSection" hidden>
                 <h3>Contratados nesta vaga</h3>
                 <ul class="job-detail-hired-list" id="jobDetailHiredList"></ul>
@@ -4121,12 +4126,12 @@
       <form id="jobStatusForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">GESTÃO DE VAGAS</span>
+            <span class="eyebrow">GESTÃƒO DE VAGAS</span>
             <h2 id="jobStatusDialogTitle">Confirmar ação</h2>
             <p id="jobStatusDialogLabel">Vaga</p>
             <p class="field-hint" id="jobStatusDialogHint" hidden></p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="jobStatusDialog">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-dialog="jobStatusDialog">Ã—</button>
         </header>
         <label class="form-field" id="jobStatusReasonField">
           <span id="jobStatusReasonLabel">Motivo</span>
@@ -4151,7 +4156,7 @@
             <h2>Mover candidato</h2>
             <p id="moveStageCandidateLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelMoveStage">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelMoveStage">Ã—</button>
         </header>
         <label class="form-field">
           <span>Nova etapa</span>
@@ -4197,7 +4202,7 @@
             <h2 id="pipelineActionTitle">Ação</h2>
             <p id="pipelineActionCandidateLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPipelineAction">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelPipelineAction">Ã—</button>
         </header>
         <label class="form-field" id="pipelineActionFieldWrap">
           <span id="pipelineActionFieldLabel">Valor</span>
@@ -4222,11 +4227,11 @@
       <form id="hiringRequestDecisionForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">APROVAÇÃO DE SOLICITAÇÃO</span>
+            <span class="eyebrow">APROVAÃ‡ÃƒO DE SOLICITAÃ‡ÃƒO</span>
             <h2 id="hiringRequestDecisionTitle">Decisão</h2>
             <p id="hiringRequestDecisionSubtitle">Registre a decisão desta etapa.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#hiringRequestDecisionCancel">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#hiringRequestDecisionCancel">Ã—</button>
         </header>
         <div class="talent-edit-fields" id="hiringRequestDecisionFields"></div>
         <footer class="dialog-actions">
@@ -4244,7 +4249,7 @@
             <h2 id="talentEditTitle">Editar</h2>
             <p id="talentEditSubtitle">Atualize o registro do talento.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#talentEditCancel">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#talentEditCancel">Ã—</button>
         </header>
         <div id="talentEditFields" class="talent-edit-fields"></div>
         <footer class="dialog-actions">
@@ -4262,7 +4267,7 @@
             <h2>Filtros avançados</h2>
             <p>Refine a busca para reaproveitar candidatos com mais precisão.</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeTalentFiltersDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeTalentFiltersDialog">Ã—</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4286,7 +4291,7 @@
             <select id="talentFilterSalary">
               <option value="all">Todas</option>
               <option value="ate3500">Até R$ 3.500</option>
-              <option value="3500-5000">R$ 3.500 – 5.000</option>
+              <option value="3500-5000">R$ 3.500 â€“ 5.000</option>
               <option value="acima5000">Acima de R$ 5.000</option>
             </select>
           </label>
@@ -4336,11 +4341,11 @@
       <form id="analyticsFiltersForm">
         <header class="stack-dialog-header">
           <div>
-            <span class="eyebrow">RELATÓRIOS</span>
+            <span class="eyebrow">RELATÃ“RIOS</span>
             <h2>Filtros avançados</h2>
             <p>Refine o recorte dos indicadores sem sobrecarregar o painel.</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsFiltersDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeAnalyticsFiltersDialog">Ã—</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4430,7 +4435,7 @@
             <h2>Filtros avançados</h2>
             <p>Refine a lista de candidatos sem sobrecarregar o quadro.</p>
           </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closePipelineFiltersDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closePipelineFiltersDialog">Ã—</button>
         </header>
         <div class="pipeline-filter-grid">
           <label class="form-field">
@@ -4470,9 +4475,9 @@
             <span>Período</span>
             <select id="pipelinePeriodFilter">
               <option value="all">Todo o período</option>
-              <option value="7">Últimos 7 dias</option>
-              <option value="15">Últimos 15 dias</option>
-              <option value="30">Últimos 30 dias</option>
+              <option value="7">Ãšltimos 7 dias</option>
+              <option value="15">Ãšltimos 15 dias</option>
+              <option value="30">Ãšltimos 30 dias</option>
             </select>
           </label>
           <label class="form-field">
@@ -4526,7 +4531,7 @@
             <h2>Dispensar candidato</h2>
             <p id="dismissCandidateLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDismiss">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelDismiss">Ã—</button>
         </header>
         <label class="form-field">
           <span>Motivo da dispensa</span>
@@ -4552,7 +4557,7 @@
             <h2>Bloquear candidato</h2>
             <p id="blockCandidateLabel">Candidato</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBlock">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBlock">Ã—</button>
         </header>
         <label class="form-field">
           <span>Motivo do bloqueio</span>
@@ -4583,7 +4588,7 @@
             <h2>LGPD e retenção</h2>
             <p>Defina o prazo padrão de retenção de dados pessoais.</p>
           </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelLgpd">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelLgpd">Ã—</button>
         </header>
         <label class="form-field">
           <span>Dias de retenção</span>
@@ -4603,7 +4608,7 @@
           <h2>Escolher horário</h2>
           <p id="bookingCandidateLabel">Disponibilidade da entrevista</p>
         </div>
-          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBooking">×</button>
+          <button class="icon-button" type="button" aria-label="Fechar" data-close-proxy="#cancelBooking">Ã—</button>
         </header>
       <div class="booking-slots" id="bookingSlotGrid"></div>
       <div class="dialog-actions">
@@ -4622,7 +4627,7 @@
           aria-expanded="false"
           aria-controls="candidateSidebar"
         >
-          <span aria-hidden="true">☰</span>
+          <span aria-hidden="true">â˜°</span>
         </button>
         <div class="app-bar-brand">
           <div>
@@ -4679,7 +4684,7 @@
             <span class="avatar" id="candidateSidebarAvatar">LL</span>
           </button>
           <div class="topbar-popover notification-popover" id="candidateNotificationPopover" hidden>
-            <header><strong>Notificações</strong><small>Carregando…</small></header>
+            <header><strong>Notificações</strong><small>Carregandoâ€¦</small></header>
           </div>
           <div class="topbar-popover profile-popover candidate-profile-popover" id="candidateProfilePopover" hidden>
             <header><span class="avatar" id="candidatePopoverAvatar">LL</span><span><strong id="candidatePopoverName">Levi Luz Sousa</strong><small>Candidato</small></span></header>
@@ -4707,7 +4712,7 @@
               aria-expanded="true"
               aria-controls="candidateSidebar"
             >
-              <span aria-hidden="true">‹</span>
+              <span aria-hidden="true">â€¹</span>
             </button>
           </div>
         </div>
@@ -4715,7 +4720,7 @@
         <nav class="main-nav" aria-label="Navegação do candidato">
           <div class="nav-group">
             <p class="nav-group-label">Explorar</p>
-            <button class="nav-item" type="button" data-candidate-nav="home" title="Início — próximos passos">
+            <button class="nav-item" type="button" data-candidate-nav="home" title="Início â€” próximos passos">
               <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-home" /></svg></span>
               <span class="nav-label">Início</span>
             </button>
@@ -4783,7 +4788,7 @@
                 <article class="home-area-card" data-candidate-next-action="jobs" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Vagas</h2>
-                    <span class="home-area-open">Abrir →</span>
+                    <span class="home-area-open">Abrir â†’</span>
                   </div>
                   <p class="home-area-pulse">Abertas · Para você</p>
                   <div class="home-area-stats" aria-label="Pulso de vagas">
@@ -4794,7 +4799,7 @@
                 <article class="home-area-card" data-candidate-next-action="processo" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Meu processo</h2>
-                    <span class="home-area-open">Abrir →</span>
+                    <span class="home-area-open">Abrir â†’</span>
                   </div>
                   <p class="home-area-pulse">Seleção · Proposta · Pré-admissão</p>
                   <div class="home-area-stats" aria-label="Pulso do processo">
@@ -4806,7 +4811,7 @@
                 <article class="home-area-card" data-candidate-scroll="candidateHomePendenciasPanel" tabindex="0">
                   <div class="home-area-card-head">
                     <h2>Pendências</h2>
-                    <span class="home-area-open">Ver fila →</span>
+                    <span class="home-area-open">Ver fila â†’</span>
                   </div>
                   <p class="home-area-pulse">Ações · Candidaturas ativas</p>
                   <div class="home-area-stats" aria-label="Pulso de pendências">
@@ -4824,7 +4829,7 @@
                   </div>
                   <div class="home-hoje-actions">
                     <span class="home-hoje-count"><strong id="candidateHomePendenciasCount">0</strong> na fila</span>
-                    <button type="button" class="dash-history-link" data-candidate-next-action="processo">Meu processo →</button>
+                    <button type="button" class="dash-history-link" data-candidate-next-action="processo">Meu processo â†’</button>
                   </div>
                 </div>
                 <div class="dash-pend-list" id="candidateHomePendencies"></div>
@@ -4845,7 +4850,7 @@
                   <div class="candidate-profile-section-head">
                     <div>
                       <h2>Histórico recente</h2>
-                      <p class="candidate-section-note">Últimas movimentações das suas candidaturas.</p>
+                      <p class="candidate-section-note">Ãšltimas movimentações das suas candidaturas.</p>
                     </div>
                   </div>
                   <div class="candidate-home-recent-list" id="candidateHomeRecentList"></div>
@@ -4879,14 +4884,14 @@
 
           <section class="candidate-view candidate-detail-view" id="candidateJobDetailView" hidden>
             <button class="page-back-link candidate-detail-back" type="button" id="candidateJobDetailBack">
-              <span aria-hidden="true">←</span> Voltar para vagas
+              <span aria-hidden="true">â†</span> Voltar para vagas
             </button>
             <div class="candidate-detail-stack" id="candidateJobDetailCard"></div>
           </section>
 
           <section class="candidate-view candidate-apply-layout" id="candidateApplyView" hidden>
             <button class="page-back-link candidate-detail-back" type="button" id="candidateApplyBack">
-              <span aria-hidden="true">←</span> Voltar para a vaga
+              <span aria-hidden="true">â†</span> Voltar para a vaga
             </button>
             <div class="candidate-apply-stack" id="candidateApplyBody"></div>
           </section>
@@ -5085,7 +5090,7 @@
 
           <section class="candidate-view candidate-app-detail-layout" id="candidateAppDetailView" hidden>
             <button class="page-back-link" type="button" id="candidateAppDetailBack">
-              <span aria-hidden="true">←</span> Voltar para candidaturas
+              <span aria-hidden="true">â†</span> Voltar para candidaturas
             </button>
             <div class="candidate-app-detail" id="candidateAppDetailBody"></div>
           </section>
@@ -5107,7 +5112,7 @@
             <div>
               <h2>Filtros</h2>
             </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateFiltersDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateFiltersDialog">Ã—</button>
         </header>
           <label class="form-field">
             <span>Tipo de contratação</span>
@@ -5161,7 +5166,7 @@
               <h2>Candidatura concluída</h2>
               <p id="candidateApplicationSuccessCopy">Sua candidatura foi enviada com sucesso.</p>
             </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateApplicationSuccess">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateApplicationSuccess">Ã—</button>
         </header>
           <div class="candidate-success-content">
             <div class="candidate-apply-success-icon" aria-hidden="true">
@@ -5174,11 +5179,11 @@
             <div class="candidate-success-details">
               <div>
                 <span id="candidateApplicationSuccessJobLabel">Vaga</span>
-                <strong id="candidateApplicationSuccessJob">—</strong>
+                <strong id="candidateApplicationSuccessJob">â€”</strong>
               </div>
               <div>
                 <span>Currículo</span>
-                <strong id="candidateApplicationSuccessResume">—</strong>
+                <strong id="candidateApplicationSuccessResume">â€”</strong>
               </div>
             </div>
             <div class="candidate-success-next">
@@ -5196,17 +5201,17 @@
         <form method="dialog">
           <header class="stack-dialog-header">
             <div>
-              <span class="eyebrow">TESTE TÉCNICO</span>
+              <span class="eyebrow">TESTE TÃ‰CNICO</span>
               <h2 id="candidateTestDialogTitle">Teste técnico</h2>
               <p id="candidateTestDialogDescription">Confira os detalhes antes de começar.</p>
             </div>
-          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateTestDialog">×</button>
+          <button class="icon-button" aria-label="Fechar" type="button" id="closeCandidateTestDialog">Ã—</button>
         </header>
           <div class="candidate-test-dialog-content">
             <div class="candidate-test-dialog-meta">
               <div><span>Questões</span><strong id="candidateTestDialogQuestions">0</strong></div>
               <div><span>Nota mínima</span><strong id="candidateTestDialogScore">0%</strong></div>
-              <div><span>Vaga</span><strong id="candidateTestDialogJob">—</strong></div>
+              <div><span>Vaga</span><strong id="candidateTestDialogJob">â€”</strong></div>
             </div>
             <p>Ao iniciar, você poderá responder a avaliação e enviar suas respostas ao final. Reserve um momento tranquilo para concluir.</p>
           </div>
