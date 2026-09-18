@@ -30,6 +30,9 @@ const jobs = [
     manager: "Larissa Dias",
     skillsRequired: ["Departamento Pessoal", "Folha", "eSocial"],
     skillsNice: ["Excel", "Comunicação"],
+    openedAt: "2026-07-15",
+    publishedAt: "2026-07-15",
+    slaTargetDays: 30,
   },
   {
     id: 3,
@@ -96,7 +99,9 @@ const jobs = [
     skillsNice: ["Trabalho em equipe"],
     contract: "CLT",
     location: "Teotônio Segurado",
-    publishedAt: "2026-08-25",
+    publishedAt: "2026-08-15",
+    openedAt: "2026-08-15",
+    slaTargetDays: 10,
     benefits: ["Almoço", "Vale Transporte", "Day Off", "Educação Corporativa", "Desconto na UniCatólica", "Assiduidade"],
     aboutCompany: "A maior contabilidade do norte do Brasil",
   },
@@ -174,7 +179,9 @@ const jobs = [
     skillsNice: ["Recrutamento", "eSocial"],
     contract: "CLT",
     location: "Teotônio Segurado",
-    publishedAt: "2026-08-21",
+    publishedAt: "2026-07-10",
+    openedAt: "2026-07-10",
+    slaTargetDays: 30,
   },
   {
     id: 11,
@@ -193,7 +200,9 @@ const jobs = [
     skillsNice: ["Excel", "Atendimento"],
     contract: "CLT",
     location: "Plano Diretor Sul",
-    publishedAt: "2026-08-25",
+    publishedAt: "2026-08-18",
+    openedAt: "2026-08-18",
+    slaTargetDays: 10,
     pcd: true,
   },
   {
@@ -356,6 +365,7 @@ function ensureJobDefaults(job) {
     12: "Encerrada",
     14: "Rascunho",
     16: "Cancelada",
+    18: "Aguardando aprovação",
   };
   if (statusById[job.id]) job.status = statusById[job.id];
   job.openings = Number(job.openings || openingsById[job.id] || 1);
@@ -506,7 +516,7 @@ const candidates = [
       },
     ],
     appliedAt: "2026-08-20",
-    stageEnteredAt: "2026-08-26T08:59:00",
+    stageEnteredAt: "2026-08-20T08:59:00",
     score: 78,
     owner: "Larissa Dias",
     manager: "Larissa Dias",
@@ -531,6 +541,11 @@ const candidates = [
     stage: "Triagem",
     alert: 1,
     attachment: true,
+    gestorExtraEvaluation: {
+      type: "fit",
+      reason: "Validar aderência cultural com a equipe de DP",
+      at: "2026-08-26T11:00:00",
+    },
     history: [["Candidatura enviada", "Pollyanna Cesario · há 2 dias"], ["Comentário", "Retornar amanhã · Larissa Dias"]],
     activities: [["PC", "Pollyanna Cesario", "Enviou a candidatura", "Há 2 dias"]],
   },
@@ -540,11 +555,15 @@ const candidates = [
     email: "victor.sousa@email.com",
     phone: "(63) 99220-1160",
     vacancy: "Suporte de Sistemas",
-    stage: "Triagem",
+    stage: "Em análise",
     alert: 1,
     attachment: true,
-    history: [["Candidatura enviada", "Victor Sousa · há 3 dias"]],
-    activities: [["VS", "Victor Sousa", "Enviou a candidatura", "Há 3 dias"]],
+    stageEnteredAt: "2026-08-22T09:00:00",
+    history: [
+      ["Etapa: Em análise", "Eduardo Ribeiro · há 2 dias"],
+      ["Candidatura enviada", "Victor Sousa · há 5 dias"],
+    ],
+    activities: [["VS", "Victor Sousa", "Enviou a candidatura", "Há 5 dias"]],
   },
   {
     id: 104,
@@ -555,13 +574,13 @@ const candidates = [
     stage: "Triagem",
     alert: 2,
     attachment: true,
-    stageEnteredAt: "2026-08-20T09:00:00",
+    stageEnteredAt: "2026-08-18T09:00:00",
     history: [
       ["Comentário", "Aguardando documentos · RH Portal"],
       ["Comentário", "Primeiro contato feito · Larissa Dias"],
-      ["Candidatura enviada", "Kemilly Cristyne · há 4 dias"],
+      ["Candidatura enviada", "Kemilly Cristyne · há 9 dias"],
     ],
-    activities: [["KN", "Kemilly Cristyne", "Enviou a candidatura", "Há 4 dias"]],
+    activities: [["KN", "Kemilly Cristyne", "Enviou a candidatura", "Há 9 dias"]],
   },
   {
     id: 105,
@@ -569,16 +588,20 @@ const candidates = [
     email: "ketmyalmeida@gmail.com",
     phone: "(63) 99288-7001",
     vacancy: "Analista de Departamento Pessoal",
-    stage: "Triagem",
+    stage: "Teste técnico",
     alert: 0,
     attachment: true,
+    stageEnteredAt: "2026-08-24T09:00:00",
     gestorExtraEvaluation: {
-      type: "fit",
-      reason: "Validar aderência cultural com a equipe de DP",
+      type: "tecnico",
+      reason: "Validar domínio técnico em folha e eSocial",
       at: "2026-08-26T11:00:00",
     },
-    history: [["Candidatura enviada", "Ketmy Almeida · há 5 dias"]],
-    activities: [["KA", "Ketmy Almeida", "Enviou a candidatura", "Há 5 dias"]],
+    history: [
+      ["Etapa: Teste técnico", "Larissa Dias · há 3 dias"],
+      ["Candidatura enviada", "Ketmy Almeida · há 8 dias"],
+    ],
+    activities: [["KA", "Ketmy Almeida", "Enviou a candidatura", "Há 8 dias"]],
   },
   {
     id: 106,
@@ -666,8 +689,9 @@ const candidates = [
     stage: "Entrevista RH",
     alert: 0,
     attachment: true,
-    history: [["Etapa: Entrevista RH", "Larissa Dias · há 2 dias"]],
-    activities: [["LD", "Larissa Dias", "Moveu para Entrevista RH", "Há 2 dias"]],
+    stageEnteredAt: "2026-08-20T09:00:00",
+    history: [["Etapa: Entrevista RH", "Larissa Dias · há 7 dias"]],
+    activities: [["LD", "Larissa Dias", "Moveu para Entrevista RH", "Há 7 dias"]],
   },
   {
     id: 110,
@@ -714,6 +738,314 @@ const candidates = [
     },
     proposalVersions: [],
   },
+  {
+    id: 111,
+    name: "Bruno Henrique Alves",
+    email: "bruno.alves.dp@email.com",
+    phone: "(63) 99111-2211",
+    vacancy: "Administrativo",
+    stage: "Contratado",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-15T10:00:00",
+    appliedAt: "2026-07-20",
+    owner: "Larissa Dias",
+    manager: "Larissa Dias",
+    history: [
+      ["Etapa: Contratado", "Larissa Dias · há 12 dias"],
+      ["Proposta aceita", "Bruno Henrique · há 14 dias"],
+    ],
+    activities: [["LD", "Larissa Dias", "Contratou o candidato", "Há 12 dias"]],
+    proposal: {
+      id: 1111,
+      version: 1,
+      status: "aceita",
+      role: "Administrativo",
+      salary: 2200,
+      amount: 2200,
+      benefits: ["Vale refeição", "Vale Transporte"],
+      workSchedule: "44h semanais",
+      workModel: "Presencial",
+      location: "Palmas - TO",
+      admissionDate: "2026-08-20",
+      validUntil: "2026-08-18",
+      notes: "Proposta aceita — cenário Contratado.",
+      contract: "CLT",
+      sentAt: "2026-08-10T10:00:00",
+      acceptedAt: "2026-08-12T14:00:00",
+      createdAt: "2026-08-10T09:00:00",
+      updatedAt: "2026-08-12T14:00:00",
+    },
+  },
+  {
+    id: 112,
+    name: "Fernanda Rocha Lima",
+    email: "fernanda.rocha.lima@email.com",
+    phone: "(63) 99222-3344",
+    vacancy: "Assistente Comercial",
+    stage: "Reprovado",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-22T16:00:00",
+    appliedAt: "2026-08-10",
+    owner: "Larissa Dias",
+    manager: "Larissa Dias",
+    history: [
+      ["Etapa: Reprovado", "Larissa Dias · há 5 dias"],
+      ["Entrevista RH", "Larissa Dias · há 8 dias"],
+    ],
+    activities: [["LD", "Larissa Dias", "Reprovou na etapa de entrevista", "Há 5 dias"]],
+  },
+  {
+    id: 113,
+    name: "Rafael Mendes Costa",
+    email: "rafael.mendes.costa@email.com",
+    phone: "(63) 99333-4455",
+    vacancy: "Coordenador(a) de RH",
+    stage: "Proposta",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-25T09:00:00",
+    appliedAt: "2026-08-12",
+    owner: "Larissa Dias",
+    manager: "Larissa Dias",
+    history: [
+      ["Proposta aprovada internamente", "Larissa Dias · há 2 dias"],
+      ["Etapa: Proposta", "Larissa Dias · há 2 dias"],
+    ],
+    activities: [["LD", "Larissa Dias", "Aprovou a proposta para envio", "Há 2 dias"]],
+    proposal: {
+      id: 1131,
+      version: 1,
+      status: "aprovada",
+      role: "Coordenador(a) de RH",
+      salary: 6800,
+      amount: 6800,
+      benefits: ["Vale refeição", "Plano de saúde"],
+      workSchedule: "44h semanais",
+      workModel: "Híbrido",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-25",
+      validUntil: "2026-09-22",
+      notes: "Aprovada — falta enviar ao candidato.",
+      contract: "CLT",
+      createdAt: "2026-08-24T10:00:00",
+      updatedAt: "2026-08-25T11:00:00",
+    },
+  },
+  {
+    id: 114,
+    name: "Camila Duarte Nogueira",
+    email: "camila.duarte.nog@email.com",
+    phone: "(63) 99444-5566",
+    vacancy: "Analista Financeiro",
+    stage: "Proposta",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-26T10:00:00",
+    appliedAt: "2026-08-14",
+    owner: "Camila Monteiro",
+    manager: "Camila Monteiro",
+    history: [["Proposta em rascunho", "Camila Monteiro · ontem"]],
+    activities: [["CM", "Camila Monteiro", "Abriu rascunho de proposta", "Ontem"]],
+    proposal: {
+      id: 1141,
+      version: 1,
+      status: "rascunho",
+      role: "Analista Financeiro",
+      salary: 5200,
+      amount: 5200,
+      benefits: ["Vale refeição"],
+      workSchedule: "44h semanais",
+      workModel: "Híbrido",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-18",
+      validUntil: "2026-09-15",
+      notes: "Rascunho interno.",
+      contract: "CLT",
+      createdAt: "2026-08-26T10:00:00",
+      updatedAt: "2026-08-26T10:00:00",
+    },
+  },
+  {
+    id: 115,
+    name: "Diego Santos Oliveira",
+    email: "diego.santos.oliv@email.com",
+    phone: "(63) 99555-6677",
+    vacancy: "Desenvolvedor(a) Full Stack",
+    stage: "Proposta",
+    alert: 1,
+    attachment: true,
+    stageEnteredAt: "2026-08-24T11:00:00",
+    appliedAt: "2026-08-08",
+    owner: "Eduardo Ribeiro",
+    manager: "Eduardo Ribeiro",
+    history: [["Candidato visualizou a proposta", "Portal · há 1 dia"]],
+    activities: [["DS", "Diego Santos", "Abriu a proposta", "Há 1 dia"]],
+    proposal: {
+      id: 1151,
+      version: 1,
+      status: "visualizada",
+      role: "Desenvolvedor(a) Full Stack",
+      salary: 7500,
+      amount: 7500,
+      benefits: ["Vale refeição", "Plano de saúde", "Home office"],
+      workSchedule: "40h semanais",
+      workModel: "Híbrido",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-20",
+      validUntil: "2026-09-12",
+      notes: "Proposta visualizada pelo candidato.",
+      contract: "CLT",
+      sentAt: "2026-08-24T11:00:00",
+      viewedAt: "2026-08-26T09:30:00",
+      createdAt: "2026-08-23T16:00:00",
+      updatedAt: "2026-08-26T09:30:00",
+    },
+  },
+  {
+    id: 116,
+    name: "Helena Prado Vieira",
+    email: "helena.prado.vieira@email.com",
+    phone: "(63) 99666-7788",
+    vacancy: "Designer UX/UI",
+    stage: "Proposta",
+    alert: 1,
+    attachment: true,
+    stageEnteredAt: "2026-08-23T14:00:00",
+    appliedAt: "2026-08-05",
+    owner: "Eduardo Ribeiro",
+    manager: "Eduardo Ribeiro",
+    history: [["Contra-proposta recebida", "Helena Prado · há 2 dias"]],
+    activities: [["HP", "Helena Prado", "Enviou contra-proposta", "Há 2 dias"]],
+    proposal: {
+      id: 1161,
+      version: 2,
+      status: "contraproposta",
+      role: "Designer UX/UI",
+      salary: 6200,
+      amount: 6200,
+      benefits: ["Vale refeição", "Plano de saúde"],
+      workSchedule: "40h semanais",
+      workModel: "Remoto",
+      location: "Remoto",
+      admissionDate: "2026-09-15",
+      validUntil: "2026-09-10",
+      notes: "Candidata pediu ajuste salarial.",
+      contract: "PJ",
+      sentAt: "2026-08-20T10:00:00",
+      counterProposal: { salary: 7000, message: "Consigo fechar em R$ 7.000 PJ.", at: "2026-08-25T11:00:00" },
+      createdAt: "2026-08-19T15:00:00",
+      updatedAt: "2026-08-25T11:00:00",
+    },
+  },
+  {
+    id: 117,
+    name: "Igor Nascimento Freitas",
+    email: "igor.nasc.freitas@email.com",
+    phone: "(63) 99777-8899",
+    vacancy: "Estagiário(a) de Contabilidade",
+    stage: "Proposta",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-21T09:00:00",
+    appliedAt: "2026-08-02",
+    owner: "Camila Monteiro",
+    manager: "Camila Monteiro",
+    history: [["Proposta recusada", "Igor Nascimento · há 4 dias"]],
+    activities: [["IN", "Igor Nascimento", "Recusou a proposta", "Há 4 dias"]],
+    proposal: {
+      id: 1171,
+      version: 1,
+      status: "recusada",
+      role: "Estagiário(a) de Contabilidade",
+      salary: 1400,
+      amount: 1400,
+      benefits: ["Vale Transporte"],
+      workSchedule: "30h semanais",
+      workModel: "Presencial",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-01",
+      validUntil: "2026-08-28",
+      notes: "Recusou por conflito de horário com a faculdade.",
+      contract: "Estágio",
+      sentAt: "2026-08-18T10:00:00",
+      declinedAt: "2026-08-23T16:00:00",
+      createdAt: "2026-08-17T11:00:00",
+      updatedAt: "2026-08-23T16:00:00",
+    },
+  },
+  {
+    id: 118,
+    name: "Juliana Moura Castro",
+    email: "juliana.moura.castro@email.com",
+    phone: "(63) 99888-9900",
+    vacancy: "Analista de Dados",
+    stage: "Proposta",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-10T09:00:00",
+    appliedAt: "2026-07-28",
+    owner: "Eduardo Ribeiro",
+    manager: "Eduardo Ribeiro",
+    history: [["Proposta expirada", "Sistema · há 3 dias"]],
+    activities: [["SYS", "Sistema", "Marcou proposta como expirada", "Há 3 dias"]],
+    proposal: {
+      id: 1181,
+      version: 1,
+      status: "expirada",
+      role: "Analista de Dados",
+      salary: 5800,
+      amount: 5800,
+      benefits: ["Vale refeição", "Plano de saúde"],
+      workSchedule: "44h semanais",
+      workModel: "Híbrido",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-01",
+      validUntil: "2026-08-20",
+      notes: "Prazo de validade encerrado.",
+      contract: "CLT",
+      sentAt: "2026-08-10T10:00:00",
+      createdAt: "2026-08-09T14:00:00",
+      updatedAt: "2026-08-24T00:00:00",
+    },
+  },
+  {
+    id: 119,
+    name: "Larissa Campos Melo",
+    email: "larissa.campos.melo@email.com",
+    phone: "(63) 99900-1122",
+    vacancy: "Gerente de Projetos",
+    stage: "Proposta",
+    alert: 0,
+    attachment: true,
+    stageEnteredAt: "2026-08-12T09:00:00",
+    appliedAt: "2026-07-30",
+    owner: "Eduardo Ribeiro",
+    manager: "Eduardo Ribeiro",
+    history: [["Proposta cancelada", "Eduardo Ribeiro · há 6 dias"]],
+    activities: [["ER", "Eduardo Ribeiro", "Cancelou a proposta", "Há 6 dias"]],
+    proposal: {
+      id: 1191,
+      version: 1,
+      status: "cancelada",
+      role: "Gerente de Projetos",
+      salary: 11000,
+      amount: 11000,
+      benefits: ["Vale refeição", "Plano de saúde"],
+      workSchedule: "44h semanais",
+      workModel: "Híbrido",
+      location: "Palmas - TO",
+      admissionDate: "2026-09-10",
+      validUntil: "2026-09-05",
+      notes: "Vaga pausada — proposta cancelada.",
+      contract: "CLT",
+      sentAt: "2026-08-12T10:00:00",
+      cancelledAt: "2026-08-21T11:00:00",
+      createdAt: "2026-08-11T15:00:00",
+      updatedAt: "2026-08-21T11:00:00",
+    },
+  },
 ];
 
 const candidateSkillDefaults = {
@@ -722,18 +1054,35 @@ const candidateSkillDefaults = {
   "Assistente / Analista Contábil": ["Contabilidade", "Excel", "Escrituração"],
   "Assistente / Analista Fiscal": ["Fiscal", "Excel", "ICMS"],
   "Desenvolvedor(a) Full Stack": ["Java", "PostgreSQL", "Flutter", "Comunicação"],
+  Administrativo: ["Comunicação", "Excel"],
+  "Assistente Comercial": ["Comunicação", "Negociação"],
+  "Coordenador(a) de RH": ["Departamento Pessoal", "Liderança", "Comunicação"],
+  "Analista Financeiro": ["Excel", "Fluxo de caixa", "Comunicação"],
+  "Designer UX/UI": ["Figma", "UI Design", "Comunicação"],
+  "Estagiário(a) de Contabilidade": ["Excel", "Comunicação"],
+  "Analista de Dados": ["SQL", "Excel", "Comunicação"],
+  "Gerente de Projetos": ["Gestão de projetos", "Comunicação", "Liderança"],
 };
 const candidateStageEnteredDefaults = {
   101: "2026-08-20T08:00:00",
   102: "2026-08-25T10:00:00",
-  103: "2026-08-24T09:00:00",
-  104: "2026-08-22T11:00:00",
-  105: "2026-08-26T14:00:00",
+  103: "2026-08-22T09:00:00",
+  104: "2026-08-18T09:00:00",
+  105: "2026-08-24T09:00:00",
   106: "2026-08-24T10:15:00",
   107: "2026-08-18T14:30:00",
   108: "2026-08-25T11:20:00",
-  109: "2026-08-25T09:00:00",
+  109: "2026-08-20T09:00:00",
   110: "2026-08-26T09:10:00",
+  111: "2026-08-15T10:00:00",
+  112: "2026-08-22T16:00:00",
+  113: "2026-08-25T09:00:00",
+  114: "2026-08-26T10:00:00",
+  115: "2026-08-24T11:00:00",
+  116: "2026-08-23T14:00:00",
+  117: "2026-08-21T09:00:00",
+  118: "2026-08-10T09:00:00",
+  119: "2026-08-12T09:00:00",
 };
 const candidateConsentDefaults = {
   104: false,
@@ -762,6 +1111,9 @@ const candidateOwnerDefaults = {
   108: "Eduardo Ribeiro",
   109: "Larissa Dias",
   110: "Larissa Dias",
+  111: "Larissa Dias",
+  112: "Larissa Dias",
+  113: "Larissa Dias",
 };
 const candidateOriginDefaults = {
   101: "LinkedIn",
@@ -774,6 +1126,9 @@ const candidateOriginDefaults = {
   108: "Site",
   109: "Indeed",
   110: "LinkedIn",
+  111: "Indicação",
+  112: "Site",
+  113: "LinkedIn",
 };
 const candidateTagDefaults = {
   101: ["Prioridade", "DP"],
@@ -786,6 +1141,9 @@ const candidateTagDefaults = {
   108: ["Dev"],
   109: ["DP"],
   110: ["Proposta"],
+  111: ["Contratado"],
+  112: ["Reprovado"],
+  113: ["Proposta"],
 };
 const candidateFitDefaults = {
   101: 82,
@@ -1634,6 +1992,106 @@ const preAdmissions = [
       },
     ],
   },
+  {
+    id: 3,
+    candidateId: 111,
+    jobId: 6,
+    name: "Bruno Henrique Alves",
+    email: "bruno.alves.dp@email.com",
+    role: "Administrativo",
+    company: "Player Contabilidade",
+    plannedDate: "2026-08-20",
+    status: "pronta",
+    checklist: [
+      {
+        id: "rg",
+        name: "Documento de identidade",
+        required: true,
+        owner: "Candidato",
+        due: "2026-08-12",
+        status: "Aprovado",
+        fileName: "rg-bruno.pdf",
+      },
+      {
+        id: "cpf",
+        name: "CPF",
+        required: true,
+        owner: "Candidato",
+        due: "2026-08-12",
+        status: "Aprovado",
+        fileName: "cpf-bruno.pdf",
+      },
+      {
+        id: "comprovante",
+        name: "Comprovante de residência",
+        required: true,
+        owner: "Candidato",
+        due: "2026-08-14",
+        status: "Aprovado",
+        fileName: "comp-bruno.pdf",
+      },
+      {
+        id: "contrato",
+        name: "Documentos pré-admissionais",
+        required: true,
+        owner: "RH",
+        due: "2026-08-18",
+        status: "Aprovado",
+        fileName: "contrato-bruno.pdf",
+      },
+      {
+        id: "aso",
+        name: "ASO ocupacional",
+        required: false,
+        owner: "RH",
+        due: "2026-08-19",
+        status: "Aprovado",
+        fileName: "aso-bruno.pdf",
+      },
+    ],
+    pendencies: [],
+  },
+  {
+    id: 4,
+    candidateId: 112,
+    jobId: 14,
+    name: "Fernanda Rocha Lima",
+    email: "fernanda.rocha.lima@email.com",
+    role: "Assistente Comercial",
+    company: "Player Contabilidade",
+    plannedDate: "2026-08-10",
+    status: "convertida",
+    checklist: [
+      {
+        id: "rg",
+        name: "Documento de identidade",
+        required: true,
+        owner: "Candidato",
+        due: "2026-08-05",
+        status: "Aprovado",
+        fileName: "rg-fernanda.pdf",
+      },
+      {
+        id: "cpf",
+        name: "CPF",
+        required: true,
+        owner: "Candidato",
+        due: "2026-08-05",
+        status: "Aprovado",
+        fileName: "cpf-fernanda.pdf",
+      },
+      {
+        id: "contrato",
+        name: "Documentos pré-admissionais",
+        required: true,
+        owner: "RH",
+        due: "2026-08-08",
+        status: "Aprovado",
+        fileName: "contrato-fernanda.pdf",
+      },
+    ],
+    pendencies: [],
+  },
 ];
 
 (() => {
@@ -2067,6 +2525,95 @@ interviews.push(
       finalizedAt: "2026-08-22T12:00:00",
     },
   },
+  {
+    id: 627,
+    name: "Levi Luz Sousa",
+    vacancy: "Coordenador(a) de RH",
+    at: "2026-08-28T09:00:00",
+    endAt: "2026-08-28T10:00:00",
+    type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
+    status: "Reagendamento solicitado",
+    waiting: true,
+    meet: "Meet",
+    link: "https://meet.google.com/demo-levi-627",
+    location: "",
+    owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
+    candidateId: 199,
+    candidateEmail: "leviluzbr@gmail.com",
+    duration: 60,
+    rescheduleRequest: {
+      reason: "Conflito de agenda do candidato",
+      message: "Prefiro horário após as 14h.",
+      requestedAt: "2026-08-26T18:00:00",
+    },
+  },
+  {
+    id: 628,
+    name: "Guilherme Rodrigues Mendes",
+    vacancy: "Assistente / Analista Contábil",
+    at: "2026-08-26T10:00:00",
+    endAt: "2026-08-26T11:00:00",
+    type: "Entrevista RH",
+    stage: "Entrevista RH",
+    modality: "Videochamada",
+    status: "Realizada",
+    attendance: "compareceu",
+    startedAt: "2026-08-26T10:05:00",
+    waiting: false,
+    meet: "Meet",
+    link: "https://meet.google.com/demo-rh-628",
+    location: "",
+    owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha RH padrão",
+    candidateId: 106,
+    duration: 60,
+    conductDraft: {
+      sheetId: 1,
+      currentQuestionId: 1,
+      answers: [
+        {
+          questionId: 1,
+          value: "Rascunho parcial da condução RH.",
+          updatedAt: "2026-08-26T10:40:00",
+        },
+      ],
+      notes: "Falta fechar opinião final.",
+      positives: ["Postura"],
+      attentionPoints: ["Detalhe técnico"],
+      competencyScores: [],
+      score: null,
+      opinion: "",
+      recommendation: "await_decision",
+      nextStage: "",
+      updatedAt: "2026-08-26T10:45:00",
+      finalizedAt: null,
+    },
+  },
+  {
+    id: 629,
+    name: "Pollyanna Cesario de Souza",
+    vacancy: "Analista de Departamento Pessoal",
+    at: "2026-08-29T15:00:00",
+    endAt: "2026-08-29T16:00:00",
+    type: "Entrevista com gestor",
+    stage: "Entrevista",
+    modality: "Videochamada",
+    status: "Aguardando confirmação",
+    waiting: true,
+    meet: "Meet",
+    link: "https://meet.google.com/demo-gestor-629",
+    location: "",
+    owner: "Larissa Dias",
+    interviewers: ["Larissa Dias"],
+    sheet: "Ficha gestores",
+    candidateId: 102,
+    duration: 60,
+  },
 );
 
 const tests = [
@@ -2352,8 +2899,72 @@ const candidateTestAssignments = [
     writtenScores: [],
     cancelledAt: null,
   },
+  {
+    id: 9,
+    candidateId: 103,
+    vacancy: "Suporte de Sistemas",
+    testId: 2,
+    type: "behavioral",
+    sentAt: "2026-08-15T09:00:00",
+    dueAt: "2026-08-20T23:59:00",
+    status: "Cancelado",
+    score: null,
+    result: null,
+    link: "https://portalrh.local/teste/9",
+    answers: [],
+    writtenScores: [],
+    cancelledAt: "2026-08-19T11:00:00",
+  },
+  {
+    id: 10,
+    candidateId: 101,
+    vacancy: "Analista de Departamento Pessoal",
+    testId: 2,
+    type: "behavioral",
+    sentAt: "2026-08-18T10:00:00",
+    dueAt: "2026-08-22T23:59:00",
+    status: "Não iniciado",
+    score: null,
+    result: null,
+    link: "https://portalrh.local/teste/10",
+    answers: [],
+    writtenScores: [],
+    cancelledAt: null,
+  },
+  {
+    id: 11,
+    candidateId: 199,
+    vacancy: "Desenvolvedor(a) Full Stack",
+    testId: 3,
+    type: "competency",
+    sentAt: "2026-08-24T09:00:00",
+    dueAt: "2026-08-30T23:59:00",
+    status: "Em andamento",
+    score: null,
+    result: null,
+    link: "https://portalrh.local/teste/11",
+    answers: [{ questionId: 7, value: "Alto" }],
+    writtenScores: [],
+    cancelledAt: null,
+  },
+  {
+    id: 12,
+    candidateId: 105,
+    vacancy: "Analista de Departamento Pessoal",
+    testId: 1,
+    type: "technical",
+    sentAt: "2026-08-25T08:00:00",
+    dueAt: "2026-08-27T23:59:00",
+    status: "Não iniciado",
+    score: null,
+    result: null,
+    link: "https://portalrh.local/teste/12",
+    answers: [],
+    writtenScores: [],
+    cancelledAt: null,
+  },
 ];
-nextAssignmentId = 9;
+nextAssignmentId = 13;
 
 function getAssignmentById(id) {
   return candidateTestAssignments.find((entry) => entry.id === Number(id));
@@ -2789,9 +3400,63 @@ const fitAssignments = [
     completedAt: null,
     cancelledAt: null,
   },
+  {
+    id: 7,
+    candidateId: 107,
+    vacancy: "Assistente / Analista Fiscal",
+    modelId: 1,
+    sentAt: "2026-08-12T09:00:00",
+    dueAt: "2026-08-18T23:59:00",
+    status: "Cancelado",
+    link: "https://portalrh.local/fit/7",
+    answers: [],
+    adherencePct: null,
+    pillarScores: [],
+    strengths: [],
+    gaps: [],
+    reusedFromId: null,
+    completedAt: null,
+    cancelledAt: "2026-08-17T15:00:00",
+  },
+  {
+    id: 8,
+    candidateId: 104,
+    vacancy: "Analista de Departamento Pessoal",
+    modelId: 1,
+    sentAt: "2026-08-19T09:00:00",
+    dueAt: "2026-08-23T23:59:00",
+    status: "Não iniciado",
+    link: "https://portalrh.local/fit/8",
+    answers: [],
+    adherencePct: null,
+    pillarScores: [],
+    strengths: [],
+    gaps: [],
+    reusedFromId: null,
+    completedAt: null,
+    cancelledAt: null,
+  },
+  {
+    id: 9,
+    candidateId: 199,
+    vacancy: "Coordenador(a) de RH",
+    modelId: 2,
+    sentAt: "2026-08-26T09:00:00",
+    dueAt: "2026-09-02T23:59:00",
+    status: "Em andamento",
+    link: "https://portalrh.local/fit/9",
+    answers: [{ questionId: 1, value: "l4" }],
+    adherencePct: null,
+    pillarScores: [],
+    strengths: [],
+    gaps: [],
+    reusedFromId: null,
+    completedAt: null,
+    cancelledAt: null,
+  },
 ];
 
-nextFitAssignmentId = 7;
+nextFitAssignmentId = 10;
 
 function fitImportanceLabel(value) {
   return { alta: "Alta", media: "Média", baixa: "Baixa" }[value] || value || "—";
@@ -3212,6 +3877,46 @@ const scoreEvaluations = [
     overallScore: null,
     createdAt: "2026-08-25T09:00:00",
     updatedAt: "2026-08-25T09:00:00",
+  },
+  {
+    id: 5,
+    candidateId: 101,
+    scorecardId: 2,
+    jobId: 2,
+    vacancy: "Analista de Departamento Pessoal",
+    status: "Em revisão",
+    scores: [
+      {
+        criterionKey: "entrevista",
+        score: 70,
+        source: "manual",
+        comment: "Revisão pendente do RH.",
+        evaluator: "Larissa Dias",
+        updatedAt: "2026-08-26T15:00:00",
+      },
+      {
+        criterionKey: "fitCultural",
+        score: 74,
+        source: "auto",
+        comment: "",
+        evaluator: "Fit Cultural",
+        updatedAt: "2026-08-26T15:00:00",
+      },
+      {
+        criterionKey: "tecnico",
+        score: 68,
+        source: "manual",
+        comment: "",
+        evaluator: "Camila Monteiro",
+        updatedAt: "2026-08-26T15:05:00",
+      },
+      { criterionKey: "comportamental", score: null, source: null, comment: "", evaluator: "", updatedAt: null },
+      { criterionKey: "competencias", score: null, source: null, comment: "", evaluator: "", updatedAt: null },
+      { criterionKey: "gestor", score: null, source: null, comment: "", evaluator: "", updatedAt: null },
+    ],
+    overallScore: null,
+    createdAt: "2026-08-26T14:00:00",
+    updatedAt: "2026-08-26T15:05:00",
   },
 ];
 
@@ -3781,6 +4486,21 @@ const managerAnalyses = [
   { id: 2, candidate: "Guilherme Rodrigues Mendes", role: "Assistente / Analista Contábil", department: "Contábil", manager: "Camila Monteiro", sender: "Larissa Dias", due: "28/08/2026 às 10:00", opinion: "Perfil técnico adequado.", status: "pending", rhNote: "", verificationMeeting: "" },
   { id: 3, candidate: "Alan Pimentas", role: "Desenvolvedor(a) Full Stack", department: "Tecnologia", manager: "Larissa Dias", sender: "Larissa Dias", due: "15/06/2026 às 09:00", opinion: "Necessita segunda verificação técnica.", status: "pending", rhNote: "", verificationMeeting: "" },
   { id: 4, candidate: "Pollyanna Cesario de Souza", role: "Analista de Departamento Pessoal", department: "Departamento Pessoal", manager: "Larissa Dias", sender: "Camila Monteiro", due: "27/08/2026 às 17:00", opinion: "Currículo alinhado; falta parecer do gestor.", status: "pending", rhNote: "", verificationMeeting: "" },
+  {
+    id: 5,
+    candidate: "Suany Costa Dias",
+    role: "Analista de Departamento Pessoal",
+    department: "Departamento Pessoal",
+    manager: "Larissa Dias",
+    sender: "Camila Monteiro",
+    due: "26/08/2026 às 16:00",
+    opinion: "Recomendo avançar para proposta com ressalvas em eSocial.",
+    status: "completed",
+    rhReviewed: false,
+    rhNote: "",
+    verificationMeeting: "",
+    updatedAt: "2026-08-26T16:30:00",
+  },
 ];
 const currentManagerName = "Larissa Dias";
 const CURRENT_RH_USER = "Larissa Dias";
@@ -3806,7 +4526,7 @@ const APPROVAL_PERSONAS = [
 ];
 
 let approvalPersona = { ...APPROVAL_PERSONAS[0] };
-const GESTOR_ALLOWED_PAGES = new Set(["gestor", "entrevistas"]);
+const GESTOR_ALLOWED_PAGES = new Set(["gestor", "entrevistas", "settings"]);
 let workspaceRole =
   window.localStorage.getItem("portal-rh-workspace-role") === "gestor" ? "gestor" : "rh";
 let currentAppPage = "dashboard";
@@ -4328,7 +5048,7 @@ let hiringRequests = [
     status: "Aprovada",
     createdAt: "2026-08-18",
     sentAt: "2026-08-18",
-    dueAt: "2026-09-01",
+    dueAt: "2026-08-27",
     assignee: "RH Portal",
     approvalFlowId: "rh",
     approvalStepIndex: 0,
@@ -4507,6 +5227,60 @@ let interviewRequests = [
       modality: "Videochamada",
       location: "",
       link: "https://meet.example/pollyanna-dp",
+      proposedBy: "Camila Monteiro",
+    },
+  }),
+  blankInterviewRequest({
+    id: 3,
+    candidateId: 104,
+    jobId: 2,
+    vacancy: "Analista de Departamento Pessoal",
+    reason: "Primeira conversa com o time após teste técnico",
+    interviewType: "Gestor",
+    desiredParticipants: ["Larissa Dias"],
+    suggestedSlots: [{ date: "2026-08-29", time: "09:30" }],
+    note: "Solicitação recém-enviada.",
+    status: "Solicitada",
+    requester: "Larissa Dias",
+    createdAt: "2026-08-27",
+    updatedAt: "2026-08-27",
+  }),
+  blankInterviewRequest({
+    id: 4,
+    candidateId: 108,
+    jobId: 5,
+    vacancy: "Desenvolvedor(a) Full Stack",
+    reason: "Validação técnica com o gestor",
+    interviewType: "Técnica",
+    desiredParticipants: ["Eduardo Ribeiro"],
+    suggestedSlots: [{ date: "2026-08-20", time: "11:00" }],
+    note: "Cancelada pelo RH.",
+    status: "Cancelada",
+    requester: "Camila Monteiro",
+    createdAt: "2026-08-18",
+    updatedAt: "2026-08-20",
+    cancelReason: "Candidato avançou para outra etapa.",
+  }),
+  blankInterviewRequest({
+    id: 5,
+    candidateId: 109,
+    jobId: 2,
+    vacancy: "Analista de Departamento Pessoal",
+    reason: "Confirmação de horário proposto pelo RH",
+    interviewType: "Gestor",
+    desiredParticipants: ["Larissa Dias"],
+    suggestedSlots: [{ date: "2026-08-30", time: "10:00" }],
+    note: "Aguardando confirmação do gestor.",
+    status: "Aguardando agenda",
+    requester: "Larissa Dias",
+    createdAt: "2026-08-26",
+    updatedAt: "2026-08-27",
+    rhProposedSlot: {
+      date: "2026-08-30",
+      time: "10:00",
+      modality: "Presencial",
+      location: "Player Contabilidade — Sala 1",
+      link: "",
       proposedBy: "Camila Monteiro",
     },
   }),
@@ -5287,15 +6061,23 @@ function syncGestorNavCounts() {
 
 function syncGestorSidebarChrome() {
   if (workspaceRole !== "gestor") return;
-  if (currentAppPage !== "gestor" && currentAppPage !== "entrevistas") return;
+  if (currentAppPage !== "gestor" && currentAppPage !== "entrevistas" && currentAppPage !== "settings") return;
   const gestorNavKey =
-    currentAppPage === "entrevistas" ? "entrevistas" : gestorNavKeyFromState();
+    currentAppPage === "entrevistas"
+      ? "entrevistas"
+      : currentAppPage === "settings"
+        ? "configuracoes"
+        : gestorNavKeyFromState();
   document.querySelectorAll("[data-page]").forEach((item) => {
     if (!item.dataset.gestorNav) return;
     const active = item.dataset.gestorNav === gestorNavKey;
     item.classList.toggle("active", active);
     item.toggleAttribute("aria-current", active);
   });
+  if (currentAppPage === "settings") {
+    history.replaceState(null, "", "#configuracoes");
+    return;
+  }
   const hash =
     currentAppPage === "entrevistas" ? "gestor-entrevistas" : gestorHashFromState();
   history.replaceState(null, "", `#${hash}`);
@@ -5412,6 +6194,14 @@ function pendingTypeChip(type) {
       banco_revisao: { label: "Banco", tone: "neutral" },
     }[type] || { label: pendingTypeLabel(type), tone: "neutral" }
   );
+}
+
+function homeQueueAccentClass({ overdue = false, dueSoon = false, scheduled = false, muted = false } = {}) {
+  if (overdue) return "is-overdue";
+  if (muted) return "is-muted";
+  if (scheduled) return "is-ok";
+  if (dueSoon) return "is-duesoon";
+  return "is-duesoon";
 }
 
 function pendingSubjectName(item) {
@@ -5552,6 +6342,50 @@ const pendingSeeds = [
     dueAt: "2026-08-30T12:00:00",
     subject: { kind: "talent", id: 218 },
     primaryAction: "resolver",
+    secondaryActions: [],
+  }),
+  makePendingItem({
+    id: "seed-proposta-aprovacao-hoje",
+    type: "proposta_aprovacao",
+    title: "Enviar proposta — Rafael Mendes Costa",
+    description: "Proposta aprovada internamente — falta envio ao candidato.",
+    assignee: CURRENT_RH_USER,
+    dueAt: "2026-08-27T18:00:00",
+    subject: { kind: "candidate", id: 113 },
+    primaryAction: "abrir_candidatura",
+    secondaryActions: ["resolver"],
+  }),
+  makePendingItem({
+    id: "seed-vaga-aprovacao-hoje",
+    type: "vaga_aprovacao",
+    title: "Criar vaga — Coordenador(a) Contábil",
+    description: "Solicitação aprovada sem vaga vinculada.",
+    assignee: CURRENT_RH_USER,
+    dueAt: "2026-08-27T17:00:00",
+    subject: { kind: "hiringRequest", id: 11 },
+    primaryAction: "criar_vaga",
+    secondaryActions: [],
+  }),
+  makePendingItem({
+    id: "seed-entrevista-hoje",
+    type: "entrevista",
+    title: "Agendar entrevista — Ketmy Almeida",
+    description: "Teste técnico em andamento — preparar entrevista gestor.",
+    assignee: CURRENT_RH_USER,
+    dueAt: "2026-08-27T16:00:00",
+    subject: { kind: "candidate", id: 105 },
+    primaryAction: "agendar",
+    secondaryActions: ["abrir_candidatura"],
+  }),
+  makePendingItem({
+    id: "seed-avaliacao-hoje",
+    type: "avaliacao",
+    title: "Revisar score — Karen Crystynna",
+    description: "Avaliação em revisão no scorecard.",
+    assignee: CURRENT_RH_USER,
+    dueAt: "2026-08-27T15:00:00",
+    subject: { kind: "score", id: 5 },
+    primaryAction: "abrir_avaliacao",
     secondaryActions: [],
   }),
 ];
@@ -6752,6 +7586,23 @@ const statusClass = {
   Cancelada: "status-canceled",
 };
 
+function jobListAccent(job) {
+  if (job?.archived) return "is-removed";
+  switch (job?.status) {
+    case "Aberta":
+      return "is-valid";
+    case "Pausada":
+    case "Aguardando aprovação":
+      return "is-soon";
+    case "Cancelada":
+      return "is-expired";
+    case "Encerrada":
+      return "is-removed";
+    default:
+      return "is-unknown";
+  }
+}
+
 function jobIsVisibleInPortal(job) {
   return Boolean(job) &&
     !job.archived &&
@@ -7016,6 +7867,7 @@ function jobTemplate(job) {
       });
   const remaining = jobRemainingCount(job);
   const listActions = jobListMenuActions(job);
+  const accent = jobListAccent(job);
   const menu = listActions
     .map((action) => `<button type="button" data-job-action="${action.id}">${action.label}</button>`)
     .join("");
@@ -7024,9 +7876,9 @@ function jobTemplate(job) {
         <div class="job-menu" hidden>${menu}</div>`
     : "";
   return `
-    <article class="job-card${job.archived ? " is-archived" : ""}" data-job-id="${job.id}" tabindex="0" aria-label="Abrir vaga ${job.title}">
+    <article class="job-card talent-card-row ${accent}${job.archived ? " is-archived" : ""}" data-job-id="${job.id}" tabindex="0" aria-label="Abrir vaga ${job.title}">
       <div class="job-main">
-        <span class="job-symbol" aria-hidden="true">${job.title.charAt(0)}</span>
+        <span class="job-symbol ${accent}" aria-hidden="true">${job.title.charAt(0)}</span>
         <div class="job-title">
           <h3>${job.title}</h3>
           <p>${job.details} · ${job.workModel}</p>
@@ -8198,6 +9050,8 @@ function formatMoney(value) {
 
 function resultTemplate(item) {
   const selected = item.id === selectedResultId ? " selected" : "";
+  const accent =
+    item.status === "contratados" ? "is-valid" : item.status === "ocultados" ? "is-soon" : "is-expired";
   const facts =
     item.status === "contratados"
       ? `<div class="result-facts">
@@ -8218,9 +9072,9 @@ function resultTemplate(item) {
     `;
   }
   return `
-    <article class="talent-card result-card${selected}" data-result-id="${item.id}" tabindex="0">
-      <span class="talent-avatar" aria-hidden="true">${initials(item.name)}</span>
-      <div class="talent-copy">
+    <article class="talent-card talent-card-row result-card ${accent}${selected}" data-result-id="${item.id}" tabindex="0">
+      <span class="talent-avatar ${accent}" aria-hidden="true">${initials(item.name)}</span>
+      <div class="talent-card-identity talent-copy">
         <h3>${item.name}</h3>
         <p>${item.vacancy}</p>
         ${facts}
@@ -8346,7 +9200,7 @@ function renderScorecardsPanel() {
         )
         .join("");
       return `
-        <article class="scorecard-card" data-scorecard-id="${card.id}">
+        <article class="scorecard-card ${card.active ? "" : "is-inactive"} ${sum === 100 ? "" : "is-warning"}" data-scorecard-id="${card.id}">
           <div class="scorecard-card-main">
             <strong class="scorecard-card-title">${escapeHtml(card.name)}</strong>
             <div class="test-meta scorecard-card-meta">
@@ -8537,7 +9391,7 @@ function renderAvaliacoesPanel() {
       const checked = scoreCompareSelectedIds.has(evaluation.id) ? "checked" : "";
       const canCompare = status === "Completa";
       return `
-        <article class="score-eval-card" data-score-eval-id="${evaluation.id}">
+        <article class="score-eval-card ${scoreEvalStatusClass(status)}" data-score-eval-id="${evaluation.id}">
           <label class="score-compare-check" ${canCompare ? "" : "hidden"}>
             <input type="checkbox" data-score-compare="${evaluation.id}" ${checked} />
             <span class="sr-only">Comparar</span>
@@ -11615,7 +12469,7 @@ function assignmentStatusClass(status) {
 function renderAssignmentRow(assignment, { showCandidate = false } = {}) {
   const candidate = candidates.find((entry) => entry.id === assignment.candidateId);
   return `
-    <tr class="assignment-row" data-assignment-id="${assignment.id}" tabindex="0">
+    <tr class="assignment-row ${assignmentStatusClass(assignment.status)}" data-assignment-id="${assignment.id}" tabindex="0">
       <td>
         <strong>${escapeHtml(assignmentTitle(assignment))}</strong>
         ${showCandidate ? "" : `<span class="panel-note">${escapeHtml(assignment.vacancy || "")}</span>`}
@@ -12062,7 +12916,7 @@ function renderFitAplicados() {
         const candidate = candidates.find((item) => item.id === entry.candidateId);
         const canCompare = entry.status === "Concluído";
         const checked = fitCompareSelectedIds.has(entry.id) ? "checked" : "";
-        return `<tr class="assignment-row" data-fit-assignment-id="${entry.id}" tabindex="0">
+        return `<tr class="assignment-row ${fitStatusClass(entry.status)}" data-fit-assignment-id="${entry.id}" tabindex="0">
           <td>${canCompare ? `<input type="checkbox" data-fit-compare="${entry.id}" ${checked} />` : ""}</td>
           <td><strong>${escapeHtml(fitModelTitle(entry))}</strong></td>
           <td>${escapeHtml(candidate?.name || "—")}</td>
@@ -12653,8 +13507,6 @@ function openApplyTestForCandidate(candidate) {
 function renderDashboard() {
   syncPortalHomeWelcome({
     eyebrowId: "#rhHomeWelcomeEyebrow",
-    nameId: "#rhHomeWelcomeName",
-    fullName: "Larissa Dias",
   });
   const pendAll = typeof buildPendencies === "function" ? buildPendencies() : [];
   const pendMine =
@@ -12722,7 +13574,11 @@ function renderDashboard() {
         const name = pendingSubjectName(item);
         const due = item.dueAt ? String(item.dueAt).slice(11, 16) || "hoje" : "hoje";
         const metaParts = [item.jobTitle || item.subtitle, due].filter(Boolean);
-        return `<button type="button" class="dash-pend-row" data-pendencia-id="${item.id}">
+        const accent = homeQueueAccentClass({
+          overdue: typeof isPendingOverdue === "function" && isPendingOverdue(item),
+          dueSoon: typeof isPendingDueSoon === "function" && isPendingDueSoon(item),
+        });
+        return `<button type="button" class="dash-pend-row ${accent}" data-pendencia-id="${item.id}">
             <div class="dash-pend-main">
               <strong>${escapeHtml(name)}</strong>
               <span class="dash-pend-meta">${escapeHtml(metaParts.join(" · "))}</span>
@@ -12733,7 +13589,11 @@ function renderDashboard() {
       ...todayIv.map((item) => {
         const time = String(item.at || "").slice(11, 16) || "hoje";
         const metaParts = [item.type || item.modality, time].filter(Boolean);
-        return `<button type="button" class="dash-pend-row" data-open-interview="${item.id}">
+        const accent = homeQueueAccentClass({
+          overdue: typeof interviewIsOverdue === "function" && interviewIsOverdue(item),
+          scheduled: true,
+        });
+        return `<button type="button" class="dash-pend-row ${accent}" data-open-interview="${item.id}">
             <div class="dash-pend-main">
               <strong>${escapeHtml(item.candidateName || "Candidato")}</strong>
               <span class="dash-pend-meta">${escapeHtml(metaParts.join(" · "))}</span>
@@ -12742,7 +13602,7 @@ function renderDashboard() {
           </button>`;
       }),
       ...todayTests.map((item) => {
-        return `<button type="button" class="dash-pend-row" data-go-page="talentos">
+        return `<button type="button" class="dash-pend-row ${homeQueueAccentClass({ dueSoon: true })}" data-go-page="talentos">
             <div class="dash-pend-main">
               <strong>${escapeHtml(item.candidateName || item.title || "Avaliação")}</strong>
               <span class="dash-pend-meta">Prazo/envio hoje</span>
@@ -12774,7 +13634,7 @@ function renderDashboard() {
       ? inboxTalents
           .map(
             (t) =>
-              `<button type="button" class="dash-pend-row" data-go-page="talentos" data-talent-id="${t.id}">
+              `<button type="button" class="dash-pend-row ${homeQueueAccentClass({ dueSoon: true })}" data-go-page="talentos" data-talent-id="${t.id}">
                 <div class="dash-pend-main">
                   <strong>${escapeHtml(t.name || "Currículo")}</strong>
                   <span class="dash-pend-meta">${escapeHtml(t.role || t.area || "Sem vaga")}</span>
@@ -12787,25 +13647,34 @@ function renderDashboard() {
 
   const jobList = document.querySelector("#dashboardJobList");
   if (jobList) {
-    jobList.innerHTML = jobs
-      .filter((job) => job.status === "Aberta")
-      .slice(0, 3)
-      .map(
-        (job) => `
-        <article class="dashboard-job" data-dashboard-job="${job.id}" data-open-job="${job.title}">
-          <span class="dashboard-job-icon" aria-hidden="true">${job.title.charAt(0)}</span>
+    const attention = jobsNeedingAttention(jobs).slice(0, 6);
+    jobList.innerHTML = attention.length
+      ? attention
+          .map((row) => {
+            const job = row.job;
+            const reasonText = (row.reasons || []).join(" ").toLowerCase();
+            const jobAccent = /atras|vencid|sla atras/.test(reasonText)
+              ? " is-overdue"
+              : /aprova|pouc|pausa|parecer|atenção|atencao/.test(reasonText)
+                ? " is-duesoon"
+                : /rascunho/.test(reasonText)
+                  ? " is-muted"
+                  : " is-ok";
+            return `
+        <article class="dashboard-job${jobAccent}" data-dashboard-job="${job.id}" data-open-job="${escapeHtml(job.title)}">
+          <span class="dashboard-job-icon" aria-hidden="true">${escapeHtml((job.title || "?").charAt(0))}</span>
           <div class="dashboard-job-copy">
-            <strong>${job.title}</strong>
-            <span>${job.area} · ${job.workModel} · ${job.status}</span>
+            <strong>${escapeHtml(job.title)}</strong>
+            <span>${escapeHtml(row.reasons.join(" · "))}</span>
           </div>
           <div class="dashboard-job-stats">
-            <strong>${job.applicants}</strong>
+            <strong>${row.candidatesN}</strong>
             <span>candidatos</span>
           </div>
-        </article>
-      `,
-      )
-      .join("");
+        </article>`;
+          })
+          .join("")
+      : `<p class="panel-note">Nenhuma vaga pedindo atenção agora.</p>`;
   }
 }
 
@@ -15722,6 +16591,7 @@ function startPreAdmission(candidate) {
   selectedPreAdmissionId = record.id;
   if (candidateDialog.open) candidateDialog.close();
   goToPage("resultados", { resultadosHubTab: "preadmissao" });
+  openPreAdmissionDialog(record.id);
   showToast("Pré-admissão", `${candidate.name} entrou no checklist de admissão.`);
 }
 
@@ -15905,6 +16775,19 @@ function preAdmissionDocActions(status) {
   }
 }
 
+function closePreAdmissionDialog() {
+  const dialog = document.querySelector("#preAdmissaoDialog");
+  if (dialog?.open) dialog.close();
+}
+
+function openPreAdmissionDialog(id) {
+  selectedPreAdmissionId = Number(id);
+  renderPreAdmissionDetail();
+  const dialog = document.querySelector("#preAdmissaoDialog");
+  if (dialog && typeof safeShowModal === "function") safeShowModal(dialog);
+  else if (dialog && !dialog.open) dialog.showModal();
+}
+
 function renderPreAdmissions() {
   const list = document.querySelector("#preAdmissaoList");
   const empty = document.querySelector("#preAdmissaoEmpty");
@@ -15913,14 +16796,12 @@ function renderPreAdmissions() {
   if (count) count.textContent = String(active.length);
   if (!list) return;
 
-  if (!selectedPreAdmissionId && active[0]) {
-    selectedPreAdmissionId = active[0].id;
-  }
   if (
     selectedPreAdmissionId &&
     !active.some((item) => item.id === selectedPreAdmissionId)
   ) {
-    selectedPreAdmissionId = active[0]?.id ?? null;
+    selectedPreAdmissionId = null;
+    closePreAdmissionDialog();
   }
 
   list.innerHTML = active
@@ -15929,38 +16810,47 @@ function renderPreAdmissions() {
       if (candidate) syncChecklistBetweenCandidateAndPreAdmission(candidate, record);
       const progress = preAdmissionProgress(record);
       const pendencies = preAdmissionOpenPendencies(record);
-      const selected = record.id === selectedPreAdmissionId ? " is-selected" : "";
+      const selected = record.id === selectedPreAdmissionId ? " selected" : "";
+      const accent = record.status === "pronta" ? "is-valid" : pendencies ? "is-soon" : "is-valid";
       return `
-        <tr class="pread-row${selected}" data-pread-open="${record.id}" tabindex="0">
-          <td><strong>${escapeHtml(record.name)}</strong></td>
-          <td>${escapeHtml(record.role || "—")}</td>
-          <td>${escapeHtml(record.company || "—")}</td>
-          <td>${record.plannedDate ? formatBRDate(record.plannedDate) : "—"}</td>
-          <td>
-            <div class="pread-progress" aria-label="${progress}%">
-              <span style="width:${progress}%"></span>
-              <em>${progress}%</em>
-            </div>
-          </td>
-          <td>${pendencies ? `<span class="pread-pend-count">${pendencies}</span>` : "—"}</td>
-        </tr>`;
+        <article class="talent-card talent-card-row pread-card ${accent}${selected}" data-pread-open="${record.id}" tabindex="0">
+          <span class="talent-avatar ${accent}" aria-hidden="true">${initials(record.name)}</span>
+          <div class="talent-card-identity">
+            <h3>${escapeHtml(record.name)}</h3>
+            <p class="talent-role-line">${escapeHtml(record.role || "—")} · ${escapeHtml(record.company || "—")}</p>
+          </div>
+          <div class="talent-row-metrics" aria-label="Progresso e pendências">
+            <span class="talent-inline-metric">
+              <span>Prevista</span>
+              <strong>${record.plannedDate ? formatBRDate(record.plannedDate) : "—"}</strong>
+            </span>
+            <span class="talent-inline-metric">
+              <span>Progresso</span>
+              <strong>${progress}%</strong>
+            </span>
+            <span class="talent-inline-metric">
+              <span>Pendências</span>
+              <strong>${pendencies || "—"}</strong>
+            </span>
+          </div>
+        </article>`;
     })
     .join("");
 
   if (empty) empty.hidden = active.length !== 0;
   list.hidden = active.length === 0;
-  renderPreAdmissionDetail();
+  const dialog = document.querySelector("#preAdmissaoDialog");
+  if (dialog?.open && selectedPreAdmissionId) renderPreAdmissionDetail();
 }
 
 function renderPreAdmissionDetail() {
-  const pane = document.querySelector("#preAdmissaoDetail");
-  if (!pane) return;
+  const dialog = document.querySelector("#preAdmissaoDialog");
+  if (!dialog) return;
   const record = preAdmissions.find((item) => item.id === selectedPreAdmissionId);
   if (!record || record.status === "convertida") {
-    pane.hidden = true;
+    closePreAdmissionDialog();
     return;
   }
-  pane.hidden = false;
 
   const progress = preAdmissionProgress(record);
   const openPend = preAdmissionOpenPendencies(record);
@@ -18287,8 +19177,12 @@ document.querySelector("#resultadosPage")?.addEventListener("click", (event) => 
   }
   const preOpen = event.target.closest("[data-pread-open]");
   if (preOpen) {
-    selectedPreAdmissionId = Number(preOpen.dataset.preadOpen);
+    openPreAdmissionDialog(preOpen.dataset.preadOpen);
     renderPreAdmissions();
+    return;
+  }
+  if (event.target.closest("#closePreAdmissaoDialog")) {
+    closePreAdmissionDialog();
     return;
   }
   if (event.target.closest("#preAdmissaoAddPendency")) {
@@ -18356,6 +19250,10 @@ document.querySelector("#scorecardEditorSave")?.addEventListener("click", (event
 
 document.querySelector("#closeScoreEvalDialog")?.addEventListener("click", () => {
   document.querySelector("#scoreEvaluationDialog")?.close();
+});
+
+document.querySelector("#preAdmissaoDialog")?.addEventListener("click", (event) => {
+  if (event.target.id === "preAdmissaoDialog") closePreAdmissionDialog();
 });
 
 document.querySelector("#scoreEvaluationDialog")?.addEventListener("click", (event) => {
@@ -19644,6 +20542,10 @@ function settingsRow(item, type, subtitle) {
 }
 
 function setSettingsView(view) {
+  const gestorViews = new Set(["home", "departments", "roles", "gestorPerms"]);
+  if (workspaceRole === "gestor" && !gestorViews.has(view)) {
+    view = "home";
+  }
   settingsView = view;
   if (view === "screenings") { screeningTab = "analyses"; analysisFilter = "all"; document.querySelectorAll("[data-analysis-filter]").forEach((button) => button.classList.toggle("is-active", button.dataset.analysisFilter === "all")); }
   if (view === "screenings") {
@@ -19662,12 +20564,57 @@ function setSettingsView(view) {
   document.querySelector("#settingsStagesView").hidden = view !== "stages";
   document.querySelector("#settingsEmailsView").hidden = view !== "emails";
   document.querySelector("#settingsRejectionsView").hidden = view !== "rejections";
-  const names = { home: "Configurações", departments: "Departamentos", managers: "Responsáveis RH", roles: "Cargos", companies: "Empresas", screenings: "Triagens e solicitações", benefits: "Benefícios", stages: "Etapas do pipeline", emails: "Modelos de e-mail", rejections: "Justificativas de rejeição" };
-  document.querySelector("#pageTitle").textContent = names[view];
+  const gestorPermsView = document.querySelector("#settingsGestorPermsView");
+  if (gestorPermsView) gestorPermsView.hidden = view !== "gestorPerms";
+  const names = {
+    home: "Configurações",
+    departments: "Departamentos",
+    managers: "Responsáveis RH",
+    roles: "Cargos",
+    companies: "Empresas",
+    screenings: "Triagens e solicitações",
+    benefits: "Benefícios",
+    stages: "Etapas do pipeline",
+    emails: "Modelos de e-mail",
+    rejections: "Justificativas de rejeição",
+    gestorPerms: "Permissões do gestor",
+  };
+  document.querySelector("#pageTitle").textContent = names[view] || "Configurações";
   renderSettings();
 }
 
+function syncSettingsCatalogAudience() {
+  const role = workspaceRole === "gestor" ? "gestor" : "rh";
+  document.querySelectorAll("#settingsCatalogGrid [data-settings-audience]").forEach((card) => {
+    const audience = card.dataset.settingsAudience || "rh";
+    const visible = audience === "both" || audience === role;
+    card.hidden = !visible;
+  });
+  const homeTitle = document.querySelector("#settingsHomeView .dashboard-welcome h1");
+  const homeNote = document.querySelector("#settingsHomeView .dashboard-welcome p");
+  const panelTitle = document.querySelector("#settingsHomeView .settings-panel h2");
+  const panelNote = document.querySelector("#settingsHomeView .settings-panel .panel-note");
+  if (role === "gestor") {
+    if (homeTitle) homeTitle.textContent = "Configurações";
+    if (homeNote) homeNote.textContent = "Ajustes e catálogos usados no seu dia a dia de gestor.";
+    if (panelTitle) panelTitle.textContent = "Configurações do gestor";
+    if (panelNote) panelNote.textContent = "Departamentos, cargos e permissões relacionadas ao seu perfil.";
+  } else {
+    if (homeTitle) homeTitle.textContent = "Configurações";
+    if (homeNote) homeNote.textContent = "Gerencie os catálogos e padrões usados no recrutamento.";
+    if (panelTitle) panelTitle.textContent = "Catálogos e padrões do sistema";
+    if (panelNote) panelNote.textContent = "Mantenha os dados reutilizados nas vagas e nos processos seletivos.";
+  }
+}
+
 function renderSettings() {
+  syncSettingsCatalogAudience();
+  if (typeof syncGestorDemoToggles === "function") syncGestorDemoToggles();
+  document.querySelectorAll("#settingsDepartmentsView .settings-shortcuts [data-settings-view]").forEach((btn) => {
+    if (btn.dataset.settingsView === "managers") {
+      btn.hidden = workspaceRole === "gestor";
+    }
+  });
   document.querySelector("#departmentList").innerHTML = departments.map((item) => settingsRow(item, "department", item.description)).join("");
   document.querySelector("#settingsManagerList").innerHTML = settingsManagers.map((item) => settingsRow(item, "manager", `${item.email}${item.phone ? ` · ${item.phone}` : ""} · ${item.portalAccess ? "Acesso ao portal" : "Sem acesso"}`)).join("");
   document.querySelector("#settingsRoleList").innerHTML = settingsRoles.map((item) => settingsRow(item, "role", `${item.department}${item.description ? ` · ${item.description}` : ""}`)).join("");
@@ -20040,6 +20987,93 @@ function selectTalentTab(tab) {
   });
 }
 
+function pinWorkspaceChrome() {
+  document.body.dataset.workspaceRole = workspaceRole;
+  const shell = document.querySelector(".app-shell");
+  const body = document.querySelector(".app-shell > .app-shell-body");
+  const sb = document.querySelector(".app-shell > .app-shell-body > #sidebar");
+  const main = document.querySelector(".app-shell > .app-shell-body > .main-content");
+  if (!shell || !body || !sb || !main) return;
+
+  sb.hidden = false;
+  sb.querySelector(".workspace-role-switch")?.removeAttribute("hidden");
+  sb.querySelector(".main-nav")?.removeAttribute("hidden");
+  sb.querySelector(".sidebar-footer")?.removeAttribute("hidden");
+  sb.querySelectorAll("[data-role]").forEach((el) => {
+    const match = el.dataset.role === workspaceRole;
+    el.hidden = !match;
+    if (match) el.removeAttribute("hidden");
+  });
+
+  if (isMobileNav()) {
+    [body, sb, main].forEach((el) => {
+      [
+        "display",
+        "flex-direction",
+        "flex-wrap",
+        "align-items",
+        "flex",
+        "width",
+        "min-width",
+        "max-width",
+        "height",
+        "transform",
+        "position",
+        "inset",
+        "overflow",
+        "overflow-x",
+        "overflow-y",
+      ].forEach((prop) => el.style.removeProperty(prop));
+    });
+    return;
+  }
+
+  shell.classList.remove("is-sidebar-collapsed");
+  sb.classList.remove("open");
+  const pin = (el, props) => {
+    Object.entries(props).forEach(([key, value]) => el.style.setProperty(key, value, "important"));
+  };
+  pin(body, {
+    display: "flex",
+    "flex-direction": "row",
+    "flex-wrap": "nowrap",
+    "align-items": "stretch",
+  });
+  pin(sb, {
+    display: "flex",
+    "flex-direction": "column",
+    position: "relative",
+    inset: "auto",
+    transform: "none",
+    flex: "0 0 248px",
+    width: "248px",
+    "min-width": "248px",
+    "max-width": "248px",
+    height: "100%",
+    "overflow-x": "hidden",
+    "overflow-y": "auto",
+  });
+  pin(main, {
+    display: "flex",
+    "flex-direction": "column",
+    flex: "1 1 0%",
+    "min-width": "0",
+    width: "auto",
+    height: "100%",
+    overflow: "hidden",
+  });
+}
+
+function syncWorkspaceScenarioButtons() {
+  const portal = document.querySelector("#candidatePortal");
+  const current = portal && !portal.hidden ? "candidato" : workspaceRole;
+  document.querySelectorAll("[data-workspace-scenario]").forEach((button) => {
+    const active = button.dataset.workspaceScenario === current;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
 function setWorkspaceRole(role, options = {}) {
   const next = role === "gestor" ? "gestor" : "rh";
   const changed = workspaceRole !== next;
@@ -20056,6 +21090,7 @@ function setWorkspaceRole(role, options = {}) {
   document.querySelectorAll("[data-role]").forEach((el) => {
     const match = el.dataset.role === workspaceRole;
     el.hidden = !match;
+    if (match) el.removeAttribute("hidden");
     el.classList.toggle("is-role-hidden", !match);
   });
 
@@ -20063,18 +21098,25 @@ function setWorkspaceRole(role, options = {}) {
   const brandSubtitle = document.querySelector("#workspaceBrandSubtitle");
   const topbarLabel = document.querySelector("#topbarContextLabel");
   const gestorName = document.querySelector("#workspaceGestorName");
+  const profileRole = document.querySelector("#sidebarAccount .profile-copy small");
   if (gestorName) gestorName.textContent = currentManagerName;
   if (workspaceRole === "gestor") {
     if (brandTitle) brandTitle.textContent = "Portal do gestor";
     if (brandSubtitle) brandSubtitle.textContent = currentManagerName;
     if (topbarLabel) topbarLabel.textContent = "Acompanhamento de vagas";
+    if (profileRole) profileRole.textContent = "Gestor";
   } else {
     if (brandTitle) brandTitle.textContent = "Portal RH";
     if (brandSubtitle) brandSubtitle.textContent = "Gestão de talentos";
     if (topbarLabel) topbarLabel.textContent = "Recrutamento e seleção";
+    if (profileRole) profileRole.textContent = "Analista de RH";
   }
 
-  if (options.navigate === false || !changed) return;
+  syncWorkspaceScenarioButtons();
+  pinWorkspaceChrome();
+
+  if (options.navigate === false) return;
+  if (!changed && !options.force) return;
   if (workspaceRole === "gestor") {
     gestorViewState.mode = "home";
     gestorViewState.homeFilter = "overview";
@@ -20083,10 +21125,34 @@ function setWorkspaceRole(role, options = {}) {
     showToast("Modo gestor", `Navegação de ${currentManagerName}.`);
     return;
   }
-  if (currentAppPage === "gestor") {
+  if (currentAppPage === "gestor" || options.force) {
     goToPage("dashboard");
   }
   showToast("Modo RH", "Navegação completa do recrutamento.");
+}
+
+function setWorkspaceScenario(scenario) {
+  closeTopbarPopovers();
+  const portal = document.querySelector("#candidatePortal");
+  const inCandidate = Boolean(portal && !portal.hidden);
+
+  if (scenario === "candidato") {
+    if (!inCandidate) {
+      openCandidatePortal("home");
+      showToast("Modo candidato", "Prévia do portal público de vagas.");
+    }
+    syncWorkspaceScenarioButtons();
+    return;
+  }
+
+  const role = scenario === "gestor" ? "gestor" : "rh";
+  if (inCandidate) {
+    closeCandidateFiltersDialog();
+    portal.hidden = true;
+    document.body.classList.remove("is-candidate-portal");
+    history.replaceState(null, "", role === "gestor" ? "#gestor" : "#dashboard");
+  }
+  setWorkspaceRole(role, { force: inCandidate });
 }
 
 function showPage(page, options = {}) {
@@ -20284,7 +21350,8 @@ function showPage(page, options = {}) {
   if (page === "gestor" || (page === "entrevistas" && workspaceRole === "gestor")) {
     syncGestorSidebarChrome();
   }
-  closeSidebar();
+  pinWorkspaceChrome();
+  if (isMobileNav()) closeSidebar();
 }
 
 function syncRhHubChrome(page) {
@@ -20803,6 +21870,59 @@ function myGestorAwaitingActions() {
       jobId: item.jobId,
       primaryAction: item.primaryAction,
     }));
+}
+
+function jobsNeedingAttention(list = jobs) {
+  const slaRank = { atrasado: 0, "em atenção": 1, "no prazo": 2 };
+  return list
+    .map((job) => {
+      const linked = typeof gestorJobCandidates === "function" ? gestorJobCandidates(job).length : 0;
+      const candidatesN = Math.max(linked, Number(job.applicants) || 0);
+      const sla = jobSlaLabel(job);
+      const reasons = [];
+      if (job.status === "Aguardando aprovação") reasons.push("Aguardando aprovação");
+      if (job.status === "Pausada") reasons.push("Vaga pausada");
+      if (job.status === "Rascunho") reasons.push("Rascunho sem publicar");
+      if (job.status === "Aberta") {
+        if (sla === "atrasado") reasons.push("SLA atrasado");
+        else if (sla === "em atenção") reasons.push("SLA em atenção");
+        if (candidatesN === 0) reasons.push("Sem candidatos");
+        else if (candidatesN <= 5) reasons.push("Poucos candidatos");
+      }
+      const overdueIv = (typeof interviews !== "undefined" && Array.isArray(interviews) ? interviews : []).filter(
+        (item) =>
+          (item.vacancy === job.title || Number(item.jobId) === Number(job.id)) &&
+          typeof interviewIsOverdue === "function" &&
+          interviewIsOverdue(item),
+      ).length;
+      if (overdueIv) {
+        reasons.push(`${overdueIv} entrevista${overdueIv === 1 ? "" : "s"} atrasada${overdueIv === 1 ? "" : "s"}`);
+      }
+      if (typeof managerAnalyses !== "undefined" && Array.isArray(managerAnalyses)) {
+        const names = new Set(
+          (typeof gestorJobCandidates === "function" ? gestorJobCandidates(job) : []).map((c) =>
+            normalize(c.name),
+          ),
+        );
+        const pendingN = managerAnalyses.filter(
+          (item) =>
+            item.status === "pending" &&
+            (names.has(normalize(item.candidate)) || item.role === job.title),
+        ).length;
+        if (pendingN) reasons.push("Parecer do gestor pendente");
+      }
+      return { job, candidatesN, sla, reasons };
+    })
+    .filter((row) => row.reasons.length > 0)
+    .sort((a, b) => {
+      const slaDiff = (slaRank[a.sla] ?? 9) - (slaRank[b.sla] ?? 9);
+      if (slaDiff) return slaDiff;
+      return b.reasons.length - a.reasons.length || a.candidatesN - b.candidatesN;
+    });
+}
+
+function gestorJobsNeedingAttention(list = myGestorJobs()) {
+  return jobsNeedingAttention(list);
 }
 
 function collectGestorOverviewMetrics() {
@@ -21744,15 +22864,60 @@ function submitGestorHiringRequest(item, action = "send") {
   return true;
 }
 
+function renderGestorRequestKpis(items = []) {
+  const host = document.querySelector("#gestorRequestKpis");
+  if (!host) return;
+  const rows = Array.isArray(items) ? items : [];
+  const countBy = (pred) => rows.filter(pred).length;
+  const cards = [
+    { id: "total", label: "Total", value: rows.length, tone: "is-tone-navy" },
+    {
+      id: "approval",
+      label: "Em aprovação",
+      value: countBy((item) => item.status === "Aguardando aprovação"),
+      tone: "is-tone-amber",
+    },
+    {
+      id: "adjust",
+      label: "Ajuste",
+      value: countBy((item) => item.status === "Ajuste solicitado"),
+      tone: "is-tone-rose",
+    },
+    {
+      id: "draft",
+      label: "Rascunho",
+      value: countBy((item) => item.status === "Rascunho"),
+      tone: "is-tone-slate",
+    },
+    {
+      id: "done",
+      label: "Concluídas",
+      value: countBy((item) => /aprovad|rejeit|cancel|aberta|publicad/i.test(item.status || "")),
+      tone: "is-tone-brand",
+    },
+  ];
+  host.innerHTML = cards
+    .map(
+      (card) => `
+    <article class="gestor-request-kpi ${card.tone}">
+      <strong>${card.value}</strong>
+      <span>${card.label}</span>
+    </article>`,
+    )
+    .join("");
+}
+
 function renderGestorHiringRequestList() {
   const list = document.querySelector("#gestorHomePanelList");
   const inboxBar = document.querySelector("#gestorRequestInboxBar");
+  const toolbar = document.querySelector("#gestorRequestToolbar");
   const approvalTab = document.querySelector("#gestorRequestApprovalTab");
-  const countEl = document.querySelector("#gestorRequestCount");
   if (!list) return;
   if (inboxBar) inboxBar.hidden = false;
-  if (approvalTab) approvalTab.hidden = !canGestorApproveRequests();
-  if (!canGestorApproveRequests() && gestorViewState.requestInboxTab === "approval") {
+  const canApprove = canGestorApproveRequests();
+  if (toolbar) toolbar.hidden = !canApprove;
+  if (approvalTab) approvalTab.hidden = !canApprove;
+  if (!canApprove && gestorViewState.requestInboxTab === "approval") {
     gestorViewState.requestInboxTab = "mine";
   }
   const inbox = gestorViewState.requestInboxTab || "mine";
@@ -21763,10 +22928,7 @@ function renderGestorHiringRequestList() {
 
   const base = inbox === "approval" ? myGestorApprovalRequests() : myGestorHiringRequests();
   const mine = filterGestorHiringRequests(base);
-  if (countEl) {
-    const noun = mine.length === 1 ? "solicitação" : "solicitações";
-    countEl.textContent = `${mine.length} ${noun}`;
-  }
+  renderGestorRequestKpis(base);
 
   list.className = "gestor-list gestor-request-list";
   if (!mine.length) {
@@ -23036,19 +24198,12 @@ function renderGestorOverview() {
   const awaitingHost = document.querySelector("#gestorAwaitingActions");
   const jobsHost = document.querySelector("#gestorMyJobsSummary");
   const requestsHost = document.querySelector("#gestorRequestsSummary");
-  const secondary = document.querySelector("#gestorSecondaryMetrics");
   const eyebrow = document.querySelector("#gestorOverviewEyebrow");
 
   if (eyebrow) {
     eyebrow.textContent = portalHomeWelcomeDateLabel();
   }
-  const gestorName = document.querySelector("#gestorManagerName");
-  if (gestorName) gestorName.textContent = portalFirstName(currentManagerName);
 
-  const setMap = (id, value) => {
-    const el = document.querySelector(id);
-    if (el) el.textContent = String(value);
-  };
   const openStatuses = new Set([
     "Rascunho",
     "Enviada",
@@ -23059,6 +24214,10 @@ function renderGestorOverview() {
   const solicitacoesN =
     myGestorHiringRequests().filter((item) => openStatuses.has(item.status)).length +
     myGestorApprovalRequests().length;
+  const setMap = (id, value) => {
+    const el = document.querySelector(id);
+    if (el) el.textContent = String(value);
+  };
   setMap("#gestorMapVagasCount", metrics.myJobs.length);
   setMap("#gestorMapPendenciasCount", metrics.gestorCounts?.total ?? metrics.pendencies.length);
   setMap("#gestorMapSolicitacoesCount", solicitacoesN);
@@ -23067,47 +24226,7 @@ function renderGestorOverview() {
   setMap("#gestorMapCandidatosCount", metrics.myCandidates.length);
   setMap("#gestorMapAnalisesCount", metrics.pendingAnalyses.length);
 
-  if (secondary) {
-    secondary.innerHTML = [
-      { id: "aprovacao", label: "Aguardando aprovação", count: metrics.awaitingApproval.length },
-      { id: "analises", label: "Minha análise", count: metrics.pendingAnalyses.length },
-      { id: "fichas", label: "Fichas a finalizar", count: metrics.fichas.length },
-      { id: "prazo", label: "Próximas do prazo", count: metrics.dueSoon.length },
-    ]
-      .map(
-        (item) => `
-        <button type="button" class="gestor-chip-metric" data-gestor-kpi="${item.id}">
-          <strong>${padCount(item.count)}</strong>
-          <span>${escapeHtml(item.label)}</span>
-        </button>`,
-      )
-      .join("");
-  }
-
-  if (jobsHost) {
-    const list = metrics.myJobs.slice(0, 4);
-    jobsHost.innerHTML = list.length
-      ? list
-          .map((job) => {
-            const inProcess = gestorJobCandidates(job).length;
-            return `
-            <article class="dashboard-job" data-gestor-ov-action="abrir-vaga" data-job-id="${job.id}" tabindex="0">
-              <span class="dashboard-job-icon" aria-hidden="true">${escapeHtml((job.title || "?").charAt(0))}</span>
-              <div class="dashboard-job-copy">
-                <strong>${escapeHtml(job.title)}</strong>
-                <span>${escapeHtml(job.area || "—")} · ${escapeHtml(job.workModel || "—")} · ${escapeHtml(job.status)}</span>
-              </div>
-              <div class="dashboard-job-stats">
-                <strong>${inProcess}</strong>
-                <span>candidatos</span>
-              </div>
-            </article>`;
-          })
-          .join("")
-      : `<p class="gestor-summary-empty">Nenhuma vaga sob sua gestão.</p>`;
-  }
-
-  const awaiting = myGestorAwaitingActions().slice(0, 4);
+  const awaiting = myGestorAwaitingActions().slice(0, 5);
   if (awaitingHost) {
     awaitingHost.innerHTML = awaiting.length
       ? awaiting
@@ -23124,7 +24243,7 @@ function renderGestorOverview() {
                       ? `data-gestor-ov-action="analisar" data-candidate-id="${row.candidateId}"`
                       : "";
             return `
-            <article class="dashboard-match" ${action} tabindex="0">
+            <article class="dashboard-match${row.stage === "Vencida" ? " is-overdue" : row.stage === "Hoje" || row.stage === "Próxima" ? " is-duesoon" : ""}" ${action} tabindex="0">
               <span class="dashboard-match-avatar">${escapeHtml(initials(row.candidateName))}</span>
               <div class="dashboard-match-copy">
                 <strong>${escapeHtml(row.candidateName)}</strong>
@@ -23137,24 +24256,6 @@ function renderGestorOverview() {
       : `<p class="gestor-summary-empty">Nada aguardando sua ação.</p>`;
   }
 
-  if (requestsHost) {
-    const list = metrics.myRequests.slice(0, 4);
-    requestsHost.innerHTML = list.length
-      ? list
-          .map(
-            (item) => `
-            <article class="gestor-request-row">
-              <div>
-                <strong>${escapeHtml(item.title)}</strong>
-                <span>${escapeHtml(item.department || "—")} · ${item.createdAt ? formatBRDate(item.createdAt) : "—"}</span>
-              </div>
-              <span class="gestor-pill">${escapeHtml(item.status || "Pendente")}</span>
-            </article>`,
-          )
-          .join("")
-      : `<p class="gestor-summary-empty">Nenhuma solicitação enviada. Use “Solicitar vaga”.</p>`;
-  }
-
   if (interviewsHost) {
     const items = metrics.upcoming.slice(0, 4);
     interviewsHost.innerHTML = items.length
@@ -23163,7 +24264,7 @@ function renderGestorOverview() {
             const day = String(item.at).slice(8, 10);
             const time = String(item.at).slice(11, 16);
             return `
-            <article class="gestor-agenda-row" data-gestor-ov-action="abrir-entrevista" data-interview-id="${item.id}" tabindex="0">
+            <article class="gestor-agenda-row ${assignmentStatusClass(item.status)}${interviewIsOverdue(item) ? " is-overdue" : ""}" data-gestor-ov-action="abrir-entrevista" data-interview-id="${item.id}" tabindex="0">
               <div class="gestor-agenda-day">
                 <strong>${escapeHtml(day)}</strong>
                 <span>${escapeHtml(time)}</span>
@@ -23178,12 +24279,59 @@ function renderGestorOverview() {
           .join("")
       : `<p class="gestor-summary-empty">Nenhuma entrevista próxima.</p>`;
   }
+
+  if (jobsHost) {
+    const list = gestorJobsNeedingAttention(metrics.myJobs).slice(0, 6);
+    jobsHost.innerHTML = list.length
+      ? list
+          .map((row) => {
+            const job = row.job;
+            const reasonText = (row.reasons || []).join(" ").toLowerCase();
+            const jobAccent = /atras|vencid|sla atras/.test(reasonText)
+              ? " is-overdue"
+              : /aprova|pouc|pausa|parecer|atenção|atencao/.test(reasonText)
+                ? " is-duesoon"
+                : /rascunho/.test(reasonText)
+                  ? " is-muted"
+                  : " is-ok";
+            return `
+            <article class="dashboard-job${jobAccent}" data-gestor-ov-action="abrir-vaga" data-job-id="${job.id}" tabindex="0">
+              <span class="dashboard-job-icon" aria-hidden="true">${escapeHtml((job.title || "?").charAt(0))}</span>
+              <div class="dashboard-job-copy">
+                <strong>${escapeHtml(job.title)}</strong>
+                <span>${escapeHtml(row.reasons.join(" · "))}</span>
+              </div>
+              <div class="dashboard-job-stats">
+                <strong>${row.candidatesN}</strong>
+                <span>candidatos</span>
+              </div>
+            </article>`;
+          })
+          .join("")
+      : `<p class="gestor-summary-empty">Nenhuma vaga pedindo atenção agora.</p>`;
+  }
+
+  if (requestsHost) {
+    const list = metrics.myRequests.filter((item) => openStatuses.has(item.status)).slice(0, 3);
+    requestsHost.innerHTML = list.length
+      ? list
+          .map((item) => {
+            const edit = item.status === "Ajuste solicitado" || item.status === "Rascunho";
+            return `
+            <article class="gestor-request-row ${hiringRequestStatusClass(item.status)}" data-gestor-ov-action="abrir-solicitacao" data-request-id="${item.id}" data-primary-action="${edit ? "corrigir_solicitacao" : ""}" tabindex="0">
+              <div>
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.department || "—")} · ${item.createdAt ? formatBRDate(item.createdAt) : "—"}</span>
+              </div>
+              <span class="gestor-pill">${escapeHtml(item.status || "Pendente")}</span>
+            </article>`;
+          })
+          .join("")
+      : `<p class="gestor-summary-empty">Nenhuma solicitação aberta. Use “Solicitar vaga”.</p>`;
+  }
 }
 
 function renderGestorPortal() {
-  const nameEl = document.querySelector("#gestorManagerName");
-  if (nameEl) nameEl.textContent = currentManagerName.split(" ")[0];
-
   syncGestorDemoToggles();
 
   if (gestorViewState.mode === "job" && gestorViewState.jobId) {
@@ -23428,10 +24576,11 @@ function runGestorOverviewAction(action, dataset = {}) {
     const req = hiringRequests.find((row) => row.id === Number(dataset.requestId));
     if (!req) return;
     const edit = dataset.primaryAction === "corrigir_solicitacao";
-    gestorViewState.requestInboxTab = edit ? "mine" : "approval";
+    const mine = req.requester === currentManagerName;
+    gestorViewState.requestInboxTab = edit || mine ? "mine" : "approval";
     openGestorRequestForm(req, {
       readOnly: !edit,
-      adoptApprovalPersona: !edit,
+      adoptApprovalPersona: !edit && !mine,
     });
     return;
   }
@@ -23734,7 +24883,7 @@ function renderGestorEntrevistasHub() {
         .map((item) => {
           const interviewers = (item.interviewers || []).filter(Boolean).join(", ") || item.owner || "—";
           const sheet = item.sheet || getConductSheet(item)?.name || "Sem ficha";
-          return `<article class="pendencias-card" data-gestor-iv-open="${item.id}" tabindex="0">
+          return `<article class="pendencias-card is-${normalize(item.status || "").replace(/\s+/g, "-")}" data-gestor-iv-open="${item.id}" tabindex="0">
             <div class="pendencias-card-main">
               <strong class="pendencias-card-title">${escapeHtml(item.name)}</strong>
               <p class="pendencias-card-desc">${escapeHtml(item.vacancy || "—")} · ${escapeHtml(
@@ -24020,10 +25169,16 @@ document.querySelector("#hubChromeSelecao")?.addEventListener("click", (event) =
   else goToPage("selecao", { selecaoTab: "instrumentos" });
 });
 
-document.querySelectorAll("[data-workspace-role]").forEach((button) => {
-  button.addEventListener("click", () => {
-    setWorkspaceRole(button.dataset.workspaceRole);
-  });
+document.addEventListener("click", (event) => {
+  const scenarioBtn = event.target.closest("[data-workspace-scenario]");
+  if (scenarioBtn) {
+    setWorkspaceScenario(scenarioBtn.dataset.workspaceScenario);
+    return;
+  }
+  const roleBtn = event.target.closest("[data-workspace-role]");
+  if (roleBtn) {
+    setWorkspaceRole(roleBtn.dataset.workspaceRole);
+  }
 });
 
 setWorkspaceRole(workspaceRole, { navigate: false });
@@ -26013,10 +27168,21 @@ function renderAnalytics() {
   const cardsHost = document.querySelector("#analyticsCards");
   if (cardsHost) {
     cardsHost.hidden = visibleCards.length === 0;
+    const kpiTone = (id) =>
+      ({
+        open_jobs: "is-tone-navy",
+        applicants: "is-tone-brand",
+        in_process: "is-tone-sky",
+        hires: "is-tone-brand",
+        rejections: "is-tone-rose",
+        withdrawals: "is-tone-amber",
+        avg_time_to_hire: "is-tone-slate",
+        hire_rate: "is-tone-brand",
+      }[id] || "is-tone-slate");
     cardsHost.innerHTML = visibleCards
       .map(
         (card) => `
-      <article class="analytics-kpi" data-analytics-metric="${card.id}" tabindex="0">
+      <article class="analytics-kpi ${kpiTone(card.id)}" data-analytics-metric="${card.id}" tabindex="0">
         <strong>${escapeHtml(String(card.value))}</strong>
         <span>${escapeHtml(card.label)}</span>
         <small>${escapeHtml(card.hint || "")}</small>
@@ -26904,7 +28070,14 @@ on("#managerList", "click", (event) => {
 });
 
 function closeTopbarPopovers(except = "") {
-  ["notificationPopover", "profilePopover", "candidateNotificationPopover", "candidateProfilePopover"].forEach((id) => {
+  [
+    "notificationPopover",
+    "profilePopover",
+    "candidateNotificationPopover",
+    "candidateProfilePopover",
+    "workspaceScenarioPopover",
+    "candidateWorkspaceScenarioPopover",
+  ].forEach((id) => {
     const popover = document.querySelector(`#${id}`); if (!popover || id === except) return;
     popover.hidden = true;
   });
@@ -26912,6 +28085,8 @@ function closeTopbarPopovers(except = "") {
   document.querySelector("#sidebarAccount .profile-button")?.setAttribute("aria-expanded", String(except === "profilePopover"));
   document.querySelector("#candidateNotificationBtn")?.setAttribute("aria-expanded", String(except === "candidateNotificationPopover"));
   document.querySelector("#candidateProfileBtn")?.setAttribute("aria-expanded", String(except === "candidateProfilePopover"));
+  document.querySelector("#workspaceScenarioBtn")?.setAttribute("aria-expanded", String(except === "workspaceScenarioPopover"));
+  document.querySelector("#candidateWorkspaceScenarioBtn")?.setAttribute("aria-expanded", String(except === "candidateWorkspaceScenarioPopover"));
 }
 on("#sidebarAccount .notification-button", "click", () => {
   const popover = document.querySelector("#notificationPopover"); const opening = popover.hidden;
@@ -26972,6 +28147,9 @@ const candidatePortalUser = {
     { jobId: 1, title: "Suporte de Sistemas", appliedAt: "2026-08-23", stage: "Entrevista RH" },
     { jobId: 5, title: "Desenvolvedor(a) Full Stack", appliedAt: "2026-08-19", stage: "Teste técnico" },
     { jobId: 10, title: "Coordenador(a) de RH", appliedAt: "2026-08-16", stage: "Proposta" },
+    { jobId: 8, title: "Estagiário(a) de Contabilidade", appliedAt: "2026-07-28", stage: "Contratado" },
+    { jobId: 9, title: "Designer UX/UI", appliedAt: "2026-08-05", stage: "Reprovado" },
+    { jobId: 3, title: "Assistente / Analista Contábil", appliedAt: "2026-08-01", stage: "Retirada" },
   ],
 };
 let candidatePortalView = "jobs";
@@ -27097,6 +28275,11 @@ function renderCandidateInterviews() {
   renderCandidateSelecao();
 }
 
+function candidateSelecaoAccentClass(status, overdue = false) {
+  if (overdue) return "is-overdue";
+  return assignmentStatusClass(status);
+}
+
 function renderCandidateSelecaoInterviewRow(item) {
   const overdue = interviewIsOverdue(item);
   const canConfirm = item.status === "Aguardando confirmação";
@@ -27113,7 +28296,7 @@ function renderCandidateSelecaoInterviewRow(item) {
       ? `<span class="candidate-selecao-note">Confirme até ${escapeHtml(formatCandidateInterviewDate(item.candidateConfirmUntil))} (prazo de 24h).</span>`
       : "";
   return `
-    <article class="candidate-selecao-item">
+    <article class="candidate-selecao-item ${candidateSelecaoAccentClass(item.status, overdue)}">
       <div class="candidate-selecao-item-main">
         <span class="candidate-selecao-kind">Entrevista</span>
         <strong>${escapeHtml(when)}</strong>
@@ -27152,7 +28335,7 @@ function renderCandidateSelecaoFitRow(item) {
     (item.strengths || []).length ? `Pontos fortes: ${(item.strengths || []).slice(0, 2).join(", ")}` : "",
   ].filter(Boolean);
   return `
-    <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
+    <article class="candidate-selecao-item${isDone ? " is-done" : ""} ${assignmentStatusClass(item.status)}">
       <div class="candidate-selecao-item-main">
         <span class="candidate-selecao-kind">Fit Cultural</span>
         <strong>${escapeHtml(item.model?.name || "Fit Cultural")}</strong>
@@ -27197,7 +28380,7 @@ function renderCandidateSelecaoTestRow(item) {
       : "",
   ].filter(Boolean);
   return `
-    <article class="candidate-selecao-item${isDone ? " is-done" : ""}">
+    <article class="candidate-selecao-item${isDone ? " is-done" : ""} ${assignmentStatusClass(item.status)}">
       <div class="candidate-selecao-item-main">
         <span class="candidate-selecao-kind">Teste</span>
         <strong>${escapeHtml(item.test?.title || "Teste técnico")}</strong>
@@ -27266,8 +28449,17 @@ function renderCandidateSelecao() {
         .map(([vacancy, bucket]) => {
           const actionCount = bucket.active.length;
           const historyCount = bucket.history.length;
+          const groupAccent = bucket.active.some((entry) =>
+            entry.kind === "interview"
+              ? interviewIsOverdue(entry.item)
+              : entry.item.status === "Expirado",
+          )
+            ? "is-overdue"
+            : actionCount
+              ? "is-pending"
+              : "is-ok";
           return `
-      <section class="candidate-selecao-vacancy">
+      <section class="candidate-selecao-vacancy ${groupAccent}">
         <header class="candidate-selecao-vacancy-head">
           <div>
             <span class="panel-kicker">VAGA</span>
@@ -27611,8 +28803,12 @@ function candidateActionMapMarkup(items, { emptyText = "Nenhuma pendência no mo
                 : item.action === "profile"
                   ? "Perfil"
                   : "Ação";
+      const accent =
+        item.action === "profile"
+          ? homeQueueAccentClass({ muted: true })
+          : homeQueueAccentClass({ dueSoon: true });
       const meta = [item.vacancy, item.text].filter(Boolean).join(" · ");
-      return `<button type="button" class="dash-pend-row" data-candidate-next-action="${escapeHtml(item.action)}">
+      return `<button type="button" class="dash-pend-row ${accent}" data-candidate-next-action="${escapeHtml(item.action)}">
           <div class="dash-pend-main">
             <strong>${escapeHtml(item.title)}</strong>
             <span class="dash-pend-meta">${escapeHtml(meta)}</span>
@@ -27675,17 +28871,26 @@ function candidateVacancyPickerCard({
   nextText,
   openAttr,
   openValue,
+  badgeCount = null,
+  kicker = "VAGA",
 }) {
   const metaLine = meta.filter(Boolean).join(" · ");
+  const badge =
+    badgeCount != null && Number(badgeCount) > 0
+      ? `<span class="candidate-picker-count" aria-label="${Number(badgeCount)} proposta(s)">${Number(badgeCount)}</span>`
+      : "";
   return `
     <button type="button" class="candidate-vacancy-picker-card" ${openAttr}="${escapeHtml(String(openValue))}">
       <header class="candidate-vacancy-picker-head">
         <div class="candidate-vacancy-picker-copy">
-          <span class="panel-kicker">VAGA</span>
+          <span class="panel-kicker">${escapeHtml(kicker)}</span>
           <strong>${escapeHtml(vacancy)}</strong>
           ${metaLine ? `<small>${escapeHtml(metaLine)}</small>` : ""}
         </div>
-        <span class="candidate-stage-pill ${statusClass}">${escapeHtml(status)}</span>
+        <div class="candidate-vacancy-picker-status">
+          ${badge}
+          <span class="candidate-stage-pill ${statusClass}">${escapeHtml(status)}</span>
+        </div>
       </header>
       <div class="candidate-app-next">
         <div>
@@ -27783,19 +28988,7 @@ function renderCandidateOffer() {
   if (!selected) {
     selectedPortalOfferId = null;
     body.innerHTML = `
-      <header class="candidate-page-intro">
-        <span class="panel-kicker">MINHA JORNADA</span>
-        <h1>Propostas</h1>
-        <p>${items.length === 1 ? "Confirme a vaga para abrir a proposta." : "Escolha a vaga para abrir a proposta correspondente."}</p>
-      </header>
       <section class="candidate-vacancy-picker">
-        <div class="candidate-journey-section-head">
-          <div>
-            <span class="panel-kicker">SELECIONE A VAGA</span>
-            <h2>Propostas disponíveis</h2>
-          </div>
-          <span class="candidate-journey-section-count">${items.length}</span>
-        </div>
         <div class="candidate-vacancy-picker-list">
           ${items
             .map((item) =>
@@ -27813,6 +29006,8 @@ function renderCandidateOffer() {
                 nextText: "Revisar e responder os termos",
                 openAttr: "data-portal-offer-open",
                 openValue: item.id,
+                badgeCount: items.length,
+                kicker: "PROPOSTA",
               }),
             )
             .join("")}
@@ -27896,19 +29091,7 @@ function renderCandidatePreAdmission() {
   if (!selected) {
     selectedPortalPreAdId = null;
     body.innerHTML = `
-      <header class="candidate-page-intro">
-        <span class="panel-kicker">MEU PROCESSO</span>
-        <h1>Pré-admissão</h1>
-        <p>${items.length === 1 ? "Confirme a vaga para enviar os documentos." : "Escolha a vaga para enviar os documentos da checklist."}</p>
-      </header>
       <section class="candidate-vacancy-picker">
-        <div class="candidate-journey-section-head">
-          <div>
-            <span class="panel-kicker">SELECIONE A VAGA</span>
-            <h2>Processos com documentos</h2>
-          </div>
-          <span class="candidate-journey-section-count">${items.length}</span>
-        </div>
         <div class="candidate-vacancy-picker-list">
           ${items
             .map((item) => {
@@ -27935,6 +29118,8 @@ function renderCandidatePreAdmission() {
                   : "Revisar checklist da vaga",
                 openAttr: "data-portal-pread-open",
                 openValue: item.id,
+                badgeCount: items.length,
+                kicker: "PRÉ-ADMISSÃO",
               });
             })
             .join("")}
@@ -28031,8 +29216,6 @@ function submitPortalPreAdDocument(itemId, fileName) {
 function renderCandidateHome() {
   syncPortalHomeWelcome({
     eyebrowId: "#candidateHomeWelcomeEyebrow",
-    nameId: "#candidateHomeWelcomeName",
-    fullName: candidatePortalUser.name,
   });
   const apps = candidatePortalUser.applications;
   const interviews = getCandidateInterviewItems().filter((item) => interviewIsActive(item));
@@ -28079,7 +29262,13 @@ function renderCandidateHome() {
           .slice(0, 6)
           .map(
             (app) => `
-              <button class="candidate-home-journey-item" type="button" data-candidate-home-app="${app.jobId}">
+              <button class="candidate-home-journey-item ${
+                /contratado/i.test(app.stage)
+                  ? "is-ok"
+                  : /proposta|teste|entrevista/i.test(app.stage)
+                    ? "is-duesoon"
+                    : "is-muted"
+              }" type="button" data-candidate-home-app="${app.jobId}">
                 <div class="candidate-home-journey-head">
                   <div><strong>${escapeHtml(app.title)}</strong><span>${escapeHtml(candidateVisibleStage(app.stage))}</span></div>
                   <span class="candidate-stage-pill ${candidateAppStageClass(app.stage)}">${escapeHtml(app.stage)}</span>
@@ -28100,7 +29289,7 @@ function renderCandidateHome() {
             const actionAttr = item.action
               ? ` data-candidate-next-action="${escapeHtml(item.action)}"`
               : "";
-            return `<button class="candidate-home-recent-item" type="button"${appAttr}${actionAttr}>
+            return `<button class="candidate-home-recent-item is-muted" type="button"${appAttr}${actionAttr}>
               <div>
                 <strong>${escapeHtml(item.title)}</strong>
                 <span>${escapeHtml(item.meta)}</span>
@@ -28982,7 +30171,7 @@ function setCandidatePortalView(view, options = {}) {
   syncCandidateOfferPreAdNav();
   updateCandidateSidebarUser();
   syncCandidatePortalHash(view, options);
-  syncCandidatePortalExitLabel();
+  syncWorkspaceScenarioButtons();
 }
 
 function candidateMetaGrid(job, inline = false) {
@@ -29671,20 +30860,6 @@ function syncCandidatePortalHash(view = candidatePortalView) {
   }
 }
 
-function syncCandidatePortalExitLabel() {
-  const label = document.querySelector("#exitCandidatePortalLabel");
-  const btn = document.querySelector("#exitCandidatePortal");
-  if (!label || !btn) return;
-  const restore = String(candidatePortalReturnHash || "").replace(/^#/, "");
-  const fromGestor =
-    restore.startsWith("gestor") ||
-    restore === "analises-gestores" ||
-    workspaceRole === "gestor";
-  const text = fromGestor ? "Voltar ao portal do gestor" : "Voltar ao RH";
-  label.textContent = text;
-  btn.title = text;
-}
-
 function openCandidatePortal(view = "jobs", options = {}) {
   candidatePortalReturnHash = window.location.hash?.startsWith("#portal-candidato")
     ? candidatePortalReturnHash || "#dashboard"
@@ -29696,7 +30871,7 @@ function openCandidatePortal(view = "jobs", options = {}) {
   syncCandidateOfferPreAdNav();
   const parsed = typeof view === "object" && view ? view : { view, ...options };
   setCandidatePortalView(parsed.view || "home", parsed);
-  syncCandidatePortalExitLabel();
+  syncWorkspaceScenarioButtons();
 }
 
 function closeCandidatePortal() {
@@ -29706,6 +30881,7 @@ function closeCandidatePortal() {
   const restore = String(candidatePortalReturnHash || "#dashboard").replace("#", "");
   const page = pageByHash[restore] || "dashboard";
   history.replaceState(null, "", candidatePortalReturnHash || "#dashboard");
+  syncWorkspaceScenarioButtons();
   if (page === "gestor") {
     goToPage("gestor", { gestorHomeFilter: gestorHomeFilterFromHash(restore) });
   } else {
@@ -30037,12 +31213,22 @@ function submitCandidateApplication() {
   openCandidateApplicationSuccess(applyJobs, resumeName);
 }
 
-on("#openCandidatePortal", "click", () => openCandidatePortal("home"));
-on("#profileOpenCandidatePortal", "click", () => {
-  closeTopbarPopovers();
-  openCandidatePortal("home");
+on("#workspaceScenarioBtn", "click", () => {
+  const popover = document.querySelector("#workspaceScenarioPopover");
+  if (!popover) return;
+  const opening = popover.hidden;
+  closeTopbarPopovers(opening ? "workspaceScenarioPopover" : "");
+  popover.hidden = !opening;
+  if (opening) syncWorkspaceScenarioButtons();
 });
-on("#exitCandidatePortal", "click", closeCandidatePortal);
+on("#candidateWorkspaceScenarioBtn", "click", () => {
+  const popover = document.querySelector("#candidateWorkspaceScenarioPopover");
+  if (!popover) return;
+  const opening = popover.hidden;
+  closeTopbarPopovers(opening ? "candidateWorkspaceScenarioPopover" : "");
+  popover.hidden = !opening;
+  if (opening) syncWorkspaceScenarioButtons();
+});
 candidateSidebarToggle.addEventListener("click", toggleCandidateSidebar);
 candidateMenuButton?.addEventListener("click", toggleCandidateSidebar);
 if (window.localStorage.getItem("portal-candidato-sidebar") === "collapsed") {
@@ -30090,6 +31276,10 @@ on("#candidateProfilePopover", "click", (event) => {
   }
   if (kind === "password") {
     showToast("Redefinir senha", "Simulação: enviaremos um link para o e-mail cadastrado.");
+    return;
+  }
+  if (kind === "rh") {
+    setWorkspaceScenario("rh");
     return;
   }
   if (kind === "logout") {

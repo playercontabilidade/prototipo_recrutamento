@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <link rel="stylesheet" href="./styles.css?v=nav-hubs-487" />
+    <link rel="stylesheet" href="./styles.css?v=nav-hubs-530" />
   </head>
   <body>
     <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
@@ -168,13 +168,30 @@
         <div class="app-bar-actions" id="sidebarAccount">
           <button
             class="candidate-view-trigger"
-            id="openCandidatePortal"
+            id="workspaceScenarioBtn"
             type="button"
-            title="Vista do candidato"
-            aria-label="Abrir vista do candidato"
+            title="Trocar cenário"
+            aria-label="Trocar cenário do protótipo"
+            aria-expanded="false"
+            aria-controls="workspaceScenarioPopover"
           >
             <svg class="ui-icon"><use href="#i-eye" /></svg>
           </button>
+          <div class="topbar-popover workspace-scenario-popover" id="workspaceScenarioPopover" hidden>
+            <header><strong>Ver como</strong><small>Trocar o cenário do protótipo</small></header>
+            <button type="button" data-workspace-scenario="rh">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <span><strong>RH</strong><small>Portal completo de recrutamento</small></span>
+            </button>
+            <button type="button" data-workspace-scenario="gestor">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
+              <span><strong>Gestor</strong><small>Acompanhamento de vagas e pareceres</small></span>
+            </button>
+            <button type="button" data-workspace-scenario="candidato">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span>
+              <span><strong>Candidato</strong><small>Prévia do portal público</small></span>
+            </button>
+          </div>
           <button
             class="icon-button notification-button"
             type="button"
@@ -206,7 +223,9 @@
           <div class="topbar-popover profile-popover" id="profilePopover" hidden>
             <header><span class="avatar">LD</span><span><strong>Larissa Dias</strong><small>larissa@portalrh.com</small></span></header>
             <button type="button" data-topbar-page="settings"><span class="popover-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Configurações</strong><small>Catálogos e preferências do portal.</small></span></button>
-            <button type="button" id="profileOpenCandidatePortal"><span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>Vista do candidato</strong><small>Prévia do portal público de vagas.</small></span></button>
+            <button type="button" data-workspace-scenario="gestor"><span class="popover-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Visão do gestor</strong><small>Acompanhamento de vagas e pareceres.</small></span></button>
+            <button type="button" data-workspace-scenario="rh"><span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Visão do RH</strong><small>Portal completo de recrutamento.</small></span></button>
+            <button type="button" data-workspace-scenario="candidato"><span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>Visão do candidato</strong><small>Prévia do portal público de vagas.</small></span></button>
             <button type="button" data-profile-action="logout"><span class="popover-icon"><svg class="ui-icon"><use href="#i-logout" /></svg></span><span><strong>Sair</strong><small>Encerrar a sessão neste protótipo.</small></span></button>
           </div>
         </div>
@@ -237,8 +256,8 @@
         </div>
 
         <div class="workspace-role-switch" role="group" aria-label="Ver como">
-          <button type="button" class="is-active" data-workspace-role="rh">RH</button>
-          <button type="button" data-workspace-role="gestor">Gestor</button>
+          <button type="button" class="is-active" data-workspace-role="rh" aria-pressed="true">RH</button>
+          <button type="button" data-workspace-role="gestor" aria-pressed="false">Gestor</button>
         </div>
 
         <nav class="main-nav" aria-label="Navegação principal">
@@ -293,11 +312,11 @@
         </nav>
 
         <div class="sidebar-footer is-sidebar-pin">
-          <a href="#configuracoes" class="nav-item" data-page="settings" data-role="rh" title="Configurações">
+          <a href="#configuracoes" class="nav-item" data-page="settings" data-gestor-nav="configuracoes" title="Configurações">
             <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-settings" /></svg></span>
             <span class="nav-label">Configurações</span>
           </a>
-          <div class="help-card" data-role="rh">
+          <div class="help-card">
             <span class="help-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-help" /></svg></span>
             <div>
               <strong>Precisa de ajuda?</strong>
@@ -309,8 +328,6 @@
           </p>
         </div>
       </aside>
-
-      <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
       <main class="main-content">
         <header class="topbar content-topbar is-retired" aria-label="Barra da página" hidden>
@@ -359,8 +376,7 @@
           <header class="dashboard-welcome home-welcome">
             <div>
               <span class="eyebrow" id="rhHomeWelcomeEyebrow">QUINTA-FEIRA, 27 DE AGOSTO</span>
-              <h1>Olá, <span id="rhHomeWelcomeName">Larissa</span></h1>
-              <p>Aqui está um resumo do que depende da sua atuação hoje.</p>
+              <p>Resumo do que depende de você hoje.</p>
             </div>
             <button class="primary-button dashboard-new-job" type="button">
               <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
@@ -439,6 +455,7 @@
               <header class="dashboard-panel-heading">
                 <div>
                   <h2>Agenda do dia</h2>
+                  <p class="panel-note">Compromissos de hoje</p>
                 </div>
                 <button type="button" data-go-page="entrevistas">Ver agenda</button>
               </header>
@@ -447,7 +464,7 @@
                 <span>AGO<br />TER</span>
               </div>
               <div class="agenda-list">
-                <article class="agenda-interview" data-go-page="entrevistas" data-interview-id="604" tabindex="0">
+                <article class="agenda-interview is-ok" data-go-page="entrevistas" data-interview-id="604" tabindex="0">
                   <time>14:30</time>
                   <div>
                     <strong>Entrevista com Guilherme</strong>
@@ -455,7 +472,7 @@
                   </div>
                   <span class="agenda-dot navy"></span>
                 </article>
-                <article data-open-job="Suporte de Sistemas" tabindex="0">
+                <article class="is-ok" data-open-job="Suporte de Sistemas" tabindex="0">
                   <time>16:00</time>
                   <div>
                     <strong>Alinhamento com gestor</strong>
@@ -475,25 +492,26 @@
           </div>
 
           <div class="home-secondary-grid">
-            <section class="dash-panel dash-block" id="dashCurriculosInbox" aria-label="Currículos">
-              <div class="dash-panel-head">
-                <div>
-                  <h2>Currículos</h2>
-                  <p class="panel-note">Novos / sem vaga</p>
-                </div>
-                <button type="button" class="dash-history-link" data-go-page="talentos">Ver talentos →</button>
-              </div>
-              <div class="dash-pend-list" id="dashCurriculosList"></div>
-            </section>
-
             <section class="dashboard-panel active-jobs-panel home-jobs">
               <header class="dashboard-panel-heading">
                 <div>
-                  <h2>Vagas em destaque</h2>
+                  <h2>Vagas que pedem atenção</h2>
+                  <p class="panel-note">SLA, poucos candidatos ou aguardando aprovação</p>
                 </div>
                 <button type="button" data-go-page="jobs">Ver todas →</button>
               </header>
               <div class="dashboard-job-list" id="dashboardJobList"></div>
+            </section>
+
+            <section class="dash-panel dash-block" id="dashCurriculosInbox" aria-label="Currículos">
+              <div class="dash-panel-head">
+                <div>
+                  <h2>Currículos novos</h2>
+                  <p class="panel-note">Sem vaga · aguardando triagem</p>
+                </div>
+                <button type="button" class="dash-history-link" data-go-page="talentos">Ver talentos →</button>
+              </div>
+              <div class="dash-pend-list" id="dashCurriculosList"></div>
             </section>
           </div>
         </section>
@@ -575,35 +593,37 @@
 
         <section class="dashboard-page settings-page" id="settingsPage" hidden>
           <div id="settingsHomeView">
-            <header class="dashboard-welcome"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h1>Configurações</h1><p>Gerencie os catálogos e padrões usados no recrutamento.</p></div></header>
+            <header class="dashboard-welcome"><div><h1>Configurações</h1><p>Gerencie os catálogos e padrões usados no recrutamento.</p></div></header>
             <section class="settings-panel"><header class="dashboard-panel-heading"><div><h2>Catálogos e padrões do sistema</h2><p class="panel-note">Mantenha os dados reutilizados nas vagas e nos processos seletivos.</p></div></header><div class="settings-catalog-grid" id="settingsCatalogGrid">
-              <button type="button" data-settings-view="departments"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-layout" /></svg></span><span><strong>Departamentos</strong><small>Estrutura, gestores e cargos</small></span><b>›</b></button>
-              <button type="button" data-settings-view="companies"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Empresas</strong><small>Dados e unidades cadastradas</small></span><b>›</b></button>
-              <button type="button" data-settings-view="managers"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Responsáveis RH</strong><small>Acessos e responsabilidades</small></span><b>›</b></button>
-              <button type="button" data-settings-view="benefits"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Benefícios</strong><small>Catálogo para novas vagas</small></span><b>›</b></button>
-              <button type="button" data-settings-view="stages"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-columns" /></svg></span><span><strong>Etapas do pipeline</strong><small>Fluxos do processo seletivo</small></span><b>›</b></button>
-              <button type="button" data-settings-view="emails"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-mail" /></svg></span><span><strong>Modelos de e-mail</strong><small>Mensagens reutilizáveis</small></span><b>›</b></button>
-              <button type="button" data-settings-view="rejections"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-message" /></svg></span><span><strong>Justificativas de rejeição</strong><small>Motivos padronizados</small></span><b>›</b></button>
-              <button type="button" id="openLgpdSettings"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>LGPD e retenção</strong><small>Consentimento e anonimização</small></span><b>›</b></button>
+              <button type="button" data-settings-view="departments" data-settings-audience="both"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-layout" /></svg></span><span><strong>Departamentos</strong><small>Estrutura, gestores e cargos</small></span><b>›</b></button>
+              <button type="button" data-settings-view="companies" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Empresas</strong><small>Dados e unidades cadastradas</small></span><b>›</b></button>
+              <button type="button" data-settings-view="managers" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Responsáveis RH</strong><small>Acessos e responsabilidades</small></span><b>›</b></button>
+              <button type="button" data-settings-view="roles" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Cargos</strong><small>Funções do seu departamento</small></span><b>›</b></button>
+              <button type="button" data-settings-view="gestorPerms" data-settings-audience="gestor"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Permissões do gestor</strong><small>Reprovar, aprovar e agendar</small></span><b>›</b></button>
+              <button type="button" data-settings-view="benefits" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-calendar" /></svg></span><span><strong>Benefícios</strong><small>Catálogo para novas vagas</small></span><b>›</b></button>
+              <button type="button" data-settings-view="stages" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-columns" /></svg></span><span><strong>Etapas do pipeline</strong><small>Fluxos do processo seletivo</small></span><b>›</b></button>
+              <button type="button" data-settings-view="emails" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-mail" /></svg></span><span><strong>Modelos de e-mail</strong><small>Mensagens reutilizáveis</small></span><b>›</b></button>
+              <button type="button" data-settings-view="rejections" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-message" /></svg></span><span><strong>Justificativas de rejeição</strong><small>Motivos padronizados</small></span><b>›</b></button>
+              <button type="button" id="openLgpdSettings" data-settings-audience="rh"><span class="settings-card-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>LGPD e retenção</strong><small>Consentimento e anonimização</small></span><b>›</b></button>
             </div></section>
           </div>
 
           <div id="settingsDepartmentsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Departamentos</h1><p>Organize a estrutura usada nas vagas e nos responsáveis.</p></div></div><button class="primary-button" id="newDepartmentButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo departamento</button></header>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Departamentos</h1><p>Organize a estrutura usada nas vagas e nos responsáveis.</p></div></div><button class="primary-button" id="newDepartmentButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo departamento</button></header>
             <div class="settings-shortcuts"><button type="button" data-settings-view="managers"><svg class="ui-icon"><use href="#i-users" /></svg><span><strong>Gestores de departamento</strong><small>Cadastre e gerencie os gestores vinculados.</small></span><b>›</b></button><button type="button" data-settings-view="roles"><svg class="ui-icon"><use href="#i-briefcase" /></svg><span><strong>Cargos</strong><small>Gerencie os cargos e associe-os aos departamentos.</small></span><b>›</b></button></div>
             <div class="settings-list" id="departmentList"></div>
           </div>
 
           <div id="settingsManagersView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Responsáveis RH</h1><p>Pessoas com acesso ao portal e responsabilidade pelos processos.</p></div></div><button class="primary-button" id="newManagerButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo responsável</button></header><div class="settings-list" id="settingsManagerList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Responsáveis RH</h1><p>Pessoas com acesso ao portal e responsabilidade pelos processos.</p></div></div><button class="primary-button" id="newManagerButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo responsável</button></header><div class="settings-list" id="settingsManagerList"></div>
           </div>
 
           <div id="settingsRolesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-view="departments"><span aria-hidden="true">←</span> Voltar para departamentos</button><div><span class="eyebrow">DEPARTAMENTOS</span><h1>Cargos</h1><p>Funções disponíveis para cadastro de vagas.</p></div></div><button class="primary-button" id="newRoleButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo cargo</button></header><div class="settings-list" id="settingsRoleList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-view="departments"><span aria-hidden="true">←</span> Voltar</button><div><h1>Cargos</h1><p>Funções disponíveis para cadastro de vagas.</p></div></div><button class="primary-button" id="newRoleButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo cargo</button></header><div class="settings-list" id="settingsRoleList"></div>
           </div>
 
           <div id="settingsCompaniesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Empresas</h1><p>Identidade, localização e benefícios usados nas vagas.</p></div></div><button class="primary-button" id="newCompanyButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova empresa</button></header><div class="settings-list" id="settingsCompanyList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Empresas</h1><p>Identidade, localização e benefícios usados nas vagas.</p></div></div><button class="primary-button" id="newCompanyButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova empresa</button></header><div class="settings-list" id="settingsCompanyList"></div>
           </div>
 
           <div id="settingsScreeningsView" hidden>
@@ -614,19 +634,67 @@
           </div>
 
           <div id="settingsBenefitsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Benefícios</h1><p>Itens reutilizados na apresentação e criação das vagas.</p></div></div><button class="primary-button" id="newBenefitButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo benefício</button></header><div class="settings-list" id="settingsBenefitList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Benefícios</h1><p>Itens reutilizados na apresentação e criação das vagas.</p></div></div><button class="primary-button" id="newBenefitButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Novo benefício</button></header><div class="settings-list" id="settingsBenefitList"></div>
           </div>
 
           <div id="settingsStagesView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Etapas do pipeline</h1><p>Organize as colunas e a sequência do processo seletivo.</p></div></div><button class="primary-button" id="newStageButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova etapa</button></header><div class="settings-list pipeline-stage-list" id="settingsStageList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Etapas do pipeline</h1><p>Organize as colunas e a sequência do processo seletivo.</p></div></div><button class="primary-button" id="newStageButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova etapa</button></header><div class="settings-list pipeline-stage-list" id="settingsStageList"></div>
           </div>
 
           <div id="settingsEmailsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Modelos de e-mail</h1><p>Personalize as mensagens automáticas enviadas pelo portal.</p></div></div></header><div class="settings-list email-template-list" id="settingsEmailList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Modelos de e-mail</h1><p>Personalize as mensagens automáticas enviadas pelo portal.</p></div></div></header><div class="settings-list email-template-list" id="settingsEmailList"></div>
           </div>
 
           <div id="settingsRejectionsView" hidden>
-            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar para configurações</button><div><span class="eyebrow">CONFIGURAÇÕES</span><h1>Justificativas de rejeição</h1><p>Padronize os retornos utilizados na reprovação de candidaturas.</p></div></div><button class="primary-button" id="newRejectionButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova justificativa</button></header><div class="settings-list" id="settingsRejectionList"></div>
+            <header class="dashboard-welcome settings-subheading"><div class="new-job-heading-copy"><button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button><div><h1>Justificativas de rejeição</h1><p>Padronize os retornos utilizados na reprovação de candidaturas.</p></div></div><button class="primary-button" id="newRejectionButton" type="button"><svg class="ui-icon"><use href="#i-plus" /></svg>Nova justificativa</button></header><div class="settings-list" id="settingsRejectionList"></div>
+          </div>
+
+          <div id="settingsGestorPermsView" hidden>
+            <header class="dashboard-welcome settings-subheading">
+              <div class="new-job-heading-copy">
+                <button class="page-back-link" type="button" data-settings-back><span aria-hidden="true">←</span> Voltar</button>
+                <div>
+                  <h1>Permissões do gestor</h1>
+                  <p>Controles das ações disponíveis no portal do gestor.</p>
+                </div>
+              </div>
+            </header>
+            <section class="settings-panel gestor-settings-perms">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Ações liberadas</h2>
+                  <p class="panel-note">Simule as regras da empresa para o perfil gestor.</p>
+                </div>
+              </header>
+              <div class="gestor-settings-perms-list" id="gestorDemoPerms" aria-label="Permissões do gestor">
+                <label class="test-switch">
+                  <input id="gestorPermRejectDirect" type="checkbox" />
+                  <span class="test-switch-track"></span>
+                  <span>Gestor pode reprovar direto</span>
+                </label>
+                <label class="test-switch">
+                  <input id="gestorPermSeeSalary" type="checkbox" checked />
+                  <span class="test-switch-track"></span>
+                  <span>Ver faixa salarial</span>
+                </label>
+                <label class="test-switch">
+                  <input id="gestorPermApproveRequests" type="checkbox" />
+                  <span class="test-switch-track"></span>
+                  <span>Pode aprovar solicitações</span>
+                </label>
+                <label class="test-switch">
+                  <input id="gestorPermScheduleInterview" type="checkbox" />
+                  <span class="test-switch-track"></span>
+                  <span>Pode agendar entrevista direto</span>
+                </label>
+                <label class="form-field gestor-persona-field" hidden>
+                  <span>Persona de aprovação</span>
+                  <select id="gestorApprovalPersona" aria-label="Persona de aprovação">
+                    <option value="rh" selected>RH · Camila Monteiro</option>
+                  </select>
+                </label>
+              </div>
+            </section>
           </div>
         </section>
 
@@ -1149,83 +1217,67 @@
           </div>
 
           <div id="preAdmissaoPanel" class="resultados-hub-panel" hidden>
-            <div class="pread-layout">
-              <section class="pread-list-pane dashboard-panel">
-                <header class="dashboard-panel-heading">
-                  <div>
-                    <h2>Em pré-admissão</h2>
-                    <p class="panel-note">Do Contratar até virar colaborador.</p>
-                  </div>
+            <section class="pread-list-pane dashboard-panel">
+              <header class="dashboard-panel-heading">
+                <div>
+                  <h2>Em pré-admissão</h2>
+                  <p class="panel-note">Do Contratar até virar colaborador. Clique para abrir o checklist.</p>
+                </div>
+              </header>
+              <div class="talent-list pread-card-list" id="preAdmissaoList" aria-label="Pré-admissões"></div>
+              <div class="empty-state" id="preAdmissaoEmpty" hidden>
+                <h3>Nenhuma pré-admissão</h3>
+                <p>Use Contratar no dossiê ou no pipeline para iniciar.</p>
+              </div>
+            </section>
+          </div>
+
+          <dialog class="stack-dialog offer-form-dialog pread-dialog" id="preAdmissaoDialog">
+            <header class="stack-dialog-header offer-form-header pread-dialog-header">
+              <div class="pread-detail-identity">
+                <p class="eyebrow" id="preAdmissaoDetailStatus">Em andamento</p>
+                <h2 id="preAdmissaoDetailTitle">Candidato</h2>
+                <p class="panel-note" id="preAdmissaoDetailMeta"></p>
+              </div>
+              <div class="pread-detail-actions" id="preAdmissaoDetailActions"></div>
+              <button class="icon-button" type="button" aria-label="Fechar" id="closePreAdmissaoDialog">×</button>
+            </header>
+            <div class="offer-form-body pread-dialog-body">
+              <div class="pread-summary" id="preAdmissaoSummary" aria-label="Resumo da pré-admissão"></div>
+              <div class="pread-section">
+                <header class="pread-section-head">
+                  <h3>Checklist documental</h3>
+                  <p class="panel-note">Uma linha por documento — status e ações à direita.</p>
                 </header>
-                <div class="pread-table-wrap">
-                  <table class="pread-table" aria-label="Pré-admissões">
+                <div class="pread-checklist-wrap">
+                  <table class="pread-checklist" aria-label="Checklist documental">
                     <thead>
                       <tr>
-                        <th>Candidato</th>
-                        <th>Cargo</th>
-                        <th>Empresa</th>
-                        <th>Data prevista</th>
-                        <th>Progresso</th>
-                        <th>Pendências</th>
+                        <th>Documento</th>
+                        <th>Obrigatório</th>
+                        <th>Responsável</th>
+                        <th>Prazo</th>
+                        <th>Status</th>
+                        <th>Arquivo</th>
+                        <th>Ações</th>
                       </tr>
                     </thead>
-                    <tbody id="preAdmissaoList"></tbody>
+                    <tbody id="preAdmissaoChecklist"></tbody>
                   </table>
                 </div>
-                <div class="empty-state" id="preAdmissaoEmpty" hidden>
-                  <h3>Nenhuma pré-admissão</h3>
-                  <p>Use Contratar no dossiê ou no pipeline para iniciar.</p>
-                </div>
-              </section>
-
-              <section class="pread-detail-pane dashboard-panel" id="preAdmissaoDetail" hidden>
-                <header class="pread-detail-head">
-                  <div class="pread-detail-identity">
-                    <p class="eyebrow" id="preAdmissaoDetailStatus">Em andamento</p>
-                    <h2 id="preAdmissaoDetailTitle">Candidato</h2>
-                    <p class="panel-note" id="preAdmissaoDetailMeta"></p>
+              </div>
+              <section class="pread-section pread-pendencies">
+                <header class="pread-section-head">
+                  <div>
+                    <h3>Pendências</h3>
+                    <p class="panel-note">Itens extras além do checklist.</p>
                   </div>
-                  <div class="pread-detail-actions" id="preAdmissaoDetailActions"></div>
+                  <button type="button" class="secondary-button" id="preAdmissaoAddPendency">Adicionar pendência</button>
                 </header>
-
-                <div class="pread-summary" id="preAdmissaoSummary" aria-label="Resumo da pré-admissão"></div>
-
-                <div class="pread-section">
-                  <header class="pread-section-head">
-                    <h3>Checklist documental</h3>
-                    <p class="panel-note">Uma linha por documento — status e ações à direita.</p>
-                  </header>
-                  <div class="pread-checklist-wrap">
-                    <table class="pread-checklist" aria-label="Checklist documental">
-                      <thead>
-                        <tr>
-                          <th>Documento</th>
-                          <th>Obrigatório</th>
-                          <th>Responsável</th>
-                          <th>Prazo</th>
-                          <th>Status</th>
-                          <th>Arquivo</th>
-                          <th>Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody id="preAdmissaoChecklist"></tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <section class="pread-section pread-pendencies">
-                  <header class="pread-section-head">
-                    <div>
-                      <h3>Pendências</h3>
-                      <p class="panel-note">Itens extras além do checklist.</p>
-                    </div>
-                    <button type="button" class="secondary-button" id="preAdmissaoAddPendency">Adicionar pendência</button>
-                  </header>
-                  <ul id="preAdmissaoPendencyList"></ul>
-                </section>
+                <ul id="preAdmissaoPendencyList"></ul>
               </section>
             </div>
-          </div>
+          </dialog>
 
           <div id="encerradosPanel" class="resultados-hub-panel" hidden>
             <div class="resultados-encerrados-toolbar">
@@ -1292,8 +1344,7 @@
               <header class="dashboard-welcome home-welcome">
                 <div>
                   <span class="eyebrow" id="gestorOverviewEyebrow">QUINTA-FEIRA, 27 DE AGOSTO</span>
-                  <h1>Olá, <span id="gestorManagerName">Larissa</span></h1>
-                  <p>Aqui está um resumo do que depende da sua atuação hoje.</p>
+                  <p>Resumo do que depende de você hoje.</p>
                 </div>
                 <button class="primary-button dashboard-new-job" type="button" data-gestor-quick="solicitar">
                   <span aria-hidden="true"><svg class="ui-icon"><use href="#i-plus" /></svg></span>
@@ -1339,76 +1390,51 @@
               </div>
 
               <div class="dashboard-grid gestor-dashboard-grid">
-                <section class="dashboard-panel active-jobs-panel">
-                  <header class="dashboard-panel-heading">
-                    <div>
-                      <h2>Minhas vagas</h2>
-                    </div>
-                    <button type="button" data-gestor-quick="vagas">Ver todas <span>→</span></button>
-                  </header>
-                  <div class="dashboard-job-list" id="gestorMyJobsSummary"></div>
-                </section>
-
-                <section class="dashboard-panel match-panel">
+                <section class="dashboard-panel match-panel gestor-ov-actions">
                   <header class="dashboard-panel-heading">
                     <div>
                       <h2>Aguardando sua ação</h2>
+                      <p class="panel-note">Fila de hoje · análises, fichas e aprovações</p>
                     </div>
                     <button type="button" data-gestor-quick="pendencias">Ver pendências</button>
                   </header>
                   <div class="dashboard-match-list" id="gestorAwaitingActions"></div>
                 </section>
 
-                <section class="dashboard-panel funnel-panel">
-                  <header class="dashboard-panel-heading">
-                    <div>
-                      <h2>Minhas solicitações</h2>
-                    </div>
-                    <button type="button" data-gestor-quick="solicitacoes">Ver todas</button>
-                  </header>
-                  <div id="gestorRequestsSummary" class="gestor-request-list"></div>
-                  <div class="gestor-secondary-metrics" id="gestorSecondaryMetrics" aria-label="Outros indicadores"></div>
-                </section>
-
                 <section class="dashboard-panel agenda-panel">
                   <header class="dashboard-panel-heading">
                     <div>
                       <h2>Próximas entrevistas</h2>
+                      <p class="panel-note">Agenda da semana</p>
                     </div>
                     <button type="button" data-gestor-quick="agenda">Ver agenda</button>
                   </header>
                   <div id="gestorUpcomingInterviews" class="gestor-agenda-list"></div>
                 </section>
+
+                <section class="dashboard-panel active-jobs-panel">
+                  <header class="dashboard-panel-heading">
+                    <div>
+                      <h2>Vagas que pedem atenção</h2>
+                      <p class="panel-note">SLA atrasado, poucos candidatos, pausada ou aguardando aprovação</p>
+                    </div>
+                    <button type="button" data-gestor-quick="vagas">Ver todas <span>→</span></button>
+                  </header>
+                  <div class="dashboard-job-list" id="gestorMyJobsSummary"></div>
+                </section>
+
+                <section class="dashboard-panel funnel-panel gestor-ov-requests">
+                  <header class="dashboard-panel-heading">
+                    <div>
+                      <h2>Solicitações abertas</h2>
+                      <p class="panel-note">Status dos pedidos enviados ao RH</p>
+                    </div>
+                    <button type="button" data-gestor-quick="solicitacoes">Ver todas</button>
+                  </header>
+                  <div id="gestorRequestsSummary" class="gestor-request-list"></div>
+                </section>
               </div>
 
-              <div class="gestor-demo-perms" id="gestorDemoPerms" aria-label="Permissões de demo">
-                <p class="gestor-demo-perms-label">Demo · permissões</p>
-                <label class="test-switch">
-                  <input id="gestorPermRejectDirect" type="checkbox" />
-                  <span class="test-switch-track"></span>
-                  <span>Gestor pode reprovar direto</span>
-                </label>
-              <label class="test-switch">
-                <input id="gestorPermSeeSalary" type="checkbox" checked />
-                <span class="test-switch-track"></span>
-                <span>Ver faixa salarial</span>
-              </label>
-              <label class="test-switch">
-                <input id="gestorPermApproveRequests" type="checkbox" checked />
-                <span class="test-switch-track"></span>
-                <span>Pode aprovar solicitações</span>
-              </label>
-              <label class="test-switch">
-                <input id="gestorPermScheduleInterview" type="checkbox" />
-                <span class="test-switch-track"></span>
-                <span>Pode agendar entrevista direto</span>
-              </label>
-              <label class="form-field gestor-persona-field" hidden>
-                <span>Persona de aprovação</span>
-                <select id="gestorApprovalPersona" aria-label="Persona de aprovação">
-                  <option value="rh" selected>RH · Camila Monteiro</option>
-                </select>
-              </label>
               </div>
             </div>
 
@@ -1516,12 +1542,12 @@
               <div class="gestor-analysis-toolbar" id="gestorAnalysisToolbar" hidden></div>
               <section class="dashboard-panel gestor-home-panel" id="gestorListPanel">
                 <div id="gestorRequestInboxBar" class="gestor-request-inbox-bar" hidden>
-                  <div class="gestor-request-toolbar">
+                  <div class="gestor-request-kpis" id="gestorRequestKpis" aria-label="Resumo das solicitações"></div>
+                  <div class="gestor-request-toolbar" id="gestorRequestToolbar" hidden>
                     <div class="talent-tabs fit-hub-tabs gestor-request-inbox-tabs" role="tablist" aria-label="Inbox de solicitações">
-                      <button type="button" role="tab" data-gestor-request-inbox="mine" aria-selected="true">Minhas solicitações</button>
-                      <button type="button" role="tab" data-gestor-request-inbox="approval" aria-selected="false" id="gestorRequestApprovalTab">Para minha aprovação</button>
+                      <button type="button" role="tab" data-gestor-request-inbox="mine" aria-selected="true">Minhas</button>
+                      <button type="button" role="tab" data-gestor-request-inbox="approval" aria-selected="false" id="gestorRequestApprovalTab">Para aprovar</button>
                     </div>
-                    <p class="gestor-request-count" id="gestorRequestCount" aria-live="polite"></p>
                   </div>
                   <div class="gestor-request-filters" id="gestorRequestFilters">
                     <label class="gestor-request-filter">
@@ -1645,7 +1671,6 @@
                 <footer class="dialog-actions gestor-request-actions" id="gestorRequestActions"></footer>
               </section>
             </div>
-          </div>
 
           <section id="gestorJobView" class="gestor-job-view" hidden>
             <header class="gestor-job-header">
@@ -1962,29 +1987,31 @@
 
             <div id="testsAppliedPanel" hidden>
               <section class="dashboard-panel">
-                <div class="assignment-type-tabs" id="appliedTestTypeTabs" role="tablist">
-                  <button type="button" class="assignment-type-tab is-active" data-applied-test-type="technical">Técnico</button>
-                  <button type="button" class="assignment-type-tab" data-applied-test-type="behavioral">Comportamental</button>
-                  <button type="button" class="assignment-type-tab" data-applied-test-type="competency">Competências</button>
-                </div>
-                <div class="applied-tests-toolbar">
-                  <label class="form-field">
-                    <span class="sr-only">Buscar</span>
-                    <input id="appliedTestsSearch" type="search" placeholder="Buscar candidato ou teste" />
-                  </label>
-                  <label class="form-field">
-                    <span class="sr-only">Status</span>
-                    <select id="appliedTestsStatusFilter">
-                      <option value="all">Todos os status</option>
-                      <option value="Enviado">Enviado</option>
-                      <option value="Não iniciado">Não iniciado</option>
-                      <option value="Em andamento">Em andamento</option>
-                      <option value="Concluído">Concluído</option>
-                      <option value="Expirado">Expirado</option>
-                      <option value="Avaliado">Avaliado</option>
-                      <option value="Cancelado">Cancelado</option>
-                    </select>
-                  </label>
+                <div class="applied-tests-bar">
+                  <div class="assignment-type-tabs" id="appliedTestTypeTabs" role="tablist">
+                    <button type="button" class="assignment-type-tab is-active" data-applied-test-type="technical">Técnico</button>
+                    <button type="button" class="assignment-type-tab" data-applied-test-type="behavioral">Comportamental</button>
+                    <button type="button" class="assignment-type-tab" data-applied-test-type="competency">Competências</button>
+                  </div>
+                  <div class="applied-tests-toolbar">
+                    <label class="form-field applied-tests-search">
+                      <span class="sr-only">Buscar</span>
+                      <input id="appliedTestsSearch" type="search" placeholder="Buscar candidato ou teste" />
+                    </label>
+                    <label class="form-field applied-tests-status">
+                      <span class="sr-only">Status</span>
+                      <select id="appliedTestsStatusFilter">
+                        <option value="all">Todos os status</option>
+                        <option value="Enviado">Enviado</option>
+                        <option value="Não iniciado">Não iniciado</option>
+                        <option value="Em andamento">Em andamento</option>
+                        <option value="Concluído">Concluído</option>
+                        <option value="Expirado">Expirado</option>
+                        <option value="Avaliado">Avaliado</option>
+                        <option value="Cancelado">Cancelado</option>
+                      </select>
+                    </label>
+                  </div>
                 </div>
                 <div class="assignment-table-wrap">
                   <table class="assignment-table">
@@ -2386,6 +2413,7 @@
           </div>
         </section>
       </main>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
       </div>
     </div>
 
@@ -4612,6 +4640,32 @@
             <svg class="ui-icon"><use href="#i-share" /></svg>
           </button>
           <button
+            class="candidate-view-trigger"
+            id="candidateWorkspaceScenarioBtn"
+            type="button"
+            title="Trocar cenário"
+            aria-label="Trocar cenário do protótipo"
+            aria-expanded="false"
+            aria-controls="candidateWorkspaceScenarioPopover"
+          >
+            <svg class="ui-icon"><use href="#i-eye" /></svg>
+          </button>
+          <div class="topbar-popover workspace-scenario-popover" id="candidateWorkspaceScenarioPopover" hidden>
+            <header><strong>Ver como</strong><small>Trocar o cenário do protótipo</small></header>
+            <button type="button" data-workspace-scenario="rh">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span>
+              <span><strong>RH</strong><small>Portal completo de recrutamento</small></span>
+            </button>
+            <button type="button" data-workspace-scenario="gestor">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span>
+              <span><strong>Gestor</strong><small>Acompanhamento de vagas e pareceres</small></span>
+            </button>
+            <button type="button" data-workspace-scenario="candidato">
+              <span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span>
+              <span><strong>Candidato</strong><small>Você está neste cenário</small></span>
+            </button>
+          </div>
+          <button
             class="icon-button notification-button"
             type="button"
             id="candidateNotificationBtn"
@@ -4637,6 +4691,7 @@
             <button type="button" data-candidate-profile-action="profile"><span class="popover-icon"><svg class="ui-icon"><use href="#i-users" /></svg></span><span><strong>Meu perfil</strong><small>Atualize seus dados profissionais.</small></span></button>
             <button type="button" data-candidate-profile-action="login"><span class="popover-icon"><svg class="ui-icon"><use href="#i-eye" /></svg></span><span><strong>Entrar em outra conta</strong><small>Simulação de login do candidato.</small></span></button>
             <button type="button" data-candidate-profile-action="password"><span class="popover-icon"><svg class="ui-icon"><use href="#i-settings" /></svg></span><span><strong>Redefinir senha</strong><small>Simulação de recuperação de acesso.</small></span></button>
+            <button type="button" data-candidate-profile-action="rh"><span class="popover-icon"><svg class="ui-icon"><use href="#i-briefcase" /></svg></span><span><strong>Visão do RH</strong><small>Voltar ao portal de recrutamento.</small></span></button>
             <button type="button" data-candidate-profile-action="logout"><span class="popover-icon"><svg class="ui-icon"><use href="#i-logout" /></svg></span><span><strong>Sair</strong><small>Encerrar a sessão neste protótipo.</small></span></button>
           </div>
         </div>
@@ -4693,10 +4748,6 @@
         </nav>
 
         <div class="sidebar-footer">
-          <button class="nav-item" type="button" id="exitCandidatePortal" title="Voltar">
-            <span class="nav-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-back" /></svg></span>
-            <span class="nav-label" id="exitCandidatePortalLabel">Voltar ao RH</span>
-          </button>
           <div class="help-card">
             <span class="help-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-help" /></svg></span>
             <div>
@@ -4726,8 +4777,7 @@
             <header class="dashboard-welcome home-welcome">
               <div>
                 <span class="eyebrow" id="candidateHomeWelcomeEyebrow">QUINTA-FEIRA, 27 DE AGOSTO</span>
-                <h1>Olá, <span id="candidateHomeWelcomeName">Levi</span></h1>
-                <p>Aqui está um resumo do que depende da sua atuação hoje.</p>
+                <p>Resumo do que depende de você hoje.</p>
               </div>
               <button class="primary-button dashboard-new-job" type="button" data-candidate-next-action="jobs">
                 Ver vagas
@@ -5182,6 +5232,6 @@
       </div>
     </div>
 
-    <script src="./app.js?v=nav-hubs-487"></script>
+    <script src="./app.js?v=nav-hubs-530"></script>
   </body>
 </html>
